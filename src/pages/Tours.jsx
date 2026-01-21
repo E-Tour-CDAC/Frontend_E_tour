@@ -79,7 +79,7 @@ const Tours = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-700"></div>
       </div>
     );
   }
@@ -114,7 +114,7 @@ const Tours = () => {
               ...categories.map(cat => ({ value: cat.id, label: cat.category_name }))
             ]}
           />
-          
+
           <Select
             name="priceRange"
             value={filters.priceRange}
@@ -124,7 +124,7 @@ const Tours = () => {
               ...priceRangeOptions
             ]}
           />
-          
+
           <Select
             name="duration"
             value={filters.duration}
@@ -134,7 +134,7 @@ const Tours = () => {
               ...durationOptions
             ]}
           />
-          
+
           <Select
             name="sortBy"
             value={filters.sortBy}
@@ -168,7 +168,7 @@ const Tours = () => {
               </div>
               <div className="p-4">
                 <div className="mb-2">
-                  <span className="text-xs text-blue-600 font-medium">
+                  <span className="text-xs text-teal-700 font-medium">
                     {tour.category_name}
                   </span>
                 </div>
@@ -194,12 +194,12 @@ const Tours = () => {
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <span className="text-2xl font-bold text-blue-600">
+                    <span className="text-2xl font-bold text-teal-700">
                       ${tour.starting_price}
                     </span>
                     <span className="text-gray-500 text-sm">/person</span>
                   </div>
-                  <button className="text-blue-600 hover:text-blue-700 font-medium text-sm">
+                  <button className="text-teal-700 hover:text-teal-800 font-medium text-sm">
                     View Details →
                   </button>
                 </div>
@@ -212,7 +212,7 @@ const Tours = () => {
       {tours.length === 0 && (
         <div className="text-center py-12">
           <p className="text-gray-500 text-lg">No tours found matching your criteria</p>
-          <button 
+          <button
             onClick={() => setFilters({ category: '', priceRange: '', duration: '', sortBy: 'name' })}
             className="mt-4 btn-secondary"
           >

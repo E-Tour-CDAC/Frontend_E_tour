@@ -19,7 +19,7 @@ const styles = {
     display: "flex",
     justifyContent: "space-between",
     padding: "15px",
-    background: "#1976d2",
+    background: "#0f766e", // teal-700
     color: "white"
   }
 };

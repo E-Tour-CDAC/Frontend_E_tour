@@ -48,7 +48,7 @@ const TourDetail = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-700"></div>
       </div>
     );
   }
@@ -69,9 +69,9 @@ const TourDetail = () => {
     content: (
       <div className="space-y-4">
         {itinerary.map((item, index) => (
-          <div key={item.id} className="border-l-4 border-blue-500 pl-4">
+          <div key={item.id} className="border-l-4 border-teal-500 pl-4">
             <div className="flex items-center mb-2">
-              <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2 py-1 rounded">
+              <span className="bg-teal-100 text-teal-800 text-sm font-medium px-2 py-1 rounded">
                 Day {item.day_number}
               </span>
               <span className="ml-2 text-gray-500 text-sm">
@@ -113,25 +113,25 @@ const TourDetail = () => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
                   <span className="text-gray-500 text-sm">Single Person</span>
-                  <p className="text-xl font-bold text-blue-600">
+                  <p className="text-xl font-bold text-teal-700">
                     ${price.single_person_cost}
                   </p>
                 </div>
                 <div>
                   <span className="text-gray-500 text-sm">Extra Person</span>
-                  <p className="text-xl font-bold text-blue-600">
+                  <p className="text-xl font-bold text-teal-700">
                     ${price.extra_person_cost}
                   </p>
                 </div>
                 <div>
                   <span className="text-gray-500 text-sm">Child (with bed)</span>
-                  <p className="text-xl font-bold text-blue-600">
+                  <p className="text-xl font-bold text-teal-700">
                     ${price.child_with_bed_cost}
                   </p>
                 </div>
                 <div>
                   <span className="text-gray-500 text-sm">Child (no bed)</span>
-                  <p className="text-xl font-bold text-blue-600">
+                  <p className="text-xl font-bold text-teal-700">
                     ${price.child_without_bed_cost}
                   </p>
                 </div>
@@ -190,7 +190,7 @@ const TourDetail = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-6">
-        <Link to="/tours" className="text-blue-600 hover:text-blue-700 mb-4 inline-block">
+        <Link to="/tours" className="text-teal-700 hover:text-teal-800 mb-4 inline-block">
           ← Back to Tours
         </Link>
       </div>
@@ -213,7 +213,7 @@ const TourDetail = () => {
 
           <div className="mb-8">
             <div className="flex items-center mb-4">
-              <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded">
+              <span className="bg-teal-100 text-teal-800 text-sm font-medium px-3 py-1 rounded">
                 {tour.category_name}
               </span>
               {tour.featured && (
@@ -261,7 +261,7 @@ const TourDetail = () => {
                   Book This Tour
                 </h3>
                 <div className="mb-6">
-                  <div className="text-3xl font-bold text-blue-600 mb-2">
+                  <div className="text-3xl font-bold text-teal-700 mb-2">
                     From ${tour.starting_price}
                   </div>
                   <p className="text-gray-600 text-sm">
@@ -300,7 +300,7 @@ const TourDetail = () => {
                 <div className="mt-4 text-center">
                   <Link
                     to={`/tours/${tour.id}/departures`}
-                    className="text-blue-600 hover:text-blue-700 text-sm"
+                    className="text-teal-700 hover:text-teal-800 text-sm"
                   >
                     View departure dates →
                   </Link>
