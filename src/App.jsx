@@ -1,16 +1,24 @@
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import AppRoutes from "./routes/AppRoutes";
+import React from 'react';
+import { AuthProvider } from './context/AuthContext';
+import { BookingProvider } from './context/BookingContext';
+import Navbar from './components/Layout/Navbar';
+import Footer from './components/Layout/Footer';
+import AppRoutes from './routes/AppRoutes';
+import './index.css';
 
 function App() {
   return (
-    <>
-      <Navbar />
-      <main style={{ minHeight: "80vh", padding: "20px" }}>
-        <AppRoutes />
-      </main>
-      <Footer />
-    </>
+    <AuthProvider>
+      <BookingProvider>
+        <div className="min-h-screen flex flex-col">
+          <Navbar />
+          <main className="flex-grow">
+            <AppRoutes />
+          </main>
+          <Footer />
+        </div>
+      </BookingProvider>
+    </AuthProvider>
   );
 }
 

@@ -1,25 +1,29 @@
-import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import TourList from "../pages/TourList";
-import TourDetails from "../pages/TourDetails";
-import Booking from "../pages/Booking";
-import Payment from "../pages/Payment";
+import Categories from "../pages/Categories";
+import Tours from "../pages/Tours";
+import TourDetail from "../pages/TourDetail";
+import BookingStart from "../pages/BookingStart";
+import CustomerProfile from "../pages/CustomerProfile";
+import CustomerBookings from "../pages/CustomerBookings";
+import AdminDashboard from "../pages/Admin/Dashboard";
 
 const AppRoutes = () => {
   return (
-    
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/categories" element={<Categories />} />
+      <Route path="/tours" element={<Tours />} />
+      <Route path="/tours/:id" element={<TourDetail />} />
+      <Route path="/booking/start/:tourId" element={<BookingStart />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/tours" element={<TourList />} />
-      <Route path="/tours/:id" element={<TourDetails />} />
-      <Route path="/booking/:tourId" element={<Booking />} />
-      <Route path="/payment/:bookingId" element={<Payment />} />
+      <Route path="/customer/profile" element={<CustomerProfile />} />
+      <Route path="/customer/bookings" element={<CustomerBookings />} />
+      <Route path="/admin/*" element={<AdminDashboard />} />
     </Routes>
-   
   );
 };
 
