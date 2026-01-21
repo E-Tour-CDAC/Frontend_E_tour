@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
+import EarthLogo from '../../assets/images/EarthLogo.png';
+
 const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
 
@@ -10,8 +12,15 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <Link to="/" className="text-2xl font-bold text-blue-600">
-              E-Tour
+            <Link to="/" className="flex items-center gap-3 group">
+              <img 
+                src={EarthLogo} 
+                alt="E-Tour Logo" 
+                className="h-10 w-auto transform transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110 drop-shadow-md"
+              />
+              <span className="text-2xl font-bold text-blue-600 tracking-wide group-hover:text-blue-700 transition-colors duration-300">
+                E-Tour
+              </span>
             </Link>
           </div>
 
