@@ -8,6 +8,7 @@ const Register = () => {
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
+    address: '',
     email: '',
     password: '',
     confirm_password: '',
@@ -20,7 +21,7 @@ const Register = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    
+
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -28,46 +29,57 @@ const Register = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!formData.first_name.trim()) {
       newErrors.first_name = 'First name is required';
     }
-    
+
     if (!formData.last_name.trim()) {
       newErrors.last_name = 'Last name is required';
     }
-    
+
+    if (!formData.address.trim()) {
+      newErrors.address = 'Address is required';
+    }
+
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Email is invalid';
     }
-    
+
     if (!formData.password) {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters';
     }
-    
+
     if (!formData.confirm_password) {
       newErrors.confirm_password = 'Please confirm your password';
     } else if (formData.password !== formData.confirm_password) {
       newErrors.confirm_password = 'Passwords do not match';
     }
-    
+
     return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
 
-    const { confirm_password, ...registrationData } = formData;
+    const { confirm_password, ...rest } = formData;
+    const registrationData = {
+      ...rest,
+      customer_role: 'CUSTOMER',
+      auth_provider: 'LOCAL',
+      profile_completed: 1 // Assuming profile is complete upon registration with all fields
+    };
+
     const result = await register(registrationData);
     if (result.success) {
       navigate('/login');
@@ -88,7 +100,7 @@ const Register = () => {
             </Link>
           </p>
         </div>
-        
+
         <Card>
           <form className="p-6 space-y-6" onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4">
@@ -101,7 +113,7 @@ const Register = () => {
                 placeholder="First name"
                 required
               />
-              
+
               <TextInput
                 label="Last Name"
                 name="last_name"
@@ -132,6 +144,16 @@ const Register = () => {
               onChange={handleChange}
               error={errors.phone}
               placeholder="+1 (555) 123-4567"
+            />
+
+            <TextInput
+              label="Address"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              error={errors.address}
+              placeholder="Enter your address"
+              required
             />
 
             <TextInput

@@ -16,7 +16,7 @@ const Login = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    
+
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -24,23 +24,23 @@ const Login = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Email is invalid';
     }
-    
+
     if (!formData.password) {
       newErrors.password = 'Password is required';
     }
-    
+
     return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -49,7 +49,7 @@ const Login = () => {
 
     const result = await login(formData);
     if (result.success) {
-      navigate('/');
+      navigate('/tours');
     }
   };
 
@@ -67,7 +67,7 @@ const Login = () => {
             </Link>
           </p>
         </div>
-        
+
         <Card>
           <form className="p-6 space-y-6" onSubmit={handleSubmit}>
             <TextInput
