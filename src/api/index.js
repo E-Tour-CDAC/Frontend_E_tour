@@ -78,4 +78,10 @@ export const customerAPI = {
   changePassword: (data) => api.post('/customers/change-password', data),
 };
 
+export const searchAPI = {
+  searchByDuration: (minDays, maxDays) => api.get(`/api/search/duration`, { params: { minDays, maxDays } }),
+  searchByCost: (minCost, maxCost) => api.get(`/api/search/cost`, { params: { minCost, maxCost } }),
+  searchByDate: (fromDate, toDate) => api.get(`/api/search/date`, { params: { fromDate, toDate } }),
+};
+
 export default api;
