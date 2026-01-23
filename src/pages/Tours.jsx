@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useLocation } from 'react-router-dom';
 import Card from '../components/UI/Card';
 import { tourAPI } from '../api';
 
 const Tours = () => {
   const { id } = useParams(); // 🔥 subcatCode from URL
+  const location = useLocation();
   const [tours, setTours] = useState([]);
+
+  useEffect(() => {
+    if (location.state?.searchParams) {
+      console.log('Search Params Received:', location.state.searchParams);
+      // Future: Call API with these params
+    }
+  }, [location.state]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -57,7 +66,7 @@ const Tours = () => {
     const mappedTours = data.map(cat => ({
       id: cat.catCode || cat.CategoryCode, // backend inconsistency safe
       catid: cat.categoryId,
-      jumpFlag: cat.jumpFlag,       
+      jumpFlag: cat.jumpFlag,
       tour_name: cat.categoryName,
       image_url: cat.imagePath,
       description: `Explore our amazing ${cat.categoryName} packages.`,
@@ -86,7 +95,7 @@ const Tours = () => {
       <div className="text-center py-12">
         <p className="text-red-600 text-lg">{error}</p>
         <button onClick={() => (id ? fetchToursBySubcat(id) : fetchTours())}
-                className="mt-4 btn-primary">
+          className="mt-4 btn-primary">
           Try Again
         </button>
       </div>
@@ -106,13 +115,13 @@ const Tours = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {tours.map((tour) => (
           <Link
-  key={tour.id}
-  to={
-    tour.jumpFlag
-      ? `/tours/details/${tour.catid}`   // ✅ jump = true
-      : `/tours/${tour.id}`           // ❌ jump = false (existing behavior)
-  }
->
+            key={tour.id}
+            to={
+              tour.jumpFlag
+                ? `/tours/details/${tour.catid}`   // ✅ jump = true
+                : `/tours/${tour.id}`           // ❌ jump = false (existing behavior)
+            }
+          >
 
             <Card hover className="cursor-pointer">
               <div className="relative">

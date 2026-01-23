@@ -6,17 +6,23 @@ import newYorkImg from '../assets/images/new_york.png';
 import dubaiImg from '../assets/images/dubai.png';
 
 const Home = () => {
-  const [searchTerm, setSearchTerm] = useState('duration');
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchParams, setSearchParams] = useState({
+    location: '',
+    date: '',
+    price: ''
+  });
   const navigate = useNavigate();
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData.entries());
+  const handleInputChange = (e) => {
+    setSearchParams({
+      ...searchParams,
+      [e.target.name]: e.target.value
+    });
+  };
 
-    // Pass the params to the Tours page.
-    navigate('/tours', { state: { searchType: searchTerm, searchParams: data } });
+  const handleSearch = (e) => {
+    e.preventDefault();
+    navigate('/tours', { state: { searchParams } });
   };
 
   return (
@@ -31,90 +37,55 @@ const Home = () => {
               Explore amazing destinations around the world with E-Tour
             </p>
 
-            {/* Search Box */}
-            <div className="max-w-3xl mx-auto mb-8 bg-white rounded-lg shadow-xl overflow-hidden text-gray-800">
-              <div className="flex border-b">
-                <button
-                  className={`flex-1 py-3 text-sm font-medium ${searchTerm === 'duration' ? 'bg-teal-50 text-teal-700 border-b-2 border-teal-500' : 'text-gray-500 hover:text-gray-700'}`}
-                  onClick={() => setSearchTerm('duration')}
-                >
-                  Duration
-                </button>
-                <button
-                  className={`flex-1 py-3 text-sm font-medium ${searchTerm === 'cost' ? 'bg-teal-50 text-teal-700 border-b-2 border-teal-500' : 'text-gray-500 hover:text-gray-700'}`}
-                  onClick={() => setSearchTerm('cost')}
-                >
-                  Cost
-                </button>
-                <button
-                  className={`flex-1 py-3 text-sm font-medium ${searchTerm === 'date' ? 'bg-teal-50 text-teal-700 border-b-2 border-teal-500' : 'text-gray-500 hover:text-gray-700'}`}
-                  onClick={() => setSearchTerm('date')}
-                >
-                  Date
-                </button>
-              </div>
+            {/* Unified Search Box */}
+            <div className="max-w-4xl mx-auto mb-8 bg-white rounded-lg shadow-xl overflow-hidden text-gray-800 p-6">
+              <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4 items-end">
+                <div className="flex-1 text-left w-full">
+                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
+                    Location
+                  </label>
+                  <input
+                    type="text"
+                    name="location"
+                    placeholder="Where are you going?"
+                    value={searchParams.location}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition-all"
+                  />
+                </div>
 
-              <form onSubmit={handleSearch} className="p-6">
-                {searchTerm === 'duration' && (
-                  <div className="flex gap-4">
-                    <input
-                      type="number"
-                      placeholder="Min Days"
-                      className="w-1/2 px-4 py-2 border rounded-md focus:ring-2 focus:ring-teal-500 focus:outline-none"
-                      name="minDays"
-                    />
-                    <input
-                      type="number"
-                      placeholder="Max Days"
-                      className="w-1/2 px-4 py-2 border rounded-md focus:ring-2 focus:ring-teal-500 focus:outline-none"
-                      name="maxDays"
-                    />
-                  </div>
-                )}
+                <div className="flex-1 text-left w-full">
+                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
+                    Date
+                  </label>
+                  <input
+                    type="date"
+                    name="date"
+                    value={searchParams.date}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition-all"
+                  />
+                </div>
 
-                {searchTerm === 'cost' && (
-                  <div className="flex gap-4">
-                    <input
-                      type="number"
-                      placeholder="Min Cost"
-                      className="w-1/2 px-4 py-2 border rounded-md focus:ring-2 focus:ring-teal-500 focus:outline-none"
-                      name="minCost"
-                    />
-                    <input
-                      type="number"
-                      placeholder="Max Cost"
-                      className="w-1/2 px-4 py-2 border rounded-md focus:ring-2 focus:ring-teal-500 focus:outline-none"
-                      name="maxCost"
-                    />
-                  </div>
-                )}
-
-                {searchTerm === 'date' && (
-                  <div className="flex gap-4">
-                    <div className="w-1/2">
-                      <label className="block text-xs text-gray-500 mb-1 text-left">From</label>
-                      <input
-                        type="date"
-                        className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-teal-500 focus:outline-none"
-                        name="fromDate"
-                      />
-                    </div>
-                    <div className="w-1/2">
-                      <label className="block text-xs text-gray-500 mb-1 text-left">To</label>
-                      <input
-                        type="date"
-                        className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-teal-500 focus:outline-none"
-                        name="toDate"
-                      />
-                    </div>
-                  </div>
-                )}
+                <div className="flex-1 text-left w-full">
+                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
+                    Max Price
+                  </label>
+                  <input
+                    type="number"
+                    name="price"
+                    placeholder="Budget limit"
+                    value={searchParams.price}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition-all"
+                  />
+                </div>
 
                 <button
                   type="submit"
-                  className="w-full mt-4 bg-teal-600 text-white py-2 rounded-md hover:bg-teal-700 transition-colors font-medium"
+                  className="w-full md:w-auto px-8 py-3 bg-teal-600 text-white font-bold rounded-lg hover:bg-teal-700 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
-                  Search Tours
+                  Search
                 </button>
               </form>
             </div>
