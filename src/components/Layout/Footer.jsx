@@ -9,7 +9,7 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold mb-4">E-Tour</h3>
             <p className="text-gray-300 mb-4">
-              Your trusted partner for unforgettable travel experiences around the world.
+              Ladies and Gentlemen,This is the boarding area for your trip.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-300 hover:text-white">
@@ -85,16 +85,16 @@ const Footer = () => {
           <div>
             <h4 className="text-lg font-semibold mb-4">Contact Info</h4>
             <div className="space-y-2 text-gray-300">
-              <p>📧 info@etour.com</p>
-              <p>📞 +1 (555) 123-4567</p>
-              <p>📍 123 Travel Street, Tourism City, TC 12345</p>
+              <p>📧 etourvirtugo@gmail.com</p>
+              <p>📞 9326923786</p>
+              <p>📍 SM VITA mumbai</p>
               <p>🕐 Mon-Fri: 9AM-6PM EST</p>
             </div>
           </div>
         </div>
 
         <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
-          <p>&copy; 2024 E-Tour. All rights reserved.</p>
+          <p>&copy; 2026 E-Tour. All rights reserved.</p>
         </div>
       </div>
     </footer>
