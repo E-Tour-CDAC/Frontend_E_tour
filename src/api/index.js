@@ -36,6 +36,7 @@ export const tourAPI = {
   // Mapping 'Tours' to 'Categories' as per available backend
   getTours: () => api.get('http://localhost:8080/api/tours'),
   getTour: (id) => api.get(`http://localhost:8080/api/tours/${id}`),
+  getTourDetails: (catId) => api.get(`http://localhost:8080/api/tours/details/${catId}`),
 
   // Keep this for filters, though it's same as getTours now
   // getCategories: () => api.get('/categories/home'),

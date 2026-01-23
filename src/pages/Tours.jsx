@@ -56,6 +56,8 @@ const Tours = () => {
   const mapAndSetTours = (data) => {
     const mappedTours = data.map(cat => ({
       id: cat.catCode || cat.CategoryCode, // backend inconsistency safe
+      catid: cat.categoryId,
+      jumpFlag: cat.jumpFlag,       
       tour_name: cat.categoryName,
       image_url: cat.imagePath,
       description: `Explore our amazing ${cat.categoryName} packages.`,
@@ -103,7 +105,15 @@ const Tours = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {tours.map((tour) => (
-          <Link key={tour.id} to={`/tours/${tour.id}`}>
+          <Link
+  key={tour.id}
+  to={
+    tour.jumpFlag
+      ? `/tours/details/${tour.catid}`   // ✅ jump = true
+      : `/tours/${tour.id}`           // ❌ jump = false (existing behavior)
+  }
+>
+
             <Card hover className="cursor-pointer">
               <div className="relative">
                 {tour.image_url ? (
