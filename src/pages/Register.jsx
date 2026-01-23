@@ -6,36 +6,43 @@ import TextInput from '../components/Forms/TextInput';
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    first_name: '',
-    last_name: '',
+    firstName: '',
+    lastName: '',
     address: '',
     email: '',
+    phone: '',
     password: '',
-    confirm_password: '',
-    phone: ''
+    confirmPassword: ''
   });
+
   const [errors, setErrors] = useState({});
   const { register, loading } = useAuth();
   const navigate = useNavigate();
 
+  // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
 
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+      setErrors((prev) => ({ ...prev, [name]: '' }));
     }
   };
 
+  // Validate form
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.first_name.trim()) {
-      newErrors.first_name = 'First name is required';
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = 'First name is required';
     }
 
-    if (!formData.last_name.trim()) {
-      newErrors.last_name = 'Last name is required';
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = 'Last name is required';
     }
 
     if (!formData.address.trim()) {
@@ -45,24 +52,29 @@ const Register = () => {
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+      newErrors.email = 'Invalid email format';
+    }
+
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Phone number is required';
     }
 
     if (!formData.password) {
       newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+    } else if (formData.password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters';
     }
 
-    if (!formData.confirm_password) {
-      newErrors.confirm_password = 'Please confirm your password';
-    } else if (formData.password !== formData.confirm_password) {
-      newErrors.confirm_password = 'Passwords do not match';
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = 'Please confirm your password';
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match';
     }
 
     return newErrors;
   };
 
+  // Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -72,16 +84,19 @@ const Register = () => {
       return;
     }
 
-    const { confirm_password, ...rest } = formData;
-    const registrationData = {
+    // Remove confirmPassword before sending to backend
+    const { confirmPassword, ...rest } = formData;
+
+    const payload = {
       ...rest,
-      customer_role: 'CUSTOMER',
-      auth_provider: 'LOCAL',
-      profile_completed: 1 // Assuming profile is complete upon registration with all fields
+      customerRole: 'CUSTOMER',
+      authProvider: 'LOCAL',
+      profileCompleted: true
     };
 
-    const result = await register(registrationData);
-    if (result.success) {
+    const result = await register(payload);
+
+    if (result?.success) {
       navigate('/login');
     }
   };
@@ -95,7 +110,10 @@ const Register = () => {
           </h2>
           <p className="mt-2 text-sm text-gray-600">
             Or{' '}
-            <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
+            <Link
+              to="/login"
+              className="font-medium text-blue-600 hover:text-blue-500"
+            >
               sign in to your existing account
             </Link>
           </p>
@@ -106,27 +124,27 @@ const Register = () => {
             <div className="grid grid-cols-2 gap-4">
               <TextInput
                 label="First Name"
-                name="first_name"
-                value={formData.first_name}
+                name="firstName"
+                value={formData.firstName}
                 onChange={handleChange}
-                error={errors.first_name}
+                error={errors.firstName}
                 placeholder="First name"
                 required
               />
 
               <TextInput
                 label="Last Name"
-                name="last_name"
-                value={formData.last_name}
+                name="lastName"
+                value={formData.lastName}
                 onChange={handleChange}
-                error={errors.last_name}
+                error={errors.lastName}
                 placeholder="Last name"
                 required
               />
             </div>
 
             <TextInput
-              label="Email address"
+              label="Email Address"
               name="email"
               type="email"
               value={formData.email}
@@ -143,7 +161,8 @@ const Register = () => {
               value={formData.phone}
               onChange={handleChange}
               error={errors.phone}
-              placeholder="+1 (555) 123-4567"
+              placeholder="9421028950"
+              required
             />
 
             <TextInput
@@ -169,11 +188,11 @@ const Register = () => {
 
             <TextInput
               label="Confirm Password"
-              name="confirm_password"
+              name="confirmPassword"
               type="password"
-              value={formData.confirm_password}
+              value={formData.confirmPassword}
               onChange={handleChange}
-              error={errors.confirm_password}
+              error={errors.confirmPassword}
               placeholder="Confirm your password"
               required
             />
@@ -186,7 +205,10 @@ const Register = () => {
                 required
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
-              <label htmlFor="agree-terms" className="ml-2 block text-sm text-gray-900">
+              <label
+                htmlFor="agree-terms"
+                className="ml-2 block text-sm text-gray-900"
+              >
                 I agree to the{' '}
                 <a href="#" className="text-blue-600 hover:text-blue-500">
                   Terms of Service
@@ -198,22 +220,13 @@ const Register = () => {
               </label>
             </div>
 
-            <div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-              >
-                {loading ? (
-                  <div className="flex items-center">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Creating account...
-                  </div>
-                ) : (
-                  'Create Account'
-                )}
-              </button>
-            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full flex justify-center py-2 px-4 text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+            >
+              {loading ? 'Creating account...' : 'Create Account'}
+            </button>
           </form>
         </Card>
       </div>

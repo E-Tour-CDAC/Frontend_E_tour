@@ -3,113 +3,113 @@ import { customerAPI } from '../api';
 
 const AuthContext = createContext();
 
+// ---------------- REDUCER ----------------
 const authReducer = (state, action) => {
   switch (action.type) {
     case 'LOGIN_START':
       return { ...state, loading: true, error: null };
+
     case 'LOGIN_SUCCESS':
-      return { 
-        ...state, 
-        loading: false, 
-        user: action.payload.user, 
+      return {
+        ...state,
+        loading: false,
+        user: action.payload.user,
         token: action.payload.token,
         isAuthenticated: true,
-        error: null 
+        error: null,
       };
+
     case 'LOGIN_FAILURE':
-      return { 
-        ...state, 
-        loading: false, 
+      return {
+        ...state,
+        loading: false,
         error: action.payload,
-        isAuthenticated: false 
-      };
-    case 'LOGOUT':
-      return { 
-        ...state, 
-        user: null, 
-        token: null, 
         isAuthenticated: false,
-        loading: false 
       };
-    case 'REGISTER_START':
-      return { ...state, loading: true, error: null };
-    case 'REGISTER_SUCCESS':
-      return { ...state, loading: false, error: null };
-    case 'REGISTER_FAILURE':
-      return { ...state, loading: false, error: action.payload };
-    case 'UPDATE_PROFILE':
-      return { ...state, user: { ...state.user, ...action.payload } };
+
+    case 'LOGOUT':
+      return {
+        user: null,
+        token: null,
+        isAuthenticated: false,
+        loading: false,
+        error: null,
+      };
+
     default:
       return state;
   }
 };
 
+// ---------------- INITIAL STATE ----------------
+const tokenFromStorage = localStorage.getItem('token');
+
 const initialState = {
   user: null,
-  token: localStorage.getItem('token'),
-  isAuthenticated: false,
+  token: tokenFromStorage,
+  isAuthenticated: !!tokenFromStorage, // ✅ KEY FIX
   loading: false,
   error: null,
 };
 
+// ---------------- PROVIDER ----------------
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
+  // 🔥 Restore session on app load (SSO FIX)
   useEffect(() => {
     if (state.token) {
-      customerAPI.getProfile()
-        .then(response => {
-          dispatch({ type: 'LOGIN_SUCCESS', payload: { user: response.data, token: state.token } });
-        })
-        .catch(() => {
-          dispatch({ type: 'LOGOUT' });
-          localStorage.removeItem('token');
-        });
+      dispatch({
+        type: 'LOGIN_SUCCESS',
+        payload: {
+          user: null, // optional: lazy load profile later
+          token: state.token,
+        },
+      });
     }
   }, []);
 
+  // ---------------- LOGIN ----------------
   const login = async (credentials) => {
     try {
       dispatch({ type: 'LOGIN_START' });
+
       const response = await customerAPI.login(credentials);
-      const { user, token } = response.data;
+      const { token, user } = response.data;
+
       localStorage.setItem('token', token);
-      dispatch({ type: 'LOGIN_SUCCESS', payload: { user, token } });
+
+      dispatch({
+        type: 'LOGIN_SUCCESS',
+        payload: { user, token },
+      });
+
       return { success: true };
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Login failed';
-      dispatch({ type: 'LOGIN_FAILURE', payload: errorMessage });
-      return { success: false, error: errorMessage };
+      const message =
+        error.response?.data?.message || 'Login failed';
+      dispatch({ type: 'LOGIN_FAILURE', payload: message });
+      return { success: false, error: message };
     }
   };
 
-  const register = async (userData) => {
+  // ---------------- REGISTER ----------------
+  const register = async (data) => {
     try {
-      dispatch({ type: 'REGISTER_START' });
-      await customerAPI.register(userData);
-      dispatch({ type: 'REGISTER_SUCCESS' });
+      await customerAPI.register(data);
       return { success: true };
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Registration failed';
-      dispatch({ type: 'REGISTER_FAILURE', payload: errorMessage });
-      return { success: false, error: errorMessage };
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Registration failed',
+      };
     }
   };
 
+  // ---------------- LOGOUT ----------------
   const logout = () => {
     localStorage.removeItem('token');
     dispatch({ type: 'LOGOUT' });
-  };
-
-  const updateProfile = async (userData) => {
-    try {
-      const response = await customerAPI.updateProfile(userData);
-      dispatch({ type: 'UPDATE_PROFILE', payload: response.data });
-      return { success: true };
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Profile update failed';
-      return { success: false, error: errorMessage };
-    }
   };
 
   return (
@@ -119,7 +119,6 @@ export const AuthProvider = ({ children }) => {
         login,
         register,
         logout,
-        updateProfile,
       }}
     >
       {children}
@@ -127,10 +126,9 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
+// ---------------- HOOK ----------------
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
+  return ctx;
 };
