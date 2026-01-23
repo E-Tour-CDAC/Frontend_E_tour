@@ -6,14 +6,17 @@ import newYorkImg from '../assets/images/new_york.png';
 import dubaiImg from '../assets/images/dubai.png';
 
 const Home = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState('duration');
+  const [searchResults, setSearchResults] = useState([]);
   const navigate = useNavigate();
 
-  const handleSearch = (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
-    // For now, redirect to tours with search term if needed, or just standard tours page
-    // Since the requirement is just adding the box, we can make it redirect to /tours
-    navigate('/tours');
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+
+    // Pass the params to the Tours page.
+    navigate('/tours', { state: { searchType: searchTerm, searchParams: data } });
   };
 
   return (
@@ -29,20 +32,89 @@ const Home = () => {
             </p>
 
             {/* Search Box */}
-            <div className="max-w-2xl mx-auto mb-8">
-              <form onSubmit={handleSearch} className="relative">
-                <input
-                  type="text"
-                  placeholder="Search by cost, duration, date..."
-                  className="w-full px-6 py-4 rounded-full text-gray-800 shadow-lg focus:outline-none focus:ring-2 focus:ring-teal-400 bg-white"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
+            <div className="max-w-3xl mx-auto mb-8 bg-white rounded-lg shadow-xl overflow-hidden text-gray-800">
+              <div className="flex border-b">
+                <button
+                  className={`flex-1 py-3 text-sm font-medium ${searchTerm === 'duration' ? 'bg-teal-50 text-teal-700 border-b-2 border-teal-500' : 'text-gray-500 hover:text-gray-700'}`}
+                  onClick={() => setSearchTerm('duration')}
+                >
+                  Duration
+                </button>
+                <button
+                  className={`flex-1 py-3 text-sm font-medium ${searchTerm === 'cost' ? 'bg-teal-50 text-teal-700 border-b-2 border-teal-500' : 'text-gray-500 hover:text-gray-700'}`}
+                  onClick={() => setSearchTerm('cost')}
+                >
+                  Cost
+                </button>
+                <button
+                  className={`flex-1 py-3 text-sm font-medium ${searchTerm === 'date' ? 'bg-teal-50 text-teal-700 border-b-2 border-teal-500' : 'text-gray-500 hover:text-gray-700'}`}
+                  onClick={() => setSearchTerm('date')}
+                >
+                  Date
+                </button>
+              </div>
+
+              <form onSubmit={handleSearch} className="p-6">
+                {searchTerm === 'duration' && (
+                  <div className="flex gap-4">
+                    <input
+                      type="number"
+                      placeholder="Min Days"
+                      className="w-1/2 px-4 py-2 border rounded-md focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      name="minDays"
+                    />
+                    <input
+                      type="number"
+                      placeholder="Max Days"
+                      className="w-1/2 px-4 py-2 border rounded-md focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      name="maxDays"
+                    />
+                  </div>
+                )}
+
+                {searchTerm === 'cost' && (
+                  <div className="flex gap-4">
+                    <input
+                      type="number"
+                      placeholder="Min Cost"
+                      className="w-1/2 px-4 py-2 border rounded-md focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      name="minCost"
+                    />
+                    <input
+                      type="number"
+                      placeholder="Max Cost"
+                      className="w-1/2 px-4 py-2 border rounded-md focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                      name="maxCost"
+                    />
+                  </div>
+                )}
+
+                {searchTerm === 'date' && (
+                  <div className="flex gap-4">
+                    <div className="w-1/2">
+                      <label className="block text-xs text-gray-500 mb-1 text-left">From</label>
+                      <input
+                        type="date"
+                        className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                        name="fromDate"
+                      />
+                    </div>
+                    <div className="w-1/2">
+                      <label className="block text-xs text-gray-500 mb-1 text-left">To</label>
+                      <input
+                        type="date"
+                        className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                        name="toDate"
+                      />
+                    </div>
+                  </div>
+                )}
+
                 <button
                   type="submit"
-                  className="absolute right-2 top-2 bg-teal-700 text-white px-6 py-2 rounded-full hover:bg-teal-800 transition-colors"
+                  className="w-full mt-4 bg-teal-600 text-white py-2 rounded-md hover:bg-teal-700 transition-colors font-medium"
                 >
-                  Search
+                  Search Tours
                 </button>
               </form>
             </div>

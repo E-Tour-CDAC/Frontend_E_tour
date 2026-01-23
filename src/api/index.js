@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -69,13 +69,19 @@ export const bookingAPI = {
 };
 
 export const customerAPI = {
-  register: (data) => api.post('/auth/register', data),
-  login: (credentials) => api.post('/auth/login', credentials),
+  register: (data) => api.post('http://localhost:8080/auth/register', data),
+  login: (credentials) => api.post('http://localhost:8080/auth/login', credentials),
   // These seem missing in AuthController, stubbing or keeping if they exist elsewhere (CustomerController?)
   // Leaving as is for now, but might fail. 
   getProfile: () => api.get('/customers/profile'),
   updateProfile: (data) => api.put('/customers/profile', data),
   changePassword: (data) => api.post('/customers/change-password', data),
+};
+
+export const searchAPI = {
+  searchByDuration: (minDays, maxDays) => api.get(`/api/search/duration`, { params: { minDays, maxDays } }),
+  searchByCost: (minCost, maxCost) => api.get(`/api/search/cost`, { params: { minCost, maxCost } }),
+  searchByDate: (fromDate, toDate) => api.get(`/api/search/date`, { params: { fromDate, toDate } }),
 };
 
 export default api;
