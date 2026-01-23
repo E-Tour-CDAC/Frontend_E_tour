@@ -161,7 +161,7 @@ const Register = () => {
               value={formData.phone}
               onChange={handleChange}
               error={errors.phone}
-              placeholder="9421028950"
+              placeholder="Mobile Number"
               required
             />
 
