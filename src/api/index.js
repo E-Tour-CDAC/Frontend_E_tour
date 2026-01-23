@@ -38,7 +38,7 @@ export const tourAPI = {
   getTour: (id) => api.get(`http://localhost:8080/api/tours/${id}`),
 
   // Keep this for filters, though it's same as getTours now
-  getCategories: () => api.get('/categories/home'),
+  // getCategories: () => api.get('/categories/home'),
 
   // Stubbing missing endpoints to prevent crashes
   createCategory: (data) => Promise.resolve({ data: {} }),
