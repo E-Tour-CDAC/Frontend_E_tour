@@ -6,12 +6,16 @@ const bookingReducer = (state, action) => {
   switch (action.type) {
     case 'SET_TOUR':
       return { ...state, selectedTour: action.payload, currentStep: 1 };
+
     case 'SET_DEPARTURE':
       return { ...state, selectedDeparture: action.payload, currentStep: 2 };
+
     case 'SET_PASSENGERS':
       return { ...state, passengers: action.payload, currentStep: 3 };
+
     case 'ADD_PASSENGER':
       return { ...state, passengers: [...state.passengers, action.payload] };
+
     case 'UPDATE_PASSENGER':
       return {
         ...state,
@@ -19,23 +23,31 @@ const bookingReducer = (state, action) => {
           index === action.payload.index ? action.payload.passenger : p
         ),
       };
+
     case 'REMOVE_PASSENGER':
       return {
         ...state,
         passengers: state.passengers.filter((_, index) => index !== action.payload),
       };
+
     case 'SET_PAYMENT':
       return { ...state, payment: action.payload, currentStep: 4 };
+
     case 'SET_BOOKING':
       return { ...state, booking: action.payload, currentStep: 5 };
+
     case 'RESET_BOOKING':
       return initialState;
+
     case 'SET_STEP':
       return { ...state, currentStep: action.payload };
+
     case 'SET_LOADING':
       return { ...state, loading: action.payload };
+
     case 'SET_ERROR':
       return { ...state, error: action.payload };
+
     default:
       return state;
   }
@@ -103,19 +115,36 @@ export const BookingProvider = ({ children }) => {
     dispatch({ type: 'SET_ERROR', payload: error });
   };
 
+  /**
+   * ✅ FIXED: price now comes from selectedTour.costs[]
+   * ❌ NOT from selectedDeparture
+   */
   const calculateTotal = () => {
-    if (!state.selectedDeparture || !state.passengers.length) return 0;
-    
-    const { single_person_cost, extra_person_cost, child_with_bed_cost, child_without_bed_cost } = state.selectedDeparture;
-    
-    return state.passengers.reduce((total, passenger) => {
+    if (!state.selectedTour || !state.passengers.length) return 0;
+
+    // For now, using first cost slab (same as your current backend usage)
+    const activeCost = state.selectedTour.costs?.[0];
+    if (!activeCost) return 0;
+
+    const {
+      singlePersonCost,
+      extraPersonCost,
+      childWithBedCost,
+      childWithoutBedCost,
+    } = activeCost;
+
+    return state.passengers.reduce((total, passenger, index) => {
       switch (passenger.pax_type) {
         case 'adult':
-          return total + (passenger.is_extra ? extra_person_cost : single_person_cost);
+          // First adult = base price, others = extra price
+          return total + (index === 0 ? singlePersonCost : extraPersonCost);
+
         case 'child_with_bed':
-          return total + child_with_bed_cost;
+          return total + childWithBedCost;
+
         case 'child_without_bed':
-          return total + child_without_bed_cost;
+          return total + childWithoutBedCost;
+
         default:
           return total;
       }
