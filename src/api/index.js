@@ -72,11 +72,9 @@ export const bookingAPI = {
 export const customerAPI = {
   register: (data) => api.post('http://localhost:8080/auth/register', data),
   login: (credentials) => api.post('http://localhost:8080/auth/login', credentials),
-  // These seem missing in AuthController, stubbing or keeping if they exist elsewhere (CustomerController?)
-  // Leaving as is for now, but might fail. 
-  getProfile: () => api.get('/customers/profile'),
-  updateProfile: (data) => api.put('/customers/profile', data),
-  changePassword: (data) => api.post('/customers/change-password', data),
+  getProfile: () => api.get('http://localhost:8080/api/customer/profile'),
+  updateProfile: (data) => api.put('http://localhost:8080/api/customer/profile', data),
+  changePassword: (data) => api.post('/api/customer/change-password', data),
 };
 
 export const searchAPI = {

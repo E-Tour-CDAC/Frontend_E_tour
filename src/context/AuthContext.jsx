@@ -106,6 +106,28 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // ---------------- OAUTH2 LOGIN ----------------
+  const loginWithOAuth2 = async (token) => {
+    try {
+      if (!token) {
+        throw new Error('No token provided');
+      }
+
+      localStorage.setItem('token', token);
+
+      dispatch({
+        type: 'LOGIN_SUCCESS',
+        payload: { user: null, token },
+      });
+
+      return { success: true };
+    } catch (error) {
+      const message = error.message || 'OAuth2 login failed';
+      dispatch({ type: 'LOGIN_FAILURE', payload: message });
+      return { success: false, error: message };
+    }
+  };
+
   // ---------------- LOGOUT ----------------
   const logout = () => {
     localStorage.removeItem('token');
@@ -118,6 +140,7 @@ export const AuthProvider = ({ children }) => {
         ...state,
         login,
         register,
+        loginWithOAuth2,
         logout,
       }}
     >
