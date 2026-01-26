@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import Categories from "../pages/Categories";
+
 import Tours from "../pages/Tours";
 import TourDetail from "../pages/TourDetail";
 import BookingStart from "../pages/BookingStart";
@@ -14,7 +14,7 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/categories" element={<Categories />} />
+
       <Route path="/tours" element={<Tours />} />
       <Route path="/tours/:id" element={<Tours />} />
       <Route path="/tours/details/:id" element={<TourDetail />} />

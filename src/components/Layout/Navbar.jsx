@@ -13,9 +13,9 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <Link to="/" className="flex items-center gap-3 group">
-              <img 
-                src={EarthLogo} 
-                alt="E-Tour Logo" 
+              <img
+                src={EarthLogo}
+                alt="E-Tour Logo"
                 className="h-10 w-auto transform transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110 drop-shadow-md"
               />
               <span className="text-2xl font-bold text-blue-600 tracking-wide group-hover:text-blue-700 transition-colors duration-300">
@@ -27,9 +27,6 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-8">
             <Link to="/" className="text-gray-700 hover:text-blue-600 transition-colors">
               Home
-            </Link>
-            <Link to="/categories" className="text-gray-700 hover:text-blue-600 transition-colors">
-              Categories
             </Link>
             <Link to="/tours" className="text-gray-700 hover:text-blue-600 transition-colors">
               Tours

@@ -36,9 +36,8 @@ const AdminDashboard = () => {
                   <p className="text-sm font-medium text-gray-600">{stat.label}</p>
                   <p className="text-2xl font-bold text-gray-900 mt-2">{stat.value}</p>
                 </div>
-                <div className={`text-sm font-medium ${
-                  stat.changeType === 'positive' ? 'text-green-600' : 'text-red-600'
-                }`}>
+                <div className={`text-sm font-medium ${stat.changeType === 'positive' ? 'text-green-600' : 'text-red-600'
+                  }`}>
                   {stat.change}
                 </div>
               </div>
@@ -65,9 +64,6 @@ const AdminDashboard = () => {
             <div className="space-y-4">
               <button className="w-full text-left btn-secondary">
                 Add New Tour
-              </button>
-              <button className="w-full text-left btn-secondary">
-                Manage Categories
               </button>
               <button className="w-full text-left btn-secondary">
                 View All Bookings
