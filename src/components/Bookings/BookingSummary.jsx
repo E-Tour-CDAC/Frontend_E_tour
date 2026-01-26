@@ -3,7 +3,21 @@ import { useBooking } from '../../context/BookingContext';
 import Card from '../UI/Card';
 
 const BookingSummary = () => {
-  const { selectedTour, selectedDeparture, passengers, calculateTotal } = useBooking();
+  const {
+    selectedTour,
+    selectedDeparture,
+    passengers,
+    calculateTotal
+  } = useBooking();
+
+  const formatDate = (date) => {
+    if (!date) return '—';
+    return new Date(date).toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
+  };
 
   if (!selectedTour) {
     return (
@@ -21,7 +35,7 @@ const BookingSummary = () => {
   }
 
   const subtotal = calculateTotal();
-  const taxes = subtotal * 0.1; // 10% tax
+  const taxes = subtotal * 0.1;
   const total = subtotal + taxes;
 
   return (
@@ -32,29 +46,39 @@ const BookingSummary = () => {
         </h3>
 
         <div className="space-y-4">
+
+          {/* TOUR DETAILS */}
           <div>
-            <h4 className="font-medium text-gray-900 mb-2">Tour Details</h4>
+            <h4 className="font-medium text-gray-900 mb-2">
+              Tour Details
+            </h4>
             <div className="text-sm text-gray-600 space-y-1">
-              <p>{selectedTour.tour_name}</p>
-              <p>{selectedTour.duration_days} days</p>
-              <p>{selectedTour.category_name}</p>
+              <p>{selectedTour.categoryName}</p>
+
+              {selectedDeparture ? (
+                <p>{selectedDeparture.noOfDays} days</p>
+              ) : (
+                <p className="text-gray-400">Select departure</p>
+              )}
             </div>
           </div>
 
+          {/* DEPARTURE */}
           {selectedDeparture && (
             <div>
-              <h4 className="font-medium text-gray-900 mb-2">Departure</h4>
+              <h4 className="font-medium text-gray-900 mb-2">
+                Departure
+              </h4>
               <div className="text-sm text-gray-600 space-y-1">
+                <p>{formatDate(selectedDeparture.departDate)}</p>
                 <p>
-                  {new Date(selectedDeparture.departure_date).toLocaleDateString()}
-                </p>
-                <p>
-                  Return: {new Date(selectedDeparture.return_date).toLocaleDateString()}
+                  Return: {formatDate(selectedDeparture.endDate)}
                 </p>
               </div>
             </div>
           )}
 
+          {/* PASSENGERS */}
           {passengers.length > 0 && (
             <div>
               <h4 className="font-medium text-gray-900 mb-2">
@@ -63,26 +87,29 @@ const BookingSummary = () => {
               <div className="text-sm text-gray-600 space-y-1">
                 {passengers.map((passenger, index) => (
                   <p key={index}>
-                    {passenger.pax_name} - {passenger.pax_type}
+                    {passenger.pax_name || `Passenger ${index + 1}`} – {passenger.pax_type}
                   </p>
                 ))}
               </div>
             </div>
           )}
 
+          {/* PRICE */}
           <div className="border-t pt-4">
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Subtotal</span>
-                <span className="font-medium">${subtotal.toFixed(2)}</span>
+                <span className="font-medium">₹{subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Taxes (10%)</span>
-                <span className="font-medium">${taxes.toFixed(2)}</span>
+                <span className="font-medium">₹{taxes.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-lg font-semibold pt-2 border-t">
                 <span>Total</span>
-                <span className="text-blue-600">${total.toFixed(2)}</span>
+                <span className="text-blue-600">
+                  ₹{total.toFixed(2)}
+                </span>
               </div>
             </div>
           </div>
@@ -92,6 +119,7 @@ const BookingSummary = () => {
             <p>• Instant confirmation</p>
             <p>• 24/7 customer support</p>
           </div>
+
         </div>
       </div>
     </Card>

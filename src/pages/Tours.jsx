@@ -4,21 +4,19 @@ import Card from '../components/UI/Card';
 import { tourAPI } from '../api';
 
 const Tours = () => {
-  const { id } = useParams(); // 🔥 subcatCode from URL
+  const { id } = useParams(); // subcatCode from URL
   const location = useLocation();
   const [tours, setTours] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (location.state?.searchParams) {
       console.log('Search Params Received:', location.state.searchParams);
-      // Future: Call API with these params
     }
   }, [location.state]);
 
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  // 🔁 Runs whenever URL changes (/tours → /tours/DOM)
+  // 🔁 Runs whenever URL changes
   useEffect(() => {
     if (id) {
       fetchToursBySubcat(id);
@@ -27,14 +25,13 @@ const Tours = () => {
     }
   }, [id]);
 
-  // 🔹 Fetch all top-level tours
+  // 🔹 Fetch all tours
   const fetchTours = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await tourAPI.getTours(); // /api/categories
-
+      const response = await tourAPI.getTours();
       mapAndSetTours(response.data);
     } catch (err) {
       setError('Failed to fetch tours');
@@ -44,14 +41,13 @@ const Tours = () => {
     }
   };
 
-  // 🔹 Fetch filtered tours by subcategory
+  // 🔹 Fetch tours by subcategory
   const fetchToursBySubcat = async (subcat) => {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await tourAPI.getTour(subcat); // /api/categories/{subcat}
-
+      const response = await tourAPI.getTour(subcat);
       mapAndSetTours(response.data);
     } catch (err) {
       setError('Failed to fetch tours');
@@ -61,21 +57,32 @@ const Tours = () => {
     }
   };
 
-  // 🔹 Shared mapper
+  // 🔹 Mapper with BASE PRICE logic
   const mapAndSetTours = (data) => {
-    const mappedTours = data.map(cat => ({
-      id: cat.catCode || cat.CategoryCode, // backend inconsistency safe
-      catid: cat.categoryId,
-      jumpFlag: cat.jumpFlag,
-      tour_name: cat.categoryName,
-      image_url: cat.imagePath,
-      description: `Explore our amazing ${cat.categoryName} packages.`,
-      starting_price: 'Check Details',
-      duration_days: '5-10',
-      rating: 4.5,
-      category_name: 'Tour Package',
-      featured: false
-    }));
+    const mappedTours = data.map(cat => {
+      // 🔥 Calculate base price from costs[]
+      let basePrice = null;
+
+      if (Array.isArray(cat.costs) && cat.costs.length > 0) {
+        basePrice = Math.min(
+          ...cat.costs.map(c => c.singlePersonCost)
+        );
+      }
+
+      return {
+        id: cat.catCode || cat.CategoryCode,
+        catid: cat.categoryId,
+        jumpFlag: cat.jumpFlag,
+        tour_name: cat.categoryName,
+        image_url: cat.imagePath,
+        description: `Explore our amazing ${cat.categoryName} packages.`,
+        starting_price: basePrice, // ✅ BASE PRICE
+        duration_days: '5-10',
+        rating: 4.5,
+        category_name: 'Tour Package',
+        featured: false
+      };
+    });
 
     setTours(mappedTours);
   };
@@ -89,22 +96,24 @@ const Tours = () => {
     );
   }
 
-  // ❌ Error state
+  // ❌ Error
   if (error) {
     return (
       <div className="text-center py-12">
         <p className="text-red-600 text-lg">{error}</p>
-        <button onClick={() => (id ? fetchToursBySubcat(id) : fetchTours())}
-          className="mt-4 btn-primary">
+        <button
+          onClick={() => (id ? fetchToursBySubcat(id) : fetchTours())}
+          className="mt-4 btn-primary"
+        >
           Try Again
         </button>
       </div>
     );
   }
 
-  // ✅ UI
   return (
     <div className="container mx-auto px-4 py-8">
+
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-4">
           {id ? `Tours: ${id}` : 'Available Tours'}
@@ -118,11 +127,10 @@ const Tours = () => {
             key={tour.id}
             to={
               tour.jumpFlag
-                ? `/tours/details/${tour.catid}`   // ✅ jump = true
-                : `/tours/${tour.id}`           // ❌ jump = false (existing behavior)
+                ? `/tours/details/${tour.catid}`
+                : `/tours/${tour.id}`
             }
           >
-
             <Card hover className="cursor-pointer">
               <div className="relative">
                 {tour.image_url ? (
@@ -156,9 +164,18 @@ const Tours = () => {
                   <span>⭐ {tour.rating}</span>
                 </div>
 
+                {/* 💰 SHOW PRICE ONLY WHEN jumpFlag = true */}
+                {tour.jumpFlag && tour.starting_price && (
+                  <div className="mt-2 text-teal-700 font-semibold">
+                    Starting from ₹{tour.starting_price}
+                  </div>
+                )}
+
                 <div className="flex justify-between items-center mt-4">
                   <span className="text-teal-700 font-bold">View</span>
-                  <span className="text-teal-700 text-sm">View Packages →</span>
+                  <span className="text-teal-700 text-sm">
+                    View Packages →
+                  </span>
                 </div>
               </div>
             </Card>
