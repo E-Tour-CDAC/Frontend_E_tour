@@ -4,6 +4,21 @@ import { tourAPI } from '../api';
 
 const BACKEND_URL = 'http://localhost:8080';
 
+const getImageUrl = (path) => {
+  if (!path) return null;
+
+  // REMOVE accidental quotes
+  const sanitizedPath = path.replace(/^"+|"+$/g, '');
+
+  if (sanitizedPath.startsWith('http')) return sanitizedPath;
+
+  const cleanPath = sanitizedPath.startsWith('/')
+    ? sanitizedPath
+    : `/${sanitizedPath}`;
+
+  return `${BACKEND_URL}${cleanPath}`;
+};
+
 const TourDetail = () => {
   const { id } = useParams(); // categoryId
   const [tours, setTours] = useState([]);
