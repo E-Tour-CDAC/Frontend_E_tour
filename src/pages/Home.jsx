@@ -1,9 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import parisImg from '../assets/images/paris.png';
-import tokyoImg from '../assets/images/tokyo.png';
-import newYorkImg from '../assets/images/new_york.png';
-import dubaiImg from '../assets/images/dubai.png';
+import { tourAPI } from '../api';
 
 const Home = () => {
   const [searchParams, setSearchParams] = useState({
@@ -11,7 +8,30 @@ const Home = () => {
     date: '',
     price: ''
   });
+  const [tours, setTours] = useState([]);
+  const [loadingTours, setLoadingTours] = useState(true);
+  const [toursError, setToursError] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchPopularTours();
+  }, []);
+
+  const fetchPopularTours = async () => {
+    try {
+      setLoadingTours(true);
+      const response = await tourAPI.getTours();
+      // Get first 4-5 tours
+      const toursList = response.data.slice(0, 4);
+      setTours(toursList);
+      setToursError(null);
+    } catch (error) {
+      console.error('Error fetching tours:', error);
+      setToursError('Failed to load tours');
+    } finally {
+      setLoadingTours(false);
+    }
+  };
 
   const handleInputChange = (e) => {
     setSearchParams({
@@ -94,7 +114,7 @@ const Home = () => {
               <Link to="/tours" className="btn-primary bg-white text-teal-700 hover:bg-gray-100">
                 Browse Tours
               </Link>
-              <Link to="/categories" className="btn-secondary bg-transparent text-white border-white hover:bg-white hover:text-teal-700">
+              <Link to="/tours" className="btn-secondary bg-transparent text-white border-white hover:bg-white hover:text-teal-700">
                 View Categories
               </Link>
             </div>
@@ -163,36 +183,68 @@ const Home = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Popular Destinations
+              Popular Tour Packages
             </h2>
             <p className="text-gray-600 text-lg">
               Explore our most sought-after travel destinations
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { name: 'Paris', country: 'France', tours: 45, image: parisImg },
-              { name: 'Tokyo', country: 'Japan', tours: 38, image: tokyoImg },
-              { name: 'New York', country: 'USA', tours: 52, image: newYorkImg },
-              { name: 'Dubai', country: 'UAE', tours: 29, image: dubaiImg }
-            ].map((destination, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="h-48 overflow-hidden">
-                  <img
-                    src={destination.image}
-                    alt={destination.name}
-                    className="w-full h-full object-cover transition-transform hover:scale-110 duration-300"
-                  />
-                </div>
-                <div className="p-4">
-                  <h3 className="text-lg font-semibold text-gray-900">{destination.name}</h3>
-                  <p className="text-gray-600 text-sm mb-2">{destination.country}</p>
-                  <p className="text-teal-700 text-sm font-medium">{destination.tours} tours available</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          {loadingTours ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600"></div>
+            </div>
+          ) : toursError ? (
+            <div className="text-center py-12">
+              <p className="text-red-600 text-lg mb-4">{toursError}</p>
+              <button
+                onClick={fetchPopularTours}
+                className="btn-primary"
+              >
+                Try Again
+              </button>
+            </div>
+          ) : tours.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600">No tours available at the moment</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {tours.map((tour) => (
+                <Link
+                  key={tour.categoryId}
+                  to={`/tours/details/${tour.categoryId}`}
+                  className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow group"
+                >
+                  <div className="h-48 bg-gradient-to-br from-teal-400 to-teal-600 relative overflow-hidden">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <svg className="w-16 h-16 text-white opacity-50" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                      </svg>
+                    </div>
+                    {/* If your backend provides images, replace this with: */}
+                    {/* <img src={tour.imageUrl} alt={tour.categoryName} className="w-full h-full object-cover" /> */}
+                  </div>
+                  <div className="p-4">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-teal-700 transition-colors">
+                      {tour.categoryName}
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                      {tour.categoryDescription || 'Explore this amazing destination'}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-teal-700 text-sm font-medium">
+                        View Details →
+                      </span>
+                      <span className="text-gray-500 text-xs">
+                        {tour.departures?.length || 0} departures
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
 
           <div className="text-center mt-8">
             <Link to="/tours" className="btn-primary">

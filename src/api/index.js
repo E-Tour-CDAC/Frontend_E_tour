@@ -56,9 +56,9 @@ export const tourAPI = {
 };
 
 export const bookingAPI = {
-  createBooking: (data) => api.post('/api/bookings', data), // Updated path based on BookingController
-  getBooking: (id) => api.get(`/api/bookings/${id}`),
-  getBookings: (params) => api.get('/api/bookings', { params }), // This endpoint might not fully exist as search, but keeping safely
+  createBooking: (data) => api.post('http://localhost:8080/api/bookings', data),
+  getBooking: (id) => api.get(`http://localhost:8080/api/bookings/${id}`),
+  getBookings: () => api.get('http://localhost:8080/api/bookings'),
   updateBooking: (id, data) => Promise.resolve({ data: {} }),
   cancelBooking: (id) => Promise.resolve({ data: {} }),
 

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useBooking } from '../../context/BookingContext';
+import { useAuth } from '../../context/AuthContext';
 import Card from '../UI/Card';
 import TextInput from './TextInput';
 import Select from './Select';
@@ -17,6 +19,9 @@ const PaymentForm = () => {
     setError,
   } = useBooking();
 
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
   const [paymentData, setPaymentData] = useState({
     card_number: '',
     cardholder_name: '',
@@ -30,6 +35,8 @@ const PaymentForm = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [submitError, setSubmitError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const monthOptions = Array.from({ length: 12 }, (_, i) => ({
     value: String(i + 1).padStart(2, '0'),
@@ -51,7 +58,7 @@ const PaymentForm = () => {
     { value: 'MY', label: 'Malaysia' },
     { value: 'TH', label: 'Thailand' },
     { value: 'JP', label: 'Japan' },
-    { value: 'CN', label: 'China' },
+    { value: 'CN', label: 'China' }
   ];
 
   const validatePayment = () => {
@@ -110,6 +117,7 @@ const PaymentForm = () => {
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: null }));
     }
+    setSubmitError(null);
   };
 
   const handleSubmit = async (e) => {
@@ -122,32 +130,78 @@ const PaymentForm = () => {
     }
 
     try {
+      setIsSubmitting(true);
       setLoading(true);
+      setSubmitError(null);
 
-      const bookingData = {
-        tour_id: selectedTour.categoryId || selectedTour.id,
-        departure_id: selectedDeparture.id,
-        no_of_pax: passengers.length,
-        passengers: passengers.map(p => ({
-          pax_name: p.pax_name,
-          pax_birthdate: p.pax_birthdate,
-          pax_type: p.pax_type,
-          pax_amount: 0, // backend calculates
-        })),
-        payment: {
-          ...paymentData,
-          card_number: paymentData.card_number.replace(/\s/g, ''),
-        },
+      // Calculate passenger amounts based on pricing
+      const activeCost = selectedTour.costs?.[0];
+
+      const formattedPassengers = passengers.map((passenger, index) => {
+        let paxAmount = 0;
+
+        if (activeCost) {
+          switch (passenger.pax_type) {
+            case 'adult':
+              paxAmount = index === 0 ? activeCost.singlePersonCost : activeCost.extraPersonCost;
+              break;
+            case 'child_with_bed':
+              paxAmount = activeCost.childWithBedCost;
+              break;
+            case 'child_without_bed':
+              paxAmount = activeCost.childWithoutBedCost;
+              break;
+          }
+        }
+
+        // Calculate age from birthdate
+        const birthdate = new Date(passenger.pax_birthdate);
+        const age = new Date().getFullYear() - birthdate.getFullYear();
+
+        return {
+          paxName: passenger.pax_name,
+          paxAge: age,
+          paxType: passenger.pax_type.toUpperCase().replace(/_/g, ' '),
+          paxAmount: paxAmount
+        };
+      });
+
+      const total = calculateTotal();
+
+      // Build booking payload matching backend DTO
+      const bookingPayload = {
+        customerId: user?.id, // Assuming user object has id from profile
+        tourPackageId: selectedTour.categoryId,
+        departureId: selectedDeparture.id,
+        noOfPax: passengers.length,
+        bookingAmount: total + (total * 0.1), // Include taxes
+        passengers: formattedPassengers
       };
 
-      const response = await bookingAPI.createBooking(bookingData);
+      console.log('Creating booking with payload:', bookingPayload);
+
+      const response = await bookingAPI.createBooking(bookingPayload);
+
+      console.log('Booking created successfully:', response.data);
+
       setBooking(response.data);
-      setStep(4);
+      setStep(4); // Move to confirmation step
+
+      // Optional: Navigate to bookings page after a delay
+      setTimeout(() => {
+        navigate('/customer/bookings');
+      }, 3000);
+
     } catch (error) {
+      console.error('Error creating booking:', error);
       const errorMessage =
-        error.response?.data?.message || 'Payment failed';
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        'Failed to create booking. Please try again';
+      setSubmitError(errorMessage);
       setError(errorMessage);
     } finally {
+      setIsSubmitting(false);
       setLoading(false);
     }
   };
@@ -163,6 +217,12 @@ const PaymentForm = () => {
         <h2 className="text-xl font-semibold text-gray-900 mb-6">
           Payment Information
         </h2>
+
+        {submitError && (
+          <div className="mb-6 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded">
+            {submitError}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
 
@@ -309,11 +369,23 @@ const PaymentForm = () => {
               type="button"
               onClick={() => setStep(2)}
               className="btn-secondary"
+              disabled={isSubmitting}
             >
               Back
             </button>
-            <button type="submit" className="btn-primary">
-              Complete Payment
+            <button
+              type="submit"
+              className="btn-primary flex items-center"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Processing...
+                </>
+              ) : (
+                'Complete Payment'
+              )}
             </button>
           </div>
         </form>
