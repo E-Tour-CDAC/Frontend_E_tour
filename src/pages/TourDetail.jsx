@@ -63,7 +63,7 @@ const TourDetail = () => {
     );
   }
 
-  // Since this is category-level, all shared data is same → use first item
+  // Use first item (category-level page)
   const tour = tours[0];
 
   return (
@@ -82,7 +82,8 @@ const TourDetail = () => {
           {tour.categoryName}
         </h1>
         <p className="text-gray-600">
-          Category Code: <span className="font-medium">{tour.categoryCode}</span>
+          Category Code:{' '}
+          <span className="font-medium">{tour.categoryCode}</span>
         </p>
       </div>
 
@@ -93,8 +94,12 @@ const TourDetail = () => {
         {tour.itineraries?.length > 0 ? (
           tour.itineraries.map((day) => (
             <div key={day.id} className="border rounded-lg p-4 mb-3">
-              <h3 className="font-semibold mb-1">Day {day.dayNo}</h3>
-              <p className="text-gray-600">{day.itineraryDetail}</p>
+              <h3 className="font-semibold mb-1">
+                Day {day.dayNo}
+              </h3>
+              <p className="text-gray-600">
+                {day.itineraryDetail}
+              </p>
             </div>
           ))
         ) : (
@@ -125,7 +130,9 @@ const TourDetail = () => {
 
       {/* 🚍 Departure Dates */}
       <div className="mb-12">
-        <h2 className="text-2xl font-semibold mb-4">Available Departures</h2>
+        <h2 className="text-2xl font-semibold mb-4">
+          Available Departures
+        </h2>
 
         {tour.departures?.length > 0 ? (
           tour.departures.map((dep) => (
@@ -136,7 +143,9 @@ const TourDetail = () => {
             </div>
           ))
         ) : (
-          <p className="text-gray-500">No departure dates available.</p>
+          <p className="text-gray-500">
+            No departure dates available.
+          </p>
         )}
       </div>
 
@@ -153,17 +162,29 @@ const TourDetail = () => {
             </div>
           ))
         ) : (
-          <p className="text-gray-500">Guide information not available.</p>
+          <p className="text-gray-500">
+            Guide information not available.
+          </p>
         )}
       </div>
 
       {/* 📞 CTA */}
       <div className="bg-white p-8 rounded-lg shadow-md text-center">
-        <h2 className="text-2xl font-bold mb-4">Interested in this tour?</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          Interested in this tour?
+        </h2>
         <p className="text-gray-600 mb-6">
-          Contact our team to book this tour or get custom pricing.
+          Book your slot now before seats fill up.
         </p>
-        <button className="btn-primary">Contact Us</button>
+
+        {tour?.categoryId && (
+          <Link
+            to={`/booking/start/${tour.categoryId}`}
+            className="btn-primary px-8 py-3 inline-block text-lg"
+          >
+            Book Now
+          </Link>
+        )}
       </div>
 
     </div>
