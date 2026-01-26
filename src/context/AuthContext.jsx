@@ -3,6 +3,32 @@ import { customerAPI } from '../api';
 
 const AuthContext = createContext();
 
+// ---------------- HELPER: Decode JWT ----------------
+const decodeJWT = (token) => {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      window
+        .atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    return null;
+  }
+};
+
+// ---------------- HELPER: Check Expiration ----------------
+const isTokenExpired = (token) => {
+  const decoded = decodeJWT(token);
+  if (!decoded || !decoded.exp) return true;
+  // exp is in seconds, Date.now() is in ms
+  return decoded.exp * 1000 < Date.now();
+};
+
 // ---------------- REDUCER ----------------
 const authReducer = (state, action) => {
   switch (action.type) {
@@ -42,15 +68,21 @@ const authReducer = (state, action) => {
 };
 
 // ---------------- INITIAL STATE ----------------
-const tokenFromStorage = localStorage.getItem('token');
+const tokenFromStorage = sessionStorage.getItem('token');
+const tokenValid = tokenFromStorage && !isTokenExpired(tokenFromStorage);
 
 const initialState = {
   user: null,
-  token: tokenFromStorage,
-  isAuthenticated: !!tokenFromStorage, // ✅ KEY FIX
+  token: tokenValid ? tokenFromStorage : null,
+  isAuthenticated: tokenValid, // ✅ KEY FIX
   loading: false,
   error: null,
 };
+
+// Clear expired token immediately if found
+if (tokenFromStorage && !tokenValid) {
+  sessionStorage.removeItem('token');
+}
 
 // ---------------- PROVIDER ----------------
 export const AuthProvider = ({ children }) => {
@@ -59,6 +91,12 @@ export const AuthProvider = ({ children }) => {
   // 🔥 Restore session on app load (SSO FIX)
   useEffect(() => {
     if (state.token) {
+      // Check again on load just in case
+        if (isTokenExpired(state.token)) {
+            logout();
+            return;
+        }
+
       dispatch({
         type: 'LOGIN_SUCCESS',
         payload: {
@@ -69,6 +107,28 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  // ⏳ Auto Logout Timer
+  useEffect(() => {
+    if (!state.token) return;
+
+    const decoded = decodeJWT(state.token);
+    if (!decoded || !decoded.exp) return;
+
+    const expiresInMs = decoded.exp * 1000 - Date.now();
+
+    if (expiresInMs <= 0) {
+      logout();
+      return;
+    }
+
+    // Set timer for auto logout
+    const timerId = setTimeout(() => {
+      logout();
+    }, expiresInMs);
+
+    return () => clearTimeout(timerId);
+  }, [state.token]);
+
   // ---------------- LOGIN ----------------
   const login = async (credentials) => {
     try {
@@ -77,7 +137,7 @@ export const AuthProvider = ({ children }) => {
       const response = await customerAPI.login(credentials);
       const { token, user } = response.data;
 
-      localStorage.setItem('token', token);
+      sessionStorage.setItem('token', token);
 
       dispatch({
         type: 'LOGIN_SUCCESS',
@@ -113,7 +173,7 @@ export const AuthProvider = ({ children }) => {
         throw new Error('No token provided');
       }
 
-      localStorage.setItem('token', token);
+      sessionStorage.setItem('token', token);
 
       dispatch({
         type: 'LOGIN_SUCCESS',
@@ -130,7 +190,7 @@ export const AuthProvider = ({ children }) => {
 
   // ---------------- LOGOUT ----------------
   const logout = () => {
-    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
     dispatch({ type: 'LOGOUT' });
   };
 
