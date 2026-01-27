@@ -107,7 +107,7 @@ const BookingSummary = () => {
               </div>
               <div className="flex justify-between text-lg font-semibold pt-2 border-t">
                 <span>Total</span>
-                <span className="text-blue-600">
+                <span className="text-sky-600">
                   ₹{total.toFixed(2)}
                 </span>
               </div>

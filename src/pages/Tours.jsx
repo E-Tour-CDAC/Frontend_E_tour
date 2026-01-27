@@ -91,7 +91,7 @@ const Tours = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-700"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-600"></div>
       </div>
     );
   }
@@ -131,13 +131,13 @@ const Tours = () => {
                 : `/tours/${tour.id}`
             }
           >
-            <Card hover className="cursor-pointer">
+            <Card hover className="cursor-pointer group">
               <div className="relative">
                 {tour.image_url ? (
                   <img
                     src={tour.image_url}
                     alt={tour.tour_name}
-                    className="w-full h-48 object-cover"
+                    className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                 ) : (
                   <div className="w-full h-48 bg-gray-300 flex items-center justify-center">
@@ -147,7 +147,7 @@ const Tours = () => {
               </div>
 
               <div className="p-4">
-                <span className="text-xs text-teal-700 font-medium">
+                <span className="text-xs text-sky-600 font-medium">
                   {tour.category_name}
                 </span>
 
@@ -166,14 +166,14 @@ const Tours = () => {
 
                 {/* 💰 SHOW PRICE ONLY WHEN jumpFlag = true */}
                 {tour.jumpFlag && tour.starting_price && (
-                  <div className="mt-2 text-teal-700 font-semibold">
+                  <div className="mt-2 text-sky-700 font-semibold">
                     Starting from ₹{tour.starting_price}
                   </div>
                 )}
 
                 <div className="flex justify-between items-center mt-4">
-                  <span className="text-teal-700 font-bold">View</span>
-                  <span className="text-teal-700 text-sm">
+                  <span className="text-sky-700 font-bold">View</span>
+                  <span className="text-sky-700 text-sm">
                     View Packages →
                   </span>
                 </div>

@@ -90,7 +90,7 @@ const BookingStart = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-600"></div>
       </div>
     );
   }
@@ -130,11 +130,11 @@ const BookingStart = () => {
                   Selected Tour
                 </h2>
 
-                <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 mb-6">
-                  <h3 className="font-bold text-blue-900 text-lg">
+                <div className="bg-sky-50 p-4 rounded-lg border border-sky-100 mb-6">
+                  <h3 className="font-bold text-sky-900 text-lg">
                     {tour.categoryName}
                   </h3>
-                  <p className="text-sm text-blue-700 mt-1">Great choice for your next adventure!</p>
+                  <p className="text-sm text-sky-700 mt-1">Great choice for your next adventure!</p>
                 </div>
 
                 <button
@@ -161,8 +161,8 @@ const BookingStart = () => {
                       key={dep.id}
                       className={`relative flex flex-col sm:flex-row sm:items-center border-2 rounded-xl p-4 cursor-pointer transition-all duration-200
                         ${selectedDeparture?.id === dep.id
-                          ? 'border-teal-600 bg-teal-50 shadow-md transform scale-[1.01]'
-                          : 'border-gray-100 hover:border-teal-200 hover:bg-gray-50'
+                          ? 'border-sky-600 bg-sky-50 shadow-md transform scale-[1.01]'
+                          : 'border-gray-100 hover:border-sky-200 hover:bg-gray-50'
                         }
                       `}
                     >
@@ -175,7 +175,7 @@ const BookingStart = () => {
                       />
 
                       {/* Check Circle */}
-                      <div className={`flex-shrink-0 w-6 h-6 rounded-full border-2 mr-4 mb-2 sm:mb-0 flex items-center justify-center transition-colors ${selectedDeparture?.id === dep.id ? 'border-teal-600 bg-teal-600' : 'border-gray-300 bg-white'
+                      <div className={`flex-shrink-0 w-6 h-6 rounded-full border-2 mr-4 mb-2 sm:mb-0 flex items-center justify-center transition-colors ${selectedDeparture?.id === dep.id ? 'border-sky-600 bg-sky-600' : 'border-gray-300 bg-white'
                         }`}>
                         {selectedDeparture?.id === dep.id && (
                           <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
