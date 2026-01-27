@@ -37,7 +37,7 @@ export const tourAPI = {
   getTours: () => api.get('http://localhost:8080/api/tours'),
   getTour: (id) => api.get(`http://localhost:8080/api/tours/${id}`),
   getTourDetails: (catId) => api.get(`http://localhost:8080/api/tours/details/${catId}`),
-  
+
 
   // Keep this for filters, though it's same as getTours now
   // getCategories: () => api.get('/categories/home'),
@@ -57,7 +57,7 @@ export const tourAPI = {
 };
 
 export const bookingAPI = {
-  
+
   getTourId: (categoryId, departureId) => api.get(`http://localhost:8080/api/tours/tour-id?categoryId=${categoryId}&departureId=${departureId}`),
   createBooking: (data) => api.post('http://localhost:8080/api/bookings', data),
   getBooking: (id) => api.get(`http://localhost:8080/api/bookings/${id}`),
@@ -79,6 +79,8 @@ export const customerAPI = {
   getProfile: () => api.get('http://localhost:8080/api/customer/id'),
   updateProfile: (data) => api.put('http://localhost:8080/api/customer/profile', data),
   changePassword: (data) => api.post('/api/customer/change-password', data),
+  forgotPassword: (email) => api.post('http://localhost:8080/auth/forgot-password', { email }),
+  resetPassword: (data) => api.post('http://localhost:8080/auth/reset-password', data),
 };
 
 export const searchAPI = {
