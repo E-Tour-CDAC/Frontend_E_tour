@@ -146,27 +146,27 @@ const PassengerForm = () => {
             </div>
           ))}
 
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-gray-100">
             <button
               type="button"
               onClick={addNewPassenger}
-              className="flex items-center text-blue-600 hover:text-blue-700"
+              className="flex items-center text-blue-600 hover:text-blue-700 font-medium px-2 py-1 rounded hover:bg-blue-50 transition-colors"
             >
               <PlusIcon className="w-5 h-5 mr-2" />
               Add Another Passenger
             </button>
 
-            <div className="space-x-4">
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="btn-secondary"
+                className="btn-secondary w-full sm:w-auto text-center justify-center"
               >
                 Back
               </button>
               <button
                 type="submit"
-                className="btn-primary"
+                className="btn-primary w-full sm:w-auto text-center justify-center"
               >
                 Continue to Payment
               </button>
