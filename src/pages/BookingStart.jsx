@@ -118,8 +118,8 @@ const BookingStart = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-4">
 
-        {/* LEFT */}
-        <div className="lg:col-span-2 space-y-6">
+        {/* LEFT: Full width if Review Step, else 2/3 */}
+        <div className={`${currentStep === 3 ? 'lg:col-span-3' : 'lg:col-span-2'} space-y-6`}>
 
           {/* STEP 0 */}
           {currentStep === 0 && (
@@ -279,12 +279,14 @@ const BookingStart = () => {
 
         </div>
 
-        {/* RIGHT */}
-        <div className="lg:col-span-1">
-          <div className="lg:sticky lg:top-8">
-             <BookingSummary />
+        {/* RIGHT: Hide if Review Step (Step 3) */}
+        {currentStep !== 3 && (
+          <div className="lg:col-span-1">
+            <div className="lg:sticky lg:top-8">
+               <BookingSummary />
+            </div>
           </div>
-        </div>
+        )}
 
       </div>
     </div>
