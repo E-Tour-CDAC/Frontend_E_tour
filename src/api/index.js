@@ -61,7 +61,8 @@ export const bookingAPI = {
   getTourId: (categoryId, departureId) => api.get(`http://localhost:8080/api/tours/tour-id?categoryId=${categoryId}&departureId=${departureId}`),
   createBooking: (data) => api.post('http://localhost:8080/api/bookings', data),
   getBooking: (id) => api.get(`http://localhost:8080/api/bookings/${id}`),
-  getBookings: () => api.get('http://localhost:8080/api/bookings'),
+  getBookings: () => api.get('http://localhost:8080/api/bookings/'),
+  getBookingsByCustomer: (customerId) => api.get(`http://localhost:8080/api/bookings/customer/${customerId}`),
   updateBooking: (id, data) => Promise.resolve({ data: {} }),
   cancelBooking: (id) => Promise.resolve({ data: {} }),
 
