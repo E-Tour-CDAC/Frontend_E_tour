@@ -80,6 +80,7 @@ export const customerAPI = {
   register: (data) => api.post('http://localhost:8080/auth/register', data),
   login: (credentials) => api.post('http://localhost:8080/auth/login', credentials),
   getProfile: () => api.get('http://localhost:8080/api/customer/profile'),
+  getProfileId: () => api.get('http://localhost:8080/api/customer/id'),
   updateProfile: (data) => api.put('http://localhost:8080/api/customer/profile', data),
   changePassword: (data) => api.post('http://localhost:8080/api/customer/change-password', data),
   forgotPassword: (email) => api.post('http://localhost:8080/auth/forgot-password', { email }),
@@ -114,5 +115,8 @@ export const searchAPI = {
     }),
 };
 
+export const healthAPI = {
+  getHealth: () => api.get('http://localhost:8080/actuator/health'),
+};
 
 export default api;
