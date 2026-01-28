@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Card from '../../components/UI/Card';
 import Table from '../../components/UI/Table';
+import { useState } from 'react';
 
 const AdminDashboard = () => {
   const stats = [
@@ -10,6 +11,9 @@ const AdminDashboard = () => {
     { label: 'Active Users', value: '5,678', change: '+18%', changeType: 'positive' },
     { label: 'Revenue', value: '$45,678', change: '+31%', changeType: 'positive' }
   ];
+
+  const [csvFile, setCsvFile] = useState(null);
+  const [uploadMsg, setUploadMsg] = useState('');
 
   const recentBookings = [
     ['B001', 'John Doe', 'European Adventure', '2024-01-15', '$2,450', 'Confirmed'],
@@ -20,6 +24,32 @@ const AdminDashboard = () => {
 
   const bookingHeaders = ['ID', 'Customer', 'Tour', 'Date', 'Amount', 'Status'];
 
+  const handleCsvUpload = async () => {
+    if (!csvFile) {
+      setUploadMsg("Please select a CSV file first");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", csvFile);
+
+    try {
+      const res = await fetch(
+        "http://localhost:8080/api/admin/itineraries/upload-csv",
+        {
+          method: "POST",
+          body: formData
+        }
+      );
+
+      if (!res.ok) throw new Error();
+
+      setUploadMsg("CSV uploaded successfully ✅");
+    } // eslint-disable-next-line no-unused-vars
+    catch (err) {
+      setUploadMsg("Upload failed");
+    }
+  };
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
@@ -68,9 +98,28 @@ const AdminDashboard = () => {
               <button className="w-full text-left btn-secondary">
                 View All Bookings
               </button>
-              <button className="w-full text-left btn-secondary">
-                Customer Management
-              </button>
+              <div className="border rounded-lg p-4">
+                <p className="font-medium mb-2">Upload Itinerary CSV</p>
+
+                <input
+                  type="file"
+                  accept=".csv"
+                  onChange={(e) => setCsvFile(e.target.files[0])}
+                  className="mb-2"
+                />
+
+                <button
+                  onClick={handleCsvUpload}
+                  className="w-full btn-secondary"
+                >
+                  Upload CSV
+                </button>
+
+                {uploadMsg && (
+                  <p className="text-sm mt-2 text-gray-600">{uploadMsg}</p>
+                )}
+              </div>
+
               <button className="w-full text-left btn-secondary">
                 Generate Reports
               </button>
