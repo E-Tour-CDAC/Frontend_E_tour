@@ -66,7 +66,8 @@ export const bookingAPI = {
   updateBooking: (id, data) => Promise.resolve({ data: {} }),
   cancelBooking: (id) => Promise.resolve({ data: {} }),
 
-  addPassenger: (bookingId, data) => Promise.resolve({ data: {} }),
+  getInvoice: (bookingId) => api.get(`http://localhost:8080/api/bookings/invoice/${bookingId}`),
+  addPassenger: (data) => api.post('http://localhost:8080/api/passengers/add', data),
   updatePassenger: (bookingId, passengerId, data) => Promise.resolve({ data: {} }),
   removePassenger: (bookingId, passengerId) => Promise.resolve({ data: {} }),
 
@@ -74,6 +75,8 @@ export const bookingAPI = {
   createOrder: (data) => api.post('http://localhost:8080/payment-gateway/create-order', data),
   verifyPayment: (params) => api.post('http://localhost:8080/payment-gateway/confirm-payment', null, { params }),
   getPaymentStatus: (bookingId) => api.get(`http://localhost:8080/api/bookings/status/${bookingId}`),
+  getPassengersByBooking: (bookingId) => api.get(`http://localhost:8080/api/passengers/booking/${bookingId}`),
+  downloadInvoice: (bookingId) => api.get(`http://localhost:8080/api/bookings/download-invoice/${bookingId}`, { responseType: 'blob' }),
 };
 
 export const customerAPI = {
@@ -86,12 +89,6 @@ export const customerAPI = {
   forgotPassword: (email) => api.post('http://localhost:8080/auth/forgot-password', { email }),
   resetPassword: (data) => api.post('http://localhost:8080/auth/reset-password', data),
 };
-
-// export const searchAPI = {
-//   searchByDuration: (minDays, maxDays) => api.get(`/api/search/duration`, { params: { minDays, maxDays } }),
-//   searchByCost: (minCost, maxCost) => api.get(`/api/search/cost`, { params: { minCost, maxCost } }),
-//   searchByDate: (fromDate, toDate) => api.get(`/api/search/date`, { params: { fromDate, toDate } }),
-// };
 
 export const searchAPI = {
   searchByDuration: (minDays, maxDays) =>

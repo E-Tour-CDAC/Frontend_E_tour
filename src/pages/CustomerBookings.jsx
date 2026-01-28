@@ -11,6 +11,10 @@ const CustomerBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loadingDetails, setLoadingDetails] = useState(false);
+  const [loadingInvoice, setLoadingInvoice] = useState({}); // Tracking loading state per booking ID
 
   useEffect(() => {
     fetchBookings();
@@ -37,6 +41,63 @@ const CustomerBookings = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleViewDetails = async (bookingId) => {
+    try {
+      setLoadingDetails(true);
+      setIsModalOpen(true);
+      console.log(bookingId);
+      // Fetch booking details and passengers in parallel
+      const [bookingRes, passengerRes] = await Promise.all([
+        bookingAPI.getBooking(bookingId),
+        bookingAPI.getPassengersByBooking(bookingId).catch(() => ({ data: [] }))
+      ]);
+
+      const bookingData = bookingRes.data;
+      bookingData.passengers = passengerRes.data;
+
+      setSelectedBooking(bookingData);
+    } catch (err) {
+      toast.error("Failed to fetch booking details");
+      setIsModalOpen(false);
+    } finally {
+      setLoadingDetails(false);
+    }
+  };
+
+  const handleDownloadInvoice = async (bookingId) => {
+    try {
+      setLoadingInvoice(prev => ({ ...prev, [bookingId]: true }));
+      const response = await bookingAPI.downloadInvoice(bookingId);
+
+      // Create a blob from the response data
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+
+      // Create a temporary link and trigger download
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `Invoice-Booking-${bookingId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast.success("Invoice downloaded successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to download invoice");
+    } finally {
+      setLoadingInvoice(prev => ({ ...prev, [bookingId]: false }));
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedBooking(null);
   };
 
   const getStatusColor = (status) => {
@@ -148,24 +209,170 @@ const CustomerBookings = () => {
                 {/* Removed Passenger Details and Departure Date as they are not in the provided JSON */}
 
                 <div className="flex items-center justify-end mt-6 pt-4 border-t">
-                  <div className="flex space-x-4">
-                    {/* 
-                       Buttons preserved but logic requires more data than available.
-                       They are strictly UI placeholders for now as per "simple" instruction.
-                     */}
-                    <button className="text-blue-600 hover:text-blue-700 font-medium text-sm">
+                  <div className="flex space-x-3">
+                    <button
+                      onClick={() => handleDownloadInvoice(booking.bookingId)}
+                      disabled={loadingInvoice[booking.bookingId]}
+                      className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 font-bold text-xs rounded-xl transition-all disabled:opacity-50"
+                    >
+                      {loadingInvoice[booking.bookingId] ? (
+                        <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin mr-2"></div>
+                      ) : (
+                        <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                      )}
+                      Invoice
+                    </button>
+                    <button
+                      onClick={() => handleViewDetails(booking.bookingId)}
+                      className="inline-flex items-center px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 font-bold text-xs rounded-xl transition-all shadow-md active:scale-95"
+                    >
                       View Details
                     </button>
-                    {booking.status === 'CONFIRMED' && (
-                      <button className="text-red-600 hover:text-red-700 font-medium text-sm">
-                        Cancel Booking
-                      </button>
-                    )}
                   </div>
                 </div>
               </div>
             </Card>
           ))}
+        </div>
+      )}
+
+      {/* Booking Details Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden transform animate-in zoom-in-95 duration-200">
+            {/* Modal Header */}
+            <div className="px-6 py-4 bg-gray-50 border-b flex items-center justify-between">
+              <h2 className="text-xl font-bold text-gray-900">
+                {loadingDetails ? 'Loading Details...' : `Booking #${selectedBooking?.bookingId}`}
+              </h2>
+              <button
+                onClick={closeModal}
+                className="text-gray-400 hover:text-gray-600 transition-colors p-1"
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 max-h-[70vh] overflow-y-auto">
+              {loadingDetails ? (
+                <div className="flex flex-col items-center justify-center py-12">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+                  <p className="text-gray-500 font-medium">Fetching booking data...</p>
+                </div>
+              ) : selectedBooking ? (
+                <div className="space-y-8">
+                  {/* Summary Section */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="bg-blue-50 p-3 rounded-xl text-center">
+                      <p className="text-xs text-blue-600 font-bold uppercase mb-1">Status</p>
+                      <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-bold ${getStatusColor(selectedBooking.status)}`}>
+                        {selectedBooking.status}
+                      </span>
+                    </div>
+                    <div className="bg-gray-50 p-3 rounded-xl text-center">
+                      <p className="text-xs text-gray-500 font-bold uppercase mb-1">Date</p>
+                      <p className="text-sm font-bold text-gray-900">{formatDate(selectedBooking.bookingDate)}</p>
+                    </div>
+                    <div className="bg-gray-50 p-3 rounded-xl text-center">
+                      <p className="text-xs text-gray-500 font-bold uppercase mb-1">Type</p>
+                      <p className="text-sm font-bold text-gray-900">{selectedBooking.bookingType || 'Standard'}</p>
+                    </div>
+                    <div className="bg-green-50 p-3 rounded-xl text-center">
+                      <p className="text-xs text-green-600 font-bold uppercase mb-1">Total</p>
+                      <p className="text-sm font-bold text-green-700">₹{selectedBooking.totalAmount}</p>
+                    </div>
+                  </div>
+
+                  {/* Passenger Information */}
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                      <svg className="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                      </svg>
+                      Passenger Information
+                    </h3>
+                    <div className="bg-gray-50 rounded-xl overflow-hidden border border-gray-100">
+                      <table className="w-full text-left">
+                        <thead className="bg-gray-100/50 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                          <tr>
+                            <th className="px-4 py-3">Name</th>
+                            <th className="px-4 py-3">Type</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                          {selectedBooking.passengers && selectedBooking.passengers.length > 0 ? (
+                            selectedBooking.passengers.map((p, idx) => (
+                              <tr key={idx} className="hover:bg-white/50 transition-colors">
+                                <td className="px-4 py-3 text-sm font-semibold text-gray-800">{p.paxName}</td>
+                                <td className="px-4 py-3">
+                                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-700 uppercase">
+                                    {p.paxType || 'Adult'}
+                                  </span>
+                                </td>
+                              </tr>
+                            ))
+                          ) : (
+                            <tr>
+                              <td colSpan="2" className="px-4 py-8 text-center text-gray-500 italic">
+                                Passenger data available: {selectedBooking.noOfPax}
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* Additional Info */}
+                  <div className="p-4 bg-amber-50 rounded-xl border border-amber-100">
+                    <div className="flex items-start gap-3">
+                      <svg className="w-6 h-6 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <div>
+                        <p className="text-sm font-bold text-amber-900 mb-1">Payment Status</p>
+                        <p className="text-xs text-amber-700 leading-relaxed">
+                          Your payment for this booking is {selectedBooking.status?.toLowerCase() === 'confirmed' ? 'fully processed' : 'being processed'}.
+                          Please keep your booking ID <span className="font-mono font-bold bg-amber-200/50 px-1 rounded">#{selectedBooking.bookingId}</span> for future reference.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-12 text-gray-500">No booking details available.</div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-6 py-4 bg-gray-50 border-t flex justify-end gap-3">
+              <button
+                onClick={() => handleDownloadInvoice(selectedBooking?.bookingId)}
+                disabled={loadingInvoice[selectedBooking?.bookingId]}
+                className="px-6 py-2 bg-blue-100 text-blue-700 font-bold rounded-xl hover:bg-blue-200 transition-all transform hover:scale-[1.02] active:scale-95 flex items-center gap-2"
+              >
+                {loadingInvoice[selectedBooking?.bookingId] ? (
+                  <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                )}
+                Download Invoice
+              </button>
+              <button
+                onClick={closeModal}
+                className="px-6 py-2 bg-gray-900 text-white font-bold rounded-xl hover:bg-gray-800 transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg shadow-gray-200"
+              >
+                Close
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
