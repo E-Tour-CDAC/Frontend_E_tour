@@ -38,7 +38,7 @@ const bookingReducer = (state, action) => {
       return { ...state, payment: action.payload, currentStep: 4 };
 
     case 'SET_BOOKING':
-      return { ...state, booking: action.payload, currentStep: 5 };
+      return { ...state, booking: action.payload };
 
     case 'RESET_BOOKING':
       return initialState;
