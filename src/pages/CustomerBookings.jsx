@@ -20,7 +20,7 @@ const CustomerBookings = () => {
     try {
       setLoading(true);
       // 1. Get Customer Profile first to get the ID
-      const profileRes = await customerAPI.getProfile();
+      const profileRes = await customerAPI.getProfileId();
       const customerId = profileRes.data.id;
 
       if (!customerId) {
