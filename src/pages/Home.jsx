@@ -3,6 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { tourAPI } from '../api';
 
 const Home = () => {
+  const categoryImages = [
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=80",
+    "https://www.outlooktravelmag.com/media/A-Paris-Weekend-Away-main-1536px-jpg-1536x884.webp",
+    "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=800&q=80"
+  ];
+
   const [searchParams, setSearchParams] = useState({
     location: '',
     date: '',
@@ -149,13 +156,13 @@ const Home = () => {
             </form>
           </div>
 
-           <div className="flex flex-col sm:flex-row gap-6 justify-center mt-12 animate-fade-in-up">
-             
-          </div> 
+          <div className="flex flex-col sm:flex-row gap-6 justify-center mt-12 animate-fade-in-up">
+
+          </div>
         </div>
       </section>
 
-      
+
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -187,38 +194,50 @@ const Home = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {tours.map((tour) => (
+              {tours.map((tour, index) => (
+
                 <Link
                   key={tour.categoryId}
                   to={`/tours/details/${tour.categoryId}`}
-                  className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow group"
+                  className="group relative bg-white rounded-[28px] overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.12)] hover:shadow-[0_20px_45px_rgba(0,0,0,0.18)] transition-all duration-500"
                 >
-                  <div className="h-48 bg-gradient-to-br from-sky-400 to-sky-600 relative overflow-hidden">
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <svg className="w-16 h-16 text-white opacity-50" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-                      </svg>
-                    </div>
-                    {/* If your backend provides images, replace this with: */}
-                    {/* <img src={tour.imageUrl} alt={tour.categoryName} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" /> */}
+                  {/* Image */}
+                  <div className="relative h-60 overflow-hidden">
+                    <img
+                      src={categoryImages[index % categoryImages.length]}
+                      alt={tour.categoryName}
+                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    />
+
+                    {/* Luxury overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+
+                    {/* Premium badge */}
+
                   </div>
-                  <div className="p-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-sky-700 transition-colors">
+
+                  {/* Content */}
+                  <div className="p-6">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2 tracking-tight">
                       {tour.categoryName}
                     </h3>
-                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                      {tour.categoryDescription || 'Explore this amazing destination'}
+
+                    <p className="text-gray-600 text-sm leading-relaxed mb-5 line-clamp-2">
+                      {tour.categoryDescription || "Curated luxury experiences tailored for unforgettable journeys"}
                     </p>
+
                     <div className="flex items-center justify-between">
-                      <span className="text-sky-700 text-sm font-medium">
-                        View Details →
+                      <span className="text-sky-700 font-semibold text-sm tracking-wide">
+                        View Experience →
                       </span>
-                      <span className="text-gray-500 text-xs">
+
+                      <span className="text-xs text-gray-400">
                         {tour.departures?.length || 0} departures
                       </span>
                     </div>
                   </div>
                 </Link>
+
               ))}
             </div>
           )}
@@ -231,7 +250,7 @@ const Home = () => {
         </div>
       </section>
 
-          <section className="py-16">
+      <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
@@ -288,7 +307,7 @@ const Home = () => {
         </div>
       </section>
 
-      
+
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="bg-sky-700 rounded-lg p-8 text-center text-white">
@@ -310,4 +329,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Home
