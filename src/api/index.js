@@ -40,7 +40,7 @@ export const tourAPI = {
 
 
   // Keep this for filters, though it's same as getTours now
-  // getCategories: () => api.get('/categories/home')
+  // getCategories: () => api.get('/categories/home'),
 
   // Stubbing missing endpoints to prevent crashes
   createCategory: (data) => Promise.resolve({ data: {} }),
@@ -79,9 +79,12 @@ export const bookingAPI = {
 export const customerAPI = {
   register: (data) => api.post('http://localhost:8080/auth/register', data),
   login: (credentials) => api.post('http://localhost:8080/auth/login', credentials),
-  getProfile: () => api.get('http://localhost:8080/api/customer/id'),
+  getProfile: () => api.get('http://localhost:8080/api/customer/profile'),
+  getProfileId: () => api.get('http://localhost:8080/api/customer/id'),
   updateProfile: (data) => api.put('http://localhost:8080/api/customer/profile', data),
-  changePassword: (data) => api.post('/api/customer/change-password', data),
+  changePassword: (data) => api.post('http://localhost:8080/api/customer/change-password', data),
+  forgotPassword: (email) => api.post('http://localhost:8080/auth/forgot-password', { email }),
+  resetPassword: (data) => api.post('http://localhost:8080/auth/reset-password', data),
 };
 
 export const searchAPI = {
