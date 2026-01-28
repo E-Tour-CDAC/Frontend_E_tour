@@ -87,10 +87,32 @@ export const customerAPI = {
   resetPassword: (data) => api.post('http://localhost:8080/auth/reset-password', data),
 };
 
+// export const searchAPI = {
+//   searchByDuration: (minDays, maxDays) => api.get(`/api/search/duration`, { params: { minDays, maxDays } }),
+//   searchByCost: (minCost, maxCost) => api.get(`/api/search/cost`, { params: { minCost, maxCost } }),
+//   searchByDate: (fromDate, toDate) => api.get(`/api/search/date`, { params: { fromDate, toDate } }),
+// };
+
 export const searchAPI = {
-  searchByDuration: (minDays, maxDays) => api.get(`/api/search/duration`, { params: { minDays, maxDays } }),
-  searchByCost: (minCost, maxCost) => api.get(`/api/search/cost`, { params: { minCost, maxCost } }),
-  searchByDate: (fromDate, toDate) => api.get(`/api/search/date`, { params: { fromDate, toDate } }),
+  searchByDuration: (minDays, maxDays) =>
+    api.get('http://localhost:8080/search/by-duration', {
+      params: { minDays, maxDays },
+    }),
+
+  searchByCost: (minCost, maxCost) =>
+    api.get('http://localhost:8080/search/by-cost', {
+      params: { minCost, maxCost },
+    }),
+
+  searchByLocation: (keyword) =>
+    api.get('http://localhost:8080/search/by-location', {
+      params: { keyword },
+    }),
+
+  searchByDate: (fromDate, toDate) =>
+    api.get('http://localhost:8080/search/by-date', {
+      params: { fromDate, toDate },
+    }),
 };
 
 export const healthAPI = {
