@@ -155,7 +155,17 @@ const Home = () => {
             </form>
           </div>
 
-
+          <div className="flex flex-col sm:flex-row gap-6 justify-center mt-12 animate-fade-in-up">
+            {/* Quick Action Pills */}
+            <div className="flex gap-4 p-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
+              <Link to="/tours" className="px-6 py-2 rounded-full bg-white text-sky-700 font-bold hover:bg-sky-50 transition-colors shadow-sm">
+                Explore Tours
+              </Link>
+              <Link to="/tours" className="px-6 py-2 rounded-full text-white font-medium hover:bg-white/10 transition-colors">
+                View Deals
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -303,6 +313,9 @@ const Home = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/register" className="btn-primary bg-white text-sky-700 hover:bg-gray-100">
                 Sign Up Now
+              </Link>
+              <Link to="/tours" className="btn-secondary bg-transparent text-white border-white hover:bg-white hover:text-sky-700">
+                Explore Tours
               </Link>
             </div>
           </div>
