@@ -1,0 +1,101 @@
+{
+  "nav": {
+    "brand": "E-Tour",
+    "home": "Home",
+    "tours": "Tours",
+    "login": "Login",
+    "signup": "Sign Up",
+    "logoAlt": "E-Tour Logo",
+
+    "bookings": "My Bookings",
+    "myBookings": "My Bookings",
+
+    "profile": "Profile",
+    "welcome": "Welcome, {{name}}",
+    "logout": "Logout",
+    "menu": "Menu"
+  },
+
+  "home": {
+    "heroTitle": "Discover Your Next Adventure",
+    "heroSubtitle": "Explore amazing destinations around the world with E-Tour",
+
+    "search": {
+      "locationLabel": "Location",
+      "locationPlaceholder": "Where are you going?",
+      "dateLabel": "Date",
+      "maxPriceLabel": "Max Price",
+      "pricePlaceholder": "Budget limit",
+      "searchBtn": "Search"
+    },
+
+    "buttons": {
+      "browseTours": "Browse Tours",
+      "viewCategories": "View Categories",
+      "viewAllTours": "View All Tours",
+      "signUpNow": "Sign Up Now",
+      "exploreTours": "Explore Tours"
+    },
+
+    "why": {
+      "title": "Why Choose E-Tour?",
+      "subtitle": "We make travel planning simple and enjoyable",
+      "expertTitle": "Expert Guidance",
+      "expertDesc": "Professional tour guides with extensive knowledge of destinations",
+      "priceTitle": "Best Price Guarantee",
+      "priceDesc": "Competitive prices with no hidden fees or surprises",
+      "supportTitle": "24/7 Support",
+      "supportDesc": "Round-the-clock customer service for your peace of mind"
+    },
+
+    "popular": {
+      "title": "Popular Destinations",
+      "subtitle": "Explore our most sought-after travel destinations",
+      "toursAvailable": "{{count}} tours available"
+    },
+
+    "cta": {
+      "title": "Ready to Start Your Adventure?",
+      "subtitle": "Join thousands of satisfied travelers who have explored the world with us"
+    },
+
+    "destinations": {
+      "paris": { "name": "Paris", "country": "France" },
+      "tokyo": { "name": "Tokyo", "country": "Japan" },
+      "newYork": { "name": "New York", "country": "USA" },
+      "dubai": { "name": "Dubai", "country": "UAE" }
+    }
+  },
+
+  "footer": {
+    "brandTitle": "E-Tour",
+    "brandDesc": "Ladies and Gentlemen, this is the boarding area for your trip.",
+
+    "quickLinksTitle": "Quick Links",
+    "supportTitle": "Support",
+    "contactTitle": "Contact Info",
+
+    "links": {
+      "home": "Home",
+      "categories": "Categories",
+      "tours": "Tours",
+      "myBookings": "My Bookings"
+    },
+
+    "support": {
+      "helpCenter": "Help Center",
+      "contactUs": "Contact Us",
+      "privacyPolicy": "Privacy Policy",
+      "terms": "Terms of Service"
+    },
+
+    "contact": {
+      "email": "etourvirtugo@gmail.com",
+      "phone": "9326923786",
+      "address": "SM VITA Mumbai",
+      "hours": "Mon-Fri: 9AM-6PM"
+    },
+
+    "bottom": "© 2026 E-Tour. All rights reserved."
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "nav": {
+    "brand": "E-Tour",
+    "home": "Accueil",
+    "tours": "Voyages",
+    "login": "Connexion",
+    "signup": "Inscription",
+    "logoAlt": "Logo E-Tour",
+    "bookings": "Mes réservations",
+    "myBookings": "Mes réservations",
+    "profile": "Profil",
+    "welcome": "Bienvenue, {{name}}",
+    "logout": "Déconnexion",
+    "menu": "Menu"
+  },
+
+  "home": {
+    "heroTitle": "Découvrez votre prochaine aventure",
+    "heroSubtitle": "Explorez des destinations incroyables dans le monde entier avec E-Tour",
+
+    "search": {
+      "locationLabel": "Destination",
+      "locationPlaceholder": "Où allez-vous ?",
+      "dateLabel": "Date",
+      "maxPriceLabel": "Prix maximum",
+      "pricePlaceholder": "Budget maximum",
+      "searchBtn": "Rechercher"
+    },
+
+    "buttons": {
+      "browseTours": "Parcourir les voyages",
+      "viewCategories": "Voir les catégories",
+      "viewAllTours": "Voir tous les voyages",
+      "signUpNow": "Inscrivez-vous maintenant",
+      "exploreTours": "Explorer les voyages"
+    },
+
+    "why": {
+      "title": "Pourquoi choisir E-Tour ?",
+      "subtitle": "Nous rendons la planification de voyage simple et agréable",
+      "expertTitle": "Guides experts",
+      "expertDesc": "Guides professionnels avec une connaissance approfondie",
+      "priceTitle": "Meilleur prix garanti",
+      "priceDesc": "Prix compétitifs sans frais cachés",
+      "supportTitle": "Support 24/7",
+      "supportDesc": "Service client disponible à tout moment"
+    },
+
+    "popular": {
+      "title": "Destinations populaires",
+      "subtitle": "Découvrez nos destinations les plus demandées",
+      "toursAvailable": "{{count}} voyages disponibles"
+    },
+
+    "cta": {
+      "title": "Prêt à commencer votre aventure ?",
+      "subtitle": "Rejoignez des milliers de voyageurs satisfaits"
+    },
+
+    "destinations": {
+      "paris": { "name": "Paris", "country": "France" },
+      "tokyo": { "name": "Tokyo", "country": "Japon" },
+      "newYork": { "name": "New York", "country": "États-Unis" },
+      "dubai": { "name": "Dubaï", "country": "EAU" }
+    }
+  },
+
+  "footer": {
+    "brandTitle": "E-Tour",
+    "brandDesc": "Mesdames et messieurs, voici la zone d’embarquement pour votre voyage.",
+    "quickLinksTitle": "Liens rapides",
+    "supportTitle": "Support",
+    "contactTitle": "Contact",
+
+    "links": {
+      "home": "Accueil",
+      "categories": "Catégories",
+      "tours": "Voyages",
+      "myBookings": "Mes réservations"
+    },
+
+    "support": {
+      "helpCenter": "Centre d’aide",
+      "contactUs": "Contactez-nous",
+      "privacyPolicy": "Politique de confidentialité",
+      "terms": "Conditions d’utilisation"
+    },
+
+    "contact": {
+      "email": "etourvirtugo@gmail.com",
+      "phone": "9326923786",
+      "address": "SM VITA Mumbai",
+      "hours": "Lun-Ven : 9h-18h"
+    },
+
+    "bottom": "© 2026 E-Tour. Tous droits réservés."
+  }
+}

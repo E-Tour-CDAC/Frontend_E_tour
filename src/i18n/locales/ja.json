@@ -1,0 +1,98 @@
+{
+  "nav": {
+    "brand": "Eツアー",
+    "home": "ホーム",
+    "tours": "ツアー",
+    "login": "ログイン",
+    "signup": "登録",
+    "logoAlt": "Eツアー ロゴ",
+    "bookings": "予約一覧",
+    "myBookings": "予約一覧",
+    "profile": "プロフィール",
+    "welcome": "ようこそ、{{name}}",
+    "logout": "ログアウト",
+    "menu": "メニュー"
+  },
+
+  "home": {
+    "heroTitle": "次の冒険を見つけよう",
+    "heroSubtitle": "Eツアーで世界中の素晴らしい目的地を探索しよう",
+
+    "search": {
+      "locationLabel": "場所",
+      "locationPlaceholder": "どこへ行きますか？",
+      "dateLabel": "日付",
+      "maxPriceLabel": "最大価格",
+      "pricePlaceholder": "予算上限",
+      "searchBtn": "検索"
+    },
+
+    "buttons": {
+      "browseTours": "ツアーを見る",
+      "viewCategories": "カテゴリを見る",
+      "viewAllTours": "すべてのツアーを見る",
+      "signUpNow": "今すぐ登録",
+      "exploreTours": "ツアーを探す"
+    },
+
+    "why": {
+      "title": "なぜEツアー？",
+      "subtitle": "旅行計画を簡単で楽しくします",
+      "expertTitle": "専門ガイド",
+      "expertDesc": "経験豊富なプロのガイド",
+      "priceTitle": "最安値保証",
+      "priceDesc": "隠れた料金なし",
+      "supportTitle": "24時間サポート",
+      "supportDesc": "いつでも安心のサポート"
+    },
+
+    "popular": {
+      "title": "人気の目的地",
+      "subtitle": "最も人気のある目的地を探索",
+      "toursAvailable": "{{count}} 件のツアー"
+    },
+
+    "cta": {
+      "title": "冒険を始める準備はできましたか？",
+      "subtitle": "多くの旅行者が私たちを選んでいます"
+    },
+
+    "destinations": {
+      "paris": { "name": "パリ", "country": "フランス" },
+      "tokyo": { "name": "東京", "country": "日本" },
+      "newYork": { "name": "ニューヨーク", "country": "アメリカ" },
+      "dubai": { "name": "ドバイ", "country": "UAE" }
+    }
+  },
+
+  "footer": {
+    "brandTitle": "Eツアー",
+    "brandDesc": "皆さま、こちらはご搭乗エリアです。",
+    "quickLinksTitle": "クイックリンク",
+    "supportTitle": "サポート",
+    "contactTitle": "連絡先",
+
+    "links": {
+      "home": "ホーム",
+      "categories": "カテゴリ",
+      "tours": "ツアー",
+      "myBookings": "予約一覧"
+    },
+
+    "support": {
+      "helpCenter": "ヘルプセンター",
+      "contactUs": "お問い合わせ",
+      "privacyPolicy": "プライバシーポリシー",
+      "terms": "利用規約"
+    },
+
+    "contact": {
+      "email": "etourvirtugo@gmail.com",
+      "phone": "9326923786",
+      "address": "SM VITA ムンバイ",
+      "hours": "月〜金 9:00〜18:00"
+    },
+
+    "bottom": "© 2026 Eツアー. 無断転載を禁じます。"
+  }
+}

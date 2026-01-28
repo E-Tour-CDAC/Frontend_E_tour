@@ -1,0 +1,98 @@
+{
+  "nav": {
+    "brand": "E-Tour",
+    "home": "Inicio",
+    "tours": "Tours",
+    "login": "Iniciar sesión",
+    "signup": "Registrarse",
+    "logoAlt": "Logo de E-Tour",
+    "bookings": "Mis reservas",
+    "myBookings": "Mis reservas",
+    "profile": "Perfil",
+    "welcome": "Bienvenido, {{name}}",
+    "logout": "Cerrar sesión",
+    "menu": "Menú"
+  },
+
+  "home": {
+    "heroTitle": "Descubre tu próxima aventura",
+    "heroSubtitle": "Explora destinos increíbles alrededor del mundo con E-Tour",
+
+    "search": {
+      "locationLabel": "Ubicación",
+      "locationPlaceholder": "¿A dónde vas?",
+      "dateLabel": "Fecha",
+      "maxPriceLabel": "Precio máximo",
+      "pricePlaceholder": "Límite de presupuesto",
+      "searchBtn": "Buscar"
+    },
+
+    "buttons": {
+      "browseTours": "Explorar tours",
+      "viewCategories": "Ver categorías",
+      "viewAllTours": "Ver todos los tours",
+      "signUpNow": "Regístrate ahora",
+      "exploreTours": "Explorar tours"
+    },
+
+    "why": {
+      "title": "¿Por qué elegir E-Tour?",
+      "subtitle": "Hacemos que planificar viajes sea fácil y divertido",
+      "expertTitle": "Guías expertos",
+      "expertDesc": "Guías profesionales con amplio conocimiento",
+      "priceTitle": "Mejor precio garantizado",
+      "priceDesc": "Precios competitivos sin cargos ocultos",
+      "supportTitle": "Soporte 24/7",
+      "supportDesc": "Atención al cliente todo el día"
+    },
+
+    "popular": {
+      "title": "Destinos populares",
+      "subtitle": "Explora nuestros destinos más populares",
+      "toursAvailable": "{{count}} tours disponibles"
+    },
+
+    "cta": {
+      "title": "¿Listo para comenzar tu aventura?",
+      "subtitle": "Únete a miles de viajeros satisfechos"
+    },
+
+    "destinations": {
+      "paris": { "name": "París", "country": "Francia" },
+      "tokyo": { "name": "Tokio", "country": "Japón" },
+      "newYork": { "name": "Nueva York", "country": "EE.UU." },
+      "dubai": { "name": "Dubái", "country": "EAU" }
+    }
+  },
+
+  "footer": {
+    "brandTitle": "E-Tour",
+    "brandDesc": "Damas y caballeros, esta es el área de embarque para su viaje.",
+    "quickLinksTitle": "Enlaces rápidos",
+    "supportTitle": "Soporte",
+    "contactTitle": "Contacto",
+
+    "links": {
+      "home": "Inicio",
+      "categories": "Categorías",
+      "tours": "Tours",
+      "myBookings": "Mis reservas"
+    },
+
+    "support": {
+      "helpCenter": "Centro de ayuda",
+      "contactUs": "Contáctanos",
+      "privacyPolicy": "Política de privacidad",
+      "terms": "Términos del servicio"
+    },
+
+    "contact": {
+      "email": "etourvirtugo@gmail.com",
+      "phone": "9326923786",
+      "address": "SM VITA Mumbai",
+      "hours": "Lun-Vie: 9AM-6PM"
+    },
+
+    "bottom": "© 2026 E-Tour. Todos los derechos reservados."
+  }
+}
