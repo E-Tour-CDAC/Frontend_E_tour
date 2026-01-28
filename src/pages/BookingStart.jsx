@@ -70,8 +70,8 @@ const BookingStart = () => {
       setDepartures(passedDepartures);
       setTour(passedTour);
 
-      // ✅ FETCH CUSTOMER PROFILE (UI ONLY)
-      const res = await customerAPI.getProfile();
+      // ✅ FETCH CUSTOMER ID (LOGIC ONLY)
+      const res = await customerAPI.getProfileId();
       const fetchedCustomerId = res.data.id;
 
       // ✅ REQUIRED CONSOLE LOG
