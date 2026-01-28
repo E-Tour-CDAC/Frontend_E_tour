@@ -12,7 +12,7 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -25,7 +25,7 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
       window.location.href = '/login';
     }
     return Promise.reject(error);
@@ -37,10 +37,10 @@ export const tourAPI = {
   getTours: () => api.get('http://localhost:8080/api/tours'),
   getTour: (id) => api.get(`http://localhost:8080/api/tours/${id}`),
   getTourDetails: (catId) => api.get(`http://localhost:8080/api/tours/details/${catId}`),
-  
+
 
   // Keep this for filters, though it's same as getTours now
-  // getCategories: () => api.get('/categories/home'),
+  // getCategories: () => api.get('/categories/home')
 
   // Stubbing missing endpoints to prevent crashes
   createCategory: (data) => Promise.resolve({ data: {} }),
@@ -57,7 +57,7 @@ export const tourAPI = {
 };
 
 export const bookingAPI = {
-  
+
   getTourId: (categoryId, departureId) => api.get(`http://localhost:8080/api/tours/tour-id?categoryId=${categoryId}&departureId=${departureId}`),
   createBooking: (data) => api.post('http://localhost:8080/api/bookings', data),
   getBooking: (id) => api.get(`http://localhost:8080/api/bookings/${id}`),
@@ -77,7 +77,7 @@ export const customerAPI = {
   register: (data) => api.post('http://localhost:8080/auth/register', data),
   login: (credentials) => api.post('http://localhost:8080/auth/login', credentials),
   getProfile: () => api.get('http://localhost:8080/api/customer/id'),
-  updateProfile: (data) => api.put('http://localhost:8080/api/customer/profile', data),
+  updateProfile: (data) => api.put('http://localhost:8080/api/customer/id', data),
   changePassword: (data) => api.post('/api/customer/change-password', data),
 };
 
