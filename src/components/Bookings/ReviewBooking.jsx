@@ -12,6 +12,9 @@ const ReviewBooking = () => {
     setBooking,
     setStep,
   } = useBooking();
+  
+  const [isVerifying, setIsVerifying] = React.useState(false);
+  const [verificationStatus, setVerificationStatus] = React.useState('');
 
   const handleConfirmBooking = async () => {
     try {
@@ -34,20 +37,166 @@ const ReviewBooking = () => {
 
       console.log('📦 BookingHeader payload:', bookingPayload);
 
+
+      // 2. Create Booking
       const res = await bookingAPI.createBooking(bookingPayload);
+      console.log('✅ Booking Created Response:', res.data);
+      
+      const bookingId = res.data.bookingId || res.data.id;
+
+      if (!bookingId) {
+          console.error('❌ Booking ID missing in response!', res.data);
+          alert('Error: Booking ID not received from server.');
+          return;
+      }
       setBooking(res.data);
-      setStep(4);
+
+      // 3. Create Razorpay Order
+      console.log('💳 Creating payment order for Booking ID:', bookingId);
+      const orderRes = await bookingAPI.createOrder({ bookingId: bookingId });
+      const orderData = orderRes.data;
+
+      console.log('✅ Order created:', orderData);
+      setIsVerifying(true);
+      setVerificationStatus('Opening Payment Gateway...');
+
+      // 4. Initialize Razorpay
+      const options = {
+        key: 'rzp_test_S6YRDydnTqv8Mc', // Test Key
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: 'E-TOUR',
+        description: 'Tour Booking Payment',
+        order_id: orderData.orderId,
+        handler: async function (response) {
+          try {
+            console.log('✅ Payment Successful Callback:', response);
+            setVerificationStatus('Payment captured. Verifying with server...');
+
+            // 5. Verify Payment in Backend
+            // Params: orderId, paymentId, amount
+            await bookingAPI.verifyPayment({
+               orderId: response.razorpay_order_id,
+               paymentId: response.razorpay_payment_id,
+               amount: orderData.amount 
+            });
+
+            setVerificationStatus('Payment verified. Updating booking status...');
+            
+            // 6. Poll for Status Update
+            let attempts = 0;
+            const maxAttempts = 15; // Increased for better UX
+            let statusConfirmed = false;
+
+            while (attempts < maxAttempts) {
+               try {
+                 const statusRes = await bookingAPI.getPaymentStatus(bookingId);
+                 const statusId = statusRes.data; 
+                 
+                 console.log(`Polling status... Attempt ${attempts + 1}:`, statusId);
+
+                 // 2 is PAID / CONFIRMED
+                 if (statusId === 2) { 
+                     statusConfirmed = true;
+                     break;
+                 }
+                 
+                 // 3 is FAILED
+                 if (statusId === 3) {
+                     setIsVerifying(false);
+                     alert('🚨 PAYMENT FAILED: The transaction was declined by the bank. Please try again or use a different card.');
+                     return;
+                 }
+                 
+                 setVerificationStatus(`Confirming status with bank... (Attempt ${attempts + 1}/${maxAttempts})`);
+
+               } catch (pollError) {
+                 console.error('Error polling status:', pollError);
+               }
+               
+               await new Promise(r => setTimeout(r, 2000));
+               attempts++;
+            }
+
+            setIsVerifying(false);
+
+            if (statusConfirmed) {
+                alert('✅ Payment Verified! Your booking is now confirmed. 🎉');
+                setStep(5); // Go to Confirmation Step
+            } else {
+                alert('⚠️ Verification Delay: Payment capture was successful, but the database update is taking longer than usual. Please check "My Bookings" in a moment.');
+                setStep(5); // Still proceed since payment captured successfully earlier
+            }
+
+          } catch (verifyError) {
+             console.error('Payment Verification Failed:', verifyError);
+             setIsVerifying(false);
+             alert('❌ Payment capture failed. If money was debited, it will be refunded automatically. Please contact support.');
+          }
+        },
+        modal: {
+          ondismiss: function() {
+            console.log('❌ Razorpay Modal Dismissed by User');
+            setIsVerifying(false);
+          }
+        },
+        prefill: {
+           name: 'Customer Name',
+           email: 'customer@example.com',
+           contact: '9999999999'
+        },
+        theme: {
+          color: '#3399cc',
+        },
+      };
+
+      const rzp1 = new window.Razorpay(options);
+      rzp1.on('payment.failed', function (response){
+        console.error('❌ Payment Failed Event:', response.error);
+        alert("Payment Failed: " + response.error.description);
+        setIsVerifying(false);
+      });
+      
+      rzp1.open();
 
     } catch (err) {
       console.error(err);
-      alert('Failed to create booking');
+      alert('Failed to initiate payment flow. Please try again.');
     }
   };
+
+  // Helper to load script
+  const loadRazorpay = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  // Load script on mount
+  React.useEffect(() => {
+    loadRazorpay();
+  }, []);
+
 
   const formatDate = (date) => new Date(date).toLocaleDateString();
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden relative">
+      
+      {/* Verification Overlay */}
+      {isVerifying && (
+        <div className="absolute inset-0 bg-white/90 backdrop-blur-sm z-50 flex flex-col items-center justify-center p-6 text-center">
+           <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+           <h3 className="text-xl font-bold text-gray-900 mb-2">Verifying Payment</h3>
+           <p className="text-gray-600">{verificationStatus}</p>
+           <p className="mt-4 text-xs text-gray-400">Please do not refresh or close this page.</p>
+        </div>
+      )}
+
       <div className="p-6 border-b border-gray-100 bg-gray-50">
         <h2 className="text-xl font-bold text-gray-900">Review & Confirm</h2>
         <p className="text-sm text-gray-500">Please review your booking details before proceeding.</p>

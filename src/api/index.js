@@ -71,6 +71,9 @@ export const bookingAPI = {
   removePassenger: (bookingId, passengerId) => Promise.resolve({ data: {} }),
 
   processPayment: (bookingId, data) => Promise.resolve({ data: {} }),
+  createOrder: (data) => api.post('http://localhost:8080/payment-gateway/create-order', data),
+  verifyPayment: (params) => api.post('http://localhost:8080/payment-gateway/confirm-payment', null, { params }),
+  getPaymentStatus: (bookingId) => api.get(`http://localhost:8080/api/bookings/status/${bookingId}`),
 };
 
 export const customerAPI = {
