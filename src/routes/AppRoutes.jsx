@@ -11,6 +11,7 @@ import BookingStart from "../pages/BookingStart";
 import CustomerProfile from "../pages/CustomerProfile";
 import CustomerBookings from "../pages/CustomerBookings";
 import AdminDashboard from "../pages/Admin/Dashboard";
+import HealthPage from "../pages/Health";
 
 const AppRoutes = () => {
   return (
@@ -29,6 +30,7 @@ const AppRoutes = () => {
       <Route path="/customer/profile" element={<CustomerProfile />} />
       <Route path="/customer/bookings" element={<CustomerBookings />} />
       <Route path="/admin/*" element={<AdminDashboard />} />
+      <Route path="/health" element={<HealthPage />} />
     </Routes>
   );
 };
