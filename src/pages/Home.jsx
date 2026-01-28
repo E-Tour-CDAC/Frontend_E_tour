@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { tourAPI } from '../api';
 
 const Home = () => {
@@ -19,6 +20,11 @@ const Home = () => {
   const [loadingTours, setLoadingTours] = useState(true);
   const [toursError, setToursError] = useState(null);
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
 
   useEffect(() => {
     fetchPopularTours();
@@ -34,7 +40,7 @@ const Home = () => {
       setToursError(null);
     } catch (error) {
       console.error('Error fetching tours:', error);
-      setToursError('Failed to load tours');
+      setToursError(t('popular.error'));
     } finally {
       setLoadingTours(false);
     }
@@ -68,12 +74,34 @@ const Home = () => {
 
         {/* Content */}
         <div className="container mx-auto px-4 z-10 relative mt-12">
+          {/* Language Switcher */}
+          <div className="absolute top-[-80px] right-4 flex gap-2">
+            <button
+              onClick={() => changeLanguage('en')}
+              className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${i18n.language === 'en' ? 'bg-sky-500 text-white' : 'bg-white/20 text-white hover:bg-white/30'}`}
+            >
+              EN
+            </button>
+            <button
+              onClick={() => changeLanguage('hi')}
+              className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${i18n.language === 'hi' ? 'bg-sky-500 text-white' : 'bg-white/20 text-white hover:bg-white/30'}`}
+            >
+              हिन्दी
+            </button>
+            <button
+              onClick={() => changeLanguage('es')}
+              className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${i18n.language === 'es' ? 'bg-sky-500 text-white' : 'bg-white/20 text-white hover:bg-white/30'}`}
+            >
+              ES
+            </button>
+          </div>
+
           <div className="text-center mb-10">
             <h1 className="text-4xl md:text-6xl font-extrabold mb-4 tracking-tight drop-shadow-md">
-              Make Your Trip <span className="text-sky-400">Memorable</span>
+              {t('hero.title1')} <span className="text-sky-400">{t('hero.title2')}</span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-200 drop-shadow">
-              Discover amazing places at exclusive deals
+              {t('hero.subtitle')}
             </p>
           </div>
 
@@ -86,14 +114,14 @@ const Home = () => {
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
                 </svg>
-                Tours
+                {t('search.tours')}
               </button>
             </div>
 
             <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
               <div className="text-left w-full group">
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 group-focus-within:text-sky-600">
-                  Location
+                  {t('search.location')}
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -102,7 +130,7 @@ const Home = () => {
                   <input
                     type="text"
                     name="location"
-                    placeholder="Where to?"
+                    placeholder={t('search.locationPlaceholder')}
                     value={searchParams.location}
                     onChange={handleInputChange}
                     className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition-all font-semibold text-gray-800"
@@ -112,7 +140,7 @@ const Home = () => {
 
               <div className="text-left w-full group">
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 group-focus-within:text-sky-600">
-                  Date
+                  {t('search.date')}
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -130,7 +158,7 @@ const Home = () => {
 
               <div className="text-left w-full group">
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 group-focus-within:text-sky-600">
-                  Budget
+                  {t('search.budget')}
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -139,7 +167,7 @@ const Home = () => {
                   <input
                     type="number"
                     name="price"
-                    placeholder="Max Price"
+                    placeholder={t('search.budgetPlaceholder')}
                     value={searchParams.price}
                     onChange={handleInputChange}
                     className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition-all font-semibold text-gray-800"
@@ -151,7 +179,7 @@ const Home = () => {
                 type="submit"
                 className="w-full py-3 h-[50px] bg-gradient-to-r from-sky-500 to-sky-700 text-white font-bold rounded-lg hover:from-sky-600 hover:to-sky-800 transition-all shadow-lg hover:shadow-sky-500/30 transform hover:-translate-y-0.5 uppercase tracking-wide"
               >
-                Search
+                {t('search.submit')}
               </button>
             </form>
           </div>
@@ -167,10 +195,10 @@ const Home = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Popular Tour Packages
+              {t('popular.title')}
             </h2>
             <p className="text-gray-600 text-lg">
-              Explore our most sought-after travel destinations
+              {t('popular.subtitle')}
             </p>
           </div>
 
@@ -185,12 +213,12 @@ const Home = () => {
                 onClick={fetchPopularTours}
                 className="btn-primary"
               >
-                Try Again
+                {t('popular.retry')}
               </button>
             </div>
           ) : tours.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-600">No tours available at the moment</p>
+              <p className="text-gray-600">{t('popular.noTours')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -223,16 +251,16 @@ const Home = () => {
                     </h3>
 
                     <p className="text-gray-600 text-sm leading-relaxed mb-5 line-clamp-2">
-                      {tour.categoryDescription || "Curated luxury experiences tailored for unforgettable journeys"}
+                      {tour.categoryDescription || t('popular.defaultDesc')}
                     </p>
 
                     <div className="flex items-center justify-between">
                       <span className="text-sky-700 font-semibold text-sm tracking-wide">
-                        View Experience →
+                        {t('popular.viewExperience')}
                       </span>
 
                       <span className="text-xs text-gray-400">
-                        {tour.departures?.length || 0} departures
+                        {tour.departures?.length || 0} {t('popular.departures')}
                       </span>
                     </div>
                   </div>
@@ -244,7 +272,7 @@ const Home = () => {
 
           <div className="text-center mt-8">
             <Link to="/tours" className="btn-primary">
-              View All Tours
+              {t('popular.viewAll')}
             </Link>
           </div>
         </div>
@@ -254,10 +282,10 @@ const Home = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Why Choose E-Tour?
+              {t('features.title')}
             </h2>
             <p className="text-gray-600 text-lg">
-              We make travel planning simple and enjoyable
+              {t('features.subtitle')}
             </p>
           </div>
 
@@ -269,10 +297,10 @@ const Home = () => {
                 </svg>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                Expert Guidance
+                {t('features.guidance.title')}
               </h3>
               <p className="text-gray-600">
-                Professional tour guides with extensive knowledge of destinations
+                {t('features.guidance.desc')}
               </p>
             </div>
 
@@ -283,10 +311,10 @@ const Home = () => {
                 </svg>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                Best Price Guarantee
+                {t('features.price.title')}
               </h3>
               <p className="text-gray-600">
-                Competitive prices with no hidden fees or surprises
+                {t('features.price.desc')}
               </p>
             </div>
 
@@ -297,10 +325,10 @@ const Home = () => {
                 </svg>
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                24/7 Support
+                {t('features.support.title')}
               </h3>
               <p className="text-gray-600">
-                Round-the-clock customer service for your peace of mind
+                {t('features.support.desc')}
               </p>
             </div>
           </div>
@@ -312,14 +340,14 @@ const Home = () => {
         <div className="container mx-auto px-4">
           <div className="bg-sky-700 rounded-lg p-8 text-center text-white">
             <h2 className="text-3xl font-bold mb-4">
-              Ready to Start Your Adventure?
+              {t('cta.title')}
             </h2>
             <p className="text-xl mb-8 text-sky-100">
-              Join thousands of satisfied travelers who have explored the world with us
+              {t('cta.subtitle')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/register" className="btn-primary bg-white text-sky-700 hover:bg-gray-100">
-                Sign Up Now
+                {t('cta.signup')}
               </Link>
             </div>
           </div>
