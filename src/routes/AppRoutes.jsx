@@ -3,7 +3,8 @@ import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import OAuth2Success from "../pages/OAuth2Success";
-
+import ForgotPassword from "../pages/ForgotPassword";
+import ResetPassword from "../pages/ResetPassword";
 import Tours from "../pages/Tours";
 import TourDetail from "../pages/TourDetail";
 import BookingStart from "../pages/BookingStart";
@@ -22,6 +23,8 @@ const AppRoutes = () => {
       <Route path="/booking/start/:tourId" element={<BookingStart />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/oauth2-success" element={<OAuth2Success />} />
       <Route path="/customer/profile" element={<CustomerProfile />} />
       <Route path="/customer/bookings" element={<CustomerBookings />} />

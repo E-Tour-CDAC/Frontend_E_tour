@@ -8,6 +8,7 @@ import PassengerForm from '../components/Forms/PassengerForm';
 import PaymentForm from '../components/Forms/PaymentForm';
 import ReviewBooking from '../components/Bookings/ReviewBooking';
 import { bookingAPI, customerAPI } from '../api';
+import { toast } from 'react-toastify';
 
 const BookingStart = () => {
   const location = useLocation();
@@ -89,7 +90,7 @@ const BookingStart = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-600"></div>
       </div>
     );
   }
@@ -113,7 +114,7 @@ const BookingStart = () => {
       </h1>
 
       <div className="overflow-x-auto pb-4">
-         <Stepper steps={steps} currentStep={currentStep} />
+        <Stepper steps={steps} currentStep={currentStep} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-4">
@@ -129,11 +130,11 @@ const BookingStart = () => {
                   Selected Tour
                 </h2>
 
-                <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 mb-6">
-                   <h3 className="font-bold text-blue-900 text-lg">
-                     {tour.categoryName}
-                   </h3>
-                   <p className="text-sm text-blue-700 mt-1">Great choice for your next adventure!</p>
+                <div className="bg-sky-50 p-4 rounded-lg border border-sky-100 mb-6">
+                  <h3 className="font-bold text-sky-900 text-lg">
+                    {tour.categoryName}
+                  </h3>
+                  <p className="text-sm text-sky-700 mt-1">Great choice for your next adventure!</p>
                 </div>
 
                 <button
@@ -159,10 +160,9 @@ const BookingStart = () => {
                     <label
                       key={dep.id}
                       className={`relative flex flex-col sm:flex-row sm:items-center border-2 rounded-xl p-4 cursor-pointer transition-all duration-200
-                        ${
-                          selectedDeparture?.id === dep.id
-                            ? 'border-teal-600 bg-teal-50 shadow-md transform scale-[1.01]'
-                            : 'border-gray-100 hover:border-teal-200 hover:bg-gray-50'
+                        ${selectedDeparture?.id === dep.id
+                          ? 'border-sky-600 bg-sky-50 shadow-md transform scale-[1.01]'
+                          : 'border-gray-100 hover:border-sky-200 hover:bg-gray-50'
                         }
                       `}
                     >
@@ -173,14 +173,13 @@ const BookingStart = () => {
                         checked={selectedDeparture?.id === dep.id}
                         onChange={() => setSelectedDeparture(dep)}
                       />
-                      
+
                       {/* Check Circle */}
-                      <div className={`flex-shrink-0 w-6 h-6 rounded-full border-2 mr-4 mb-2 sm:mb-0 flex items-center justify-center transition-colors ${
-                          selectedDeparture?.id === dep.id ? 'border-teal-600 bg-teal-600' : 'border-gray-300 bg-white'
-                      }`}>
-                         {selectedDeparture?.id === dep.id && (
-                           <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
-                         )}
+                      <div className={`flex-shrink-0 w-6 h-6 rounded-full border-2 mr-4 mb-2 sm:mb-0 flex items-center justify-center transition-colors ${selectedDeparture?.id === dep.id ? 'border-sky-600 bg-sky-600' : 'border-gray-300 bg-white'
+                        }`}>
+                        {selectedDeparture?.id === dep.id && (
+                          <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
+                        )}
                       </div>
 
                       <div className="flex-grow grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 w-full">
@@ -196,7 +195,7 @@ const BookingStart = () => {
                             {formatDate(dep.endDate)}
                           </p>
                         </div>
-                         <div>
+                        <div>
                           <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Duration</p>
                           <p className="font-medium text-gray-700">
                             {dep.noOfDays} Days
@@ -235,14 +234,13 @@ const BookingStart = () => {
                         setStep(2);
                       } catch (err) {
                         console.error(err);
-                        alert('Failed to fetch tour ID');
+                        toast.error('Failed to fetch tour ID');
                       }
                     }}
-                    className={`btn-primary w-full sm:w-auto px-8 py-3 text-lg shadow-lg ${
-                      !selectedDeparture
-                        ? 'opacity-50 cursor-not-allowed transform-none shadow-none'
-                        : ''
-                    }`}
+                    className={`btn-primary w-full sm:w-auto px-8 py-3 text-lg shadow-lg ${!selectedDeparture
+                      ? 'opacity-50 cursor-not-allowed transform-none shadow-none'
+                      : ''
+                      }`}
                   >
                     Continue
                   </button>
@@ -256,22 +254,22 @@ const BookingStart = () => {
           {currentStep === 4 && <PaymentForm />}
           {currentStep === 5 && (
             <Card>
-               <div className="p-12 text-center">
+              <div className="p-12 text-center">
                 <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                   <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                   </svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
                 </div>
                 <h2 className="text-3xl font-extrabold text-gray-900 mb-2">
                   Booking Confirmed!
                 </h2>
                 <p className="text-gray-500 max-w-md mx-auto">
-                   Your adventure awaits. We have sent a confirmation email with all the details.
+                  Your adventure awaits. We have sent a confirmation email with all the details.
                 </p>
                 <div className="mt-8">
-                   <Link to="/customer/bookings" className="btn-primary">
-                      View My Bookings
-                   </Link>
+                  <Link to="/customer/bookings" className="btn-primary">
+                    View My Bookings
+                  </Link>
                 </div>
               </div>
             </Card>
@@ -283,7 +281,7 @@ const BookingStart = () => {
         {currentStep !== 3 && (
           <div className="lg:col-span-1">
             <div className="lg:sticky lg:top-8">
-               <BookingSummary />
+              <BookingSummary />
             </div>
           </div>
         )}

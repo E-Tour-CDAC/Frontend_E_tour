@@ -133,7 +133,7 @@ const Register = () => {
             Or{' '}
             <Link
               to="/login"
-              className="font-medium text-blue-600 hover:text-blue-500"
+              className="font-medium text-sky-600 hover:text-sky-500"
             >
               sign in to your existing account
             </Link>
@@ -227,18 +227,18 @@ const Register = () => {
                 name="agree-terms"
                 type="checkbox"
                 required
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="h-4 w-4 text-sky-600 focus:ring-sky-500 border-gray-300 rounded"
               />
               <label
                 htmlFor="agree-terms"
                 className="ml-2 block text-sm text-gray-900"
               >
                 I agree to the{' '}
-                <a href="#" className="text-blue-600 hover:text-blue-500">
+                <a href="#" className="text-sky-600 hover:text-sky-500">
                   Terms of Service
                 </a>{' '}
                 and{' '}
-                <a href="#" className="text-blue-600 hover:text-blue-500">
+                <a href="#" className="text-sky-600 hover:text-sky-500">
                   Privacy Policy
                 </a>
               </label>
@@ -247,7 +247,7 @@ const Register = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center py-2 px-4 text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+              className="w-full flex justify-center py-2 px-4 text-sm font-medium rounded-md text-white bg-sky-600 hover:bg-sky-700 disabled:opacity-50"
             >
               {loading ? 'Creating account...' : 'Create Account'}
             </button>
@@ -267,7 +267,7 @@ const Register = () => {
               <button
                 type="button"
                 onClick={() => window.location.href = 'http://localhost:8080/oauth2/authorization/google'}
-                className="w-full flex items-center justify-center gap-3 py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="w-full flex items-center justify-center gap-3 py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path
