@@ -71,13 +71,16 @@ export const bookingAPI = {
   removePassenger: (bookingId, passengerId) => Promise.resolve({ data: {} }),
 
   processPayment: (bookingId, data) => Promise.resolve({ data: {} }),
+  createOrder: (data) => api.post('http://localhost:8080/payment-gateway/create-order', data),
+  verifyPayment: (params) => api.post('http://localhost:8080/payment-gateway/confirm-payment', null, { params }),
+  getPaymentStatus: (bookingId) => api.get(`http://localhost:8080/api/bookings/status/${bookingId}`),
 };
 
 export const customerAPI = {
   register: (data) => api.post('http://localhost:8080/auth/register', data),
   login: (credentials) => api.post('http://localhost:8080/auth/login', credentials),
   getProfile: () => api.get('http://localhost:8080/api/customer/id'),
-  updateProfile: (data) => api.put('http://localhost:8080/api/customer/id', data),
+  updateProfile: (data) => api.put('http://localhost:8080/api/customer/profile', data),
   changePassword: (data) => api.post('/api/customer/change-password', data),
 };
 

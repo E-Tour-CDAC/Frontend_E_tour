@@ -5,6 +5,7 @@ import TextInput from './TextInput';
 import DatePicker from './DatePicker';
 import RadioGroup from './RadioGroup';
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { toast } from 'react-toastify';
 
 const PassengerForm = () => {
   const { passengers, addPassenger, updatePassenger, removePassenger, setStep } = useBooking();
@@ -18,26 +19,26 @@ const PassengerForm = () => {
 
   const validatePassenger = (passenger) => {
     const newErrors = {};
-    
+
     if (!passenger.pax_name.trim()) {
       newErrors.pax_name = 'Name is required';
     }
-    
+
     if (!passenger.pax_birthdate) {
       newErrors.pax_birthdate = 'Birth date is required';
     }
-    
+
     if (!passenger.pax_type) {
       newErrors.pax_type = 'Passenger type is required';
     }
-    
+
     return newErrors;
   };
 
   const handlePassengerChange = (index, field, value) => {
     const updatedPassenger = { ...passengers[index], [field]: value };
     updatePassenger(index, updatedPassenger);
-    
+
     if (errors[index] && errors[index][field]) {
       const newErrors = { ...errors };
       delete newErrors[index][field];
@@ -80,7 +81,7 @@ const PassengerForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (validateAllPassengers()) {
       setStep(3);
     }

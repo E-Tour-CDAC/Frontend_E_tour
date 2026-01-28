@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Card from '../components/UI/Card';
 import Table from '../components/UI/Table';
-import { customerAPI,bookingAPI } from '../api';
+import { customerAPI, bookingAPI } from '../api';
+import { toast } from 'react-toastify';
 
 const CustomerBookings = () => {
   const { user } = useAuth();
@@ -19,12 +20,12 @@ const CustomerBookings = () => {
     try {
       setLoading(true);
       // 1. Get Customer Profile first to get the ID
-      const profileRes = await customerAPI.getProfile();
+      const profileRes = await customerAPI.getProfileId();
       const customerId = profileRes.data.id;
 
       if (!customerId) {
-         setError("Could not verify customer identity.");
-         return;
+        toast.error("Could not verify customer identity.");
+        return;
       }
 
       // 2. Fetch Bookings for this customer
@@ -117,8 +118,8 @@ const CustomerBookings = () => {
                 <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6">
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                       Booking #{booking.bookingId} 
-                       {/* Note: Tour Name is not provided in the list API */}
+                      Booking #{booking.bookingId}
+                      {/* Note: Tour Name is not provided in the list API */}
                     </h3>
                     <div className="flex items-center space-x-4 text-sm text-gray-600">
                       <span>Ref: {booking.bookingId}</span>
@@ -145,10 +146,10 @@ const CustomerBookings = () => {
                 </div>
 
                 {/* Removed Passenger Details and Departure Date as they are not in the provided JSON */}
-                
+
                 <div className="flex items-center justify-end mt-6 pt-4 border-t">
                   <div className="flex space-x-4">
-                     {/* 
+                    {/* 
                        Buttons preserved but logic requires more data than available.
                        They are strictly UI placeholders for now as per "simple" instruction.
                      */}

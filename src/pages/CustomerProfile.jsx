@@ -50,9 +50,10 @@ const CustomerProfile = () => {
       });
 
       // Check if profile is incomplete
-      if (!profileData.profileCompleted) {
-        setIsEditing(true);
-      }
+      // Only force edit on FIRST load, logic handled by initial state or manual click to avoid loops
+      // if (!profileData.profileCompleted) {
+      //   setIsEditing(true);
+      // }
     } catch (error) {
       console.error('Error fetching profile:', error);
     } finally {
@@ -186,12 +187,12 @@ const CustomerProfile = () => {
       <div className="max-w-2xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">My Profile</h1>
-          {!isEditing && profile.profileCompleted && (
+          {!isEditing && (
             <button
               onClick={() => setIsEditing(true)}
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
             >
-              Edit Profile
+              {profile.profileCompleted ? 'Edit Profile' : 'Complete Profile'}
             </button>
           )}
         </div>
