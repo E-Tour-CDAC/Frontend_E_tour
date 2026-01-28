@@ -93,4 +93,8 @@ export const searchAPI = {
   searchByDate: (fromDate, toDate) => api.get(`/api/search/date`, { params: { fromDate, toDate } }),
 };
 
+export const healthAPI = {
+  getHealth: () => api.get('http://localhost:8080/actuator/health'),
+};
+
 export default api;
