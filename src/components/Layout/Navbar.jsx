@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useTranslation } from 'react-i18next';
 
-import EarthLogo from '../../assets/images/EarthLogo.png';
+import VirtugoLogo from '../../assets/images/VirtugoLogo.png';
 
 const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
+  const { t } = useTranslation();
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-40">
@@ -14,13 +16,10 @@ const Navbar = () => {
           <div className="flex items-center">
             <Link to="/" className="flex items-center gap-3 group">
               <img
-                src={EarthLogo}
-                alt="E-Tour Logo"
-                className="h-10 w-auto transform transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110 drop-shadow-md"
+                src={VirtugoLogo}
+                alt="Virtugo Logo"
+                className="h-12 w-auto transform transition-transform duration-300 group-hover:scale-105 drop-shadow-md"
               />
-              <span className="text-2xl font-bold text-blue-600 tracking-wide group-hover:text-blue-700 transition-colors duration-300">
-                E-Tour
-              </span>
             </Link>
           </div>
 
