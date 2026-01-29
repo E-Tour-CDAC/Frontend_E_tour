@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <!-- Console appender -->
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>
-                %d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n
-            </pattern>
-        </encoder>
-    </appender>
+	<!-- Console appender -->
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>
+				%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
 
-    <!-- CONTROLLER -->
-    <logger name="com.example.controller" level="INFO"/>
+	<!-- CONTROLLER -->
+	<logger name="com.example.controller" level="INFO" />
 
-    <!-- SERVICE -->
-    <logger name="com.example.services" level="DEBUG"/>
+	<!-- SERVICE -->
+	<logger name="com.example.services" level="DEBUG" />
 
-    <!-- REPOSITORY -->
-    <logger name="com.example.repositories" level="WARN"/>
+	<!-- REPOSITORY -->
+	<logger name="com.example.repositories" level="WARN" />
 
-    <!-- PAYMENT GATEWAY / EXTERNAL -->
-    <logger name="com.example.services.impl.RazorpayServiceImpl" level="DEBUG"/>
+	<!-- PAYMENT GATEWAY / EXTERNAL -->
+	<logger name="com.example.services.impl.RazorpayServiceImpl" level="DEBUG" />
 
-    <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
-    </root>
+	<root level="INFO">
+		<appender-ref ref="CONSOLE" />
+	</root>
 
 </configuration>
