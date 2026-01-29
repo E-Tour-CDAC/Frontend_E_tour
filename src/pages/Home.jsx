@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { tourAPI } from '../api';
+import { useAuth } from '../context/AuthContext';
 
 const Home = () => {
   const categoryImages = [
@@ -21,6 +22,7 @@ const Home = () => {
   const [toursError, setToursError] = useState(null);
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
+  const { isAuthenticated } = useAuth();
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
@@ -336,23 +338,25 @@ const Home = () => {
       </section>
 
 
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="bg-sky-700 rounded-lg p-8 text-center text-white">
-            <h2 className="text-3xl font-bold mb-4">
-              {t('cta.title')}
-            </h2>
-            <p className="text-xl mb-8 text-sky-100">
-              {t('cta.subtitle')}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/register" className="btn-primary bg-white text-sky-700 hover:bg-gray-100">
-                {t('cta.signup')}
-              </Link>
+      {!isAuthenticated && (
+        <section className="py-16">
+          <div className="container mx-auto px-4">
+            <div className="bg-sky-700 rounded-lg p-8 text-center text-white">
+              <h2 className="text-3xl font-bold mb-4">
+                {t('cta.title')}
+              </h2>
+              <p className="text-xl mb-8 text-sky-100">
+                {t('cta.subtitle')}
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link to="/register" className="btn-primary bg-white text-sky-700 hover:bg-gray-100">
+                  {t('cta.signup')}
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 };
