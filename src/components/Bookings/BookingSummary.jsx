@@ -7,7 +7,8 @@ const BookingSummary = () => {
     selectedTour,
     selectedDeparture,
     passengers,
-    calculateTotal
+    calculateTotal,
+    roomSummary // [NEW]
   } = useBooking();
 
   const formatDate = (date) => {
@@ -87,9 +88,41 @@ const BookingSummary = () => {
               <div className="text-sm text-gray-600 space-y-1">
                 {passengers.map((passenger, index) => (
                   <p key={index}>
-                    {passenger.pax_name || `Passenger ${index + 1}`} – {passenger.pax_type}
+                    {passenger.pax_name || `Passenger ${index + 1}`} – {passenger.pax_type.replace(/_/g, ' ')}
                   </p>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* ROOM REQUIREMENTS */}
+          {roomSummary && (
+            <div>
+               <h4 className="font-medium text-gray-900 mb-2">
+                Room Requirements
+              </h4>
+              <div className="text-sm text-gray-600 space-y-1 bg-yellow-50 p-2 rounded border border-yellow-100">
+                 {roomSummary.doubleRoomCount > 0 && (
+                   <div className="flex justify-between">
+                     <span>Twin Sharing Rooms:</span>
+                     <span className="font-bold">{roomSummary.doubleRoomCount}</span>
+                   </div>
+                 )}
+                 {roomSummary.singleRoomCount > 0 && (
+                   <div className="flex justify-between">
+                     <span>Single Rooms:</span>
+                     <span className="font-bold">{roomSummary.singleRoomCount}</span>
+                   </div>
+                 )}
+                 {roomSummary.childBedCount > 0 && (
+                   <div className="flex justify-between">
+                     <span>Extra Beds (Child):</span>
+                     <span className="font-bold">{roomSummary.childBedCount}</span>
+                   </div>
+                 )}
+                 <p className="text-xs text-gray-500 mt-1 italic">
+                   *Max 2 adults per room
+                 </p>
               </div>
             </div>
           )}

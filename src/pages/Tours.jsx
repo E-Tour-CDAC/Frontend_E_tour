@@ -5,6 +5,8 @@ import Card from "../components/UI/Card";
 import { tourAPI, searchAPI } from "../api";
 
 
+
+
 const BACKEND_URL = 'http://localhost:8080';
 
 const getImageUrl = (path) => {

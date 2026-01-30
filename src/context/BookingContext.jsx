@@ -17,6 +17,9 @@ const bookingReducer = (state, action) => {
     case 'SET_PASSENGERS':
       return { ...state, passengers: action.payload, currentStep: 3 };
 
+    case 'SET_ROOM_SUMMARY':
+      return { ...state, roomSummary: action.payload };
+
     case 'ADD_PASSENGER':
       return { ...state, passengers: [...state.passengers, action.payload] };
 
@@ -62,6 +65,7 @@ const initialState = {
   selectedTour: null,
   selectedDeparture: null,
   passengers: [],
+  roomSummary: null, // ✅ ADDED
   payment: null,
   booking: null,
   currentStep: 0,
@@ -86,6 +90,10 @@ export const BookingProvider = ({ children }) => {
 
   const setPassengers = (passengers) => {
     dispatch({ type: 'SET_PASSENGERS', payload: passengers });
+  };
+
+  const setRoomSummary = (summary) => {
+    dispatch({ type: 'SET_ROOM_SUMMARY', payload: summary });
   };
 
   const addPassenger = (passenger) => {
@@ -159,6 +167,7 @@ export const BookingProvider = ({ children }) => {
         setTour,
         setDeparture,
         setPassengers,
+        setRoomSummary, // ✅ ADDED
         addPassenger,
         updatePassenger,
         removePassenger,
