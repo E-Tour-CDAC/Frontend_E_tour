@@ -15,6 +15,7 @@ const CustomerBookings = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [loadingInvoice, setLoadingInvoice] = useState({}); // Tracking loading state per booking ID
+  const [loadingEmail, setLoadingEmail] = useState({});
 
   useEffect(() => {
     fetchBookings();
@@ -92,6 +93,21 @@ const CustomerBookings = () => {
       toast.error("Failed to download invoice");
     } finally {
       setLoadingInvoice(prev => ({ ...prev, [bookingId]: false }));
+    }
+  };
+
+  const handleSendEmail = async (bookingId, paymentId) => {
+    try {
+      setLoadingEmail(prev => ({ ...prev, [bookingId]: true }));
+      // Use paymentId if available, fallback to bookingId
+      const idToSend = paymentId || bookingId;
+      await bookingAPI.sendInvoiceEmail(idToSend);
+      toast.success("Invoice email sent successfully!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to send email. Check if payment is successful.");
+    } finally {
+      setLoadingEmail(prev => ({ ...prev, [bookingId]: false }));
     }
   };
 
@@ -223,6 +239,20 @@ const CustomerBookings = () => {
                         </svg>
                       )}
                       Invoice
+                    </button>
+                    <button
+                      onClick={() => handleSendEmail(booking.bookingId, booking.paymentId)}
+                      disabled={loadingEmail[booking.bookingId]}
+                      className="inline-flex items-center px-4 py-2 bg-sky-100 text-sky-700 hover:bg-sky-200 font-bold text-xs rounded-xl transition-all disabled:opacity-50"
+                    >
+                      {loadingEmail[booking.bookingId] ? (
+                        <div className="w-4 h-4 border-2 border-sky-400 border-t-transparent rounded-full animate-spin mr-2"></div>
+                      ) : (
+                        <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                      )}
+                      Send Mail
                     </button>
                     <button
                       onClick={() => handleViewDetails(booking.bookingId)}
@@ -364,6 +394,20 @@ const CustomerBookings = () => {
                   </svg>
                 )}
                 Download Invoice
+              </button>
+              <button
+                onClick={() => handleSendEmail(selectedBooking?.bookingId, selectedBooking?.paymentId)}
+                disabled={loadingEmail[selectedBooking?.bookingId]}
+                className="px-6 py-2 bg-sky-100 text-sky-700 font-bold rounded-xl hover:bg-sky-200 transition-all transform hover:scale-[1.02] active:scale-95 flex items-center gap-2"
+              >
+                {loadingEmail[selectedBooking?.bookingId] ? (
+                  <div className="w-4 h-4 border-2 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                )}
+                Send Mail
               </button>
               <button
                 onClick={closeModal}
