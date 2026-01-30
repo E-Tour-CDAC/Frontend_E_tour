@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { customerAPI } from '../api';
 import Card from '../components/UI/Card';
 import TextInput from '../components/Forms/TextInput';
 
@@ -47,9 +48,31 @@ const Login = () => {
       return;
     }
 
+    console.log('Attempting login...');
     const result = await login(formData);
+    console.log('Login result:', result);
+    
     if (result.success) {
-      navigate('/tours');
+      console.log('Login successful, fetching profile...');
+      // Fetch profile to get the customer role for redirection
+      try {
+        const profileResponse = await customerAPI.getProfile();
+        const profile = profileResponse.data;
+        console.log('Profile data:', profile);
+        
+        if (profile.customerRole === 'ADMIN') {
+          console.log('Admin detected, navigating to /admin');
+          navigate('/admin');
+        } else {
+          console.log('Customer detected, navigating to /tours');
+          navigate('/tours');
+        }
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+        navigate('/tours');
+      }
+    } else {
+      console.log('Login failed:', result.error);
     }
   };
 
