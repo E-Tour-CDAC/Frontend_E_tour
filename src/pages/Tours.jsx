@@ -200,6 +200,17 @@ import { Link, useParams, useLocation } from "react-router-dom";
 import Card from "../components/UI/Card";
 import { tourAPI, searchAPI } from "../api";
 
+const BACKEND_URL = 'http://localhost:8080';
+
+const getImageUrl = (path) => {
+  if (!path) return null;
+  const sanitizedPath = path.replace(/^"+|"+$/g, '');
+  if (sanitizedPath.startsWith('http')) return sanitizedPath;
+  const cleanPath = sanitizedPath.startsWith('/') ? sanitizedPath : `/${sanitizedPath}`;
+  console.log(`${BACKEND_URL}${cleanPath}`);
+  return `${BACKEND_URL}${cleanPath}`;
+};
+
 const Tours = () => {
   const { id } = useParams();
   const location = useLocation();
@@ -379,7 +390,7 @@ const Tours = () => {
               <div className="relative">
                 {tour.image_url ? (
                   <img
-                    src={tour.image_url}
+                    src={getImageUrl(tour.image_url)}
                     alt={tour.tour_name}
                     className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
                   />
