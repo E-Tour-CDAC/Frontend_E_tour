@@ -39,17 +39,6 @@ export const tourAPI = {
   getTourDetails: (catId) => api.get(`http://localhost:8080/api/tours/details/${catId}`),
 
 
-  // Keep this for filters, though it's same as getTours now
-  // getCategories: () => api.get('/categories/home'),
-
-  // Stubbing missing endpoints to prevent crashes
-  createCategory: (data) => Promise.resolve({ data: {} }),
-  updateCategory: (id, data) => Promise.resolve({ data: {} }),
-  deleteCategory: (id) => Promise.resolve({ data: {} }),
-  createTour: (data) => Promise.resolve({ data: {} }),
-  updateTour: (id, data) => Promise.resolve({ data: {} }),
-  deleteTour: (id) => Promise.resolve({ data: {} }),
-
   getDepartures: (tourId) => Promise.resolve({ data: [] }),
   getItinerary: (tourId) => Promise.resolve({ data: [] }),
   getPricing: (tourId) => Promise.resolve({ data: [] }),
