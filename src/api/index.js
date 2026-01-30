@@ -76,7 +76,7 @@ export const bookingAPI = {
   verifyPayment: (params) => api.post('http://localhost:8080/payment-gateway/confirm-payment', null, { params }),
   getPaymentStatus: (bookingId) => api.get(`http://localhost:8080/api/bookings/status/${bookingId}`),
   getPassengersByBooking: (bookingId) => api.get(`http://localhost:8080/api/passengers/booking/${bookingId}`),
-  downloadInvoice: (bookingId) => api.get(`http://localhost:8080/api/bookings/download-invoice/${bookingId}`, { responseType: 'blob' }),
+  downloadInvoice: (bookingId) => api.get(`http://localhost:8080/api/invoices/${bookingId}/download`, { responseType: 'blob' }),
 };
 
 export const customerAPI = {
