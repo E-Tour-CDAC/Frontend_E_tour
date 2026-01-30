@@ -3,23 +3,6 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
 import Card from "../components/UI/Card";
 import { tourAPI, searchAPI } from "../api";
-const BACKEND_URL = "http://localhost:8080";
-
-const getImageUrl = (path) => {
-  if (!path) return null;
-
-  const sanitizedPath = path
-    .replace(/^"+|"+$/g, "")
-    .trim(); // 🔥 IMPORTANT FIX
-
-  if (sanitizedPath.startsWith("http")) return sanitizedPath;
-
-  const cleanPath = sanitizedPath.startsWith("/")
-    ? sanitizedPath
-    : `/${sanitizedPath}`;
-
-  return `${BACKEND_URL}${cleanPath}`;
-};
 
 
 const BACKEND_URL = 'http://localhost:8080';
