@@ -8,7 +8,7 @@ import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { toast } from 'react-toastify';
 
 const PassengerForm = () => {
-  const { passengers, addPassenger, updatePassenger, removePassenger, setStep } = useBooking();
+  const { passengers, addPassenger, updatePassenger, removePassenger, setStep, selectedDeparture: departure } = useBooking();
   const [errors, setErrors] = useState({});
 
   const passengerTypes = [
@@ -16,6 +16,19 @@ const PassengerForm = () => {
     { value: 'child_with_bed', label: 'Child (with bed)' },
     { value: 'child_without_bed', label: 'Child (without bed)' },
   ];
+
+  // [NEW] Helper to calculate age
+  const calculateAge = (dob, departureDate) => {
+    if (!dob || !departureDate) return 0;
+    const birthDate = new Date(dob);
+    const depDate = new Date(departureDate);
+    let age = depDate.getFullYear() - birthDate.getFullYear();
+    const m = depDate.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && depDate.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
 
   const validatePassenger = (passenger) => {
     const newErrors = {};
@@ -36,7 +49,19 @@ const PassengerForm = () => {
   };
 
   const handlePassengerChange = (index, field, value) => {
-    const updatedPassenger = { ...passengers[index], [field]: value };
+    // [NEW] Auto-Calculate Type Logic
+    let updatedPassenger = { ...passengers[index], [field]: value };
+
+    if (field === 'pax_birthdate' && departure?.departDate) {
+       const age = calculateAge(value, departure.departDate);
+       let type = 'adult';
+       
+       if (age < 1) type = 'infant';
+       else if (age <= 12) type = 'child_with_bed'; 
+       
+       updatedPassenger.pax_type = type;
+    }
+
     updatePassenger(index, updatedPassenger);
 
     if (errors[index] && errors[index][field]) {
@@ -51,7 +76,8 @@ const PassengerForm = () => {
       pax_name: '',
       pax_birthdate: '',
       pax_type: 'adult',
-      is_extra: passengers.length > 0
+      is_extra: passengers.length > 0,
+      isSingleRoom: false // [NEW] Default to sharing
     };
     addPassenger(newPassenger);
   };
@@ -126,6 +152,8 @@ const PassengerForm = () => {
                   required
                 />
 
+                {/* Gender Removed as per user request */}
+
                 <DatePicker
                   label="Birth Date"
                   name={`pax_birthdate_${index}`}
@@ -136,14 +164,54 @@ const PassengerForm = () => {
                 />
               </div>
 
-              <RadioGroup
-                label="Passenger Type"
-                name={`pax_type_${index}`}
-                options={passengerTypes}
-                value={passenger.pax_type}
-                onChange={(e) => handlePassengerChange(index, 'pax_type', e.target.value)}
-                error={errors[index]?.pax_type}
-              />
+                {/* [NEW] Type Display & Bed Option */}
+                <div className="bg-gray-50 p-3 rounded-md border border-gray-200">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <span className="text-xs text-gray-500 uppercase font-bold tracking-wider">Type</span>
+                      <p className="font-medium text-gray-800 capitalize">
+                         {passenger.pax_type.replace(/_/g, ' ')}
+                      </p>
+                    </div>
+
+                    {/* Show 'Extra Bed' Toggle ONLY for Children (1-12) */}
+                    {(passenger.pax_type === 'child_with_bed' || passenger.pax_type === 'child_without_bed') && (
+                      <div className="flex items-center">
+                        <input
+                          id={`bed-${index}`}
+                          type="checkbox"
+                          checked={passenger.pax_type === 'child_with_bed'}
+                          onChange={(e) => {
+                            const newType = e.target.checked ? 'child_with_bed' : 'child_without_bed';
+                            handlePassengerChange(index, 'pax_type', newType);
+                          }}
+                          className="h-4 w-4 text-sky-600 focus:ring-sky-500 border-gray-300 rounded"
+                        />
+                        <label htmlFor={`bed-${index}`} className="ml-2 block text-sm text-gray-900 cursor-pointer">
+                          Need Extra Bed?
+                        </label>
+                      </div>
+                    )}
+
+                    {/* [NEW] 'Separate Room' Toggle for Adults (Only for Co-Passengers) */}
+                    {passenger.pax_type === 'adult' && index > 0 && (
+                      <div className="flex items-center">
+                        <input
+                          id={`room-${index}`}
+                          type="checkbox"
+                          checked={passenger.isSingleRoom || false}
+                          onChange={(e) => {
+                            handlePassengerChange(index, 'isSingleRoom', e.target.checked);
+                          }}
+                          className="h-4 w-4 text-sky-600 focus:ring-sky-500 border-gray-300 rounded"
+                        />
+                        <label htmlFor={`room-${index}`} className="ml-2 block text-sm text-gray-900 cursor-pointer">
+                          Separate Room?
+                        </label>
+                      </div>
+                    )}
+                  </div>
+                </div>
             </div>
           ))}
 
