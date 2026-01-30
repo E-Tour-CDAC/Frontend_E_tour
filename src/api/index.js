@@ -80,7 +80,7 @@ export const bookingAPI = {
 };
 
 export const customerAPI = {
-  register: (data) => api.post('http://localhost:8080/auth/register', data),
+  register: (data) => api.post('http://localhost:8080/client/register', data),
   login: (credentials) => api.post('http://localhost:8080/auth/login', credentials),
   getProfile: () => api.get('http://localhost:8080/api/customer/profile'),
   getProfileId: () => api.get('http://localhost:8080/api/customer/id'),
