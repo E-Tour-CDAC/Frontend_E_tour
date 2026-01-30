@@ -54,6 +54,9 @@ const OAuth2Success = () => {
                         if (!profile.profileCompleted) {
                             console.log('Profile incomplete, redirecting to profile page');
                             navigate('/customer/profile', { replace: true });
+                        } else if (profile.customerRole === 'ADMIN') {
+                            console.log('Admin user, redirecting to admin dashboard');
+                            navigate('/admin', { replace: true });
                         } else {
                             console.log('Profile complete, redirecting to tours');
                             navigate('/tours', { replace: true });

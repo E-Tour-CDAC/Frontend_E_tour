@@ -17,6 +17,18 @@ const getImageUrl = (path) => {
   return `${BACKEND_URL}${cleanPath}`;
 };
 
+
+const BACKEND_URL = 'http://localhost:8080';
+
+const getImageUrl = (path) => {
+  if (!path) return null;
+  const sanitizedPath = path.replace(/^"+|"+$/g, '');
+  if (sanitizedPath.startsWith('http')) return sanitizedPath;
+  const cleanPath = sanitizedPath.startsWith('/') ? sanitizedPath : `/${sanitizedPath}`;
+  console.log(`${BACKEND_URL}${cleanPath}`);
+  return `${BACKEND_URL}${cleanPath}`;
+};
+
 const Tours = () => {
   const { id } = useParams();
   const location = useLocation();
