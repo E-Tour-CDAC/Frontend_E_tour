@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTranslation } from 'react-i18next';
 
@@ -8,6 +8,16 @@ import VirtugoLogo from '../../assets/images/VirtugoLogo.png';
 const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const handleLogout = () => {
+    logout();
+    setIsMenuOpen(false);
+    navigate('/');
+  };
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-40">
@@ -42,14 +52,14 @@ const Navbar = () => {
             )}
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-4">
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
                 <span className="text-gray-700">
                   Welcome, {user?.first_name || user?.email}
                 </span>
                 <button
-                  onClick={logout}
+                  onClick={handleLogout}
                   className="btn-secondary text-sm"
                 >
                   Logout
@@ -68,13 +78,86 @@ const Navbar = () => {
           </div>
 
           <div className="md:hidden">
-            <button className="text-gray-700 hover:text-blue-600">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+            <button
+              onClick={toggleMenu}
+              className="text-gray-700 hover:text-blue-600 focus:outline-none"
+            >
+              {isMenuOpen ? (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
             </button>
           </div>
         </div>
+
+        {/* Mobile Menu Dropdown */}
+        {isMenuOpen && (
+          <div className="md:hidden bg-white border-t border-gray-100 py-4 pb-6 space-y-4 px-4 shadow-lg">
+            <Link
+              to="/"
+              onClick={() => setIsMenuOpen(false)}
+              className="block text-gray-700 hover:text-blue-600 font-medium"
+            >
+              Home
+            </Link>
+            <Link
+              to="/tours"
+              onClick={() => setIsMenuOpen(false)}
+              className="block text-gray-700 hover:text-blue-600 font-medium"
+            >
+              Tours
+            </Link>
+            {isAuthenticated ? (
+              <>
+                <Link
+                  to="/customer/bookings"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block text-gray-700 hover:text-blue-600 font-medium"
+                >
+                  My Bookings
+                </Link>
+                <Link
+                  to="/customer/profile"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block text-gray-700 hover:text-blue-600 font-medium"
+                >
+                  Profile
+                </Link>
+                <div className="pt-4 border-t border-gray-100">
+                  <p className="text-sm text-gray-500 mb-2">Welcome, {user?.first_name || user?.email}</p>
+                  <button
+                    onClick={handleLogout}
+                    className="btn-secondary w-full text-center"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="pt-4 border-t border-gray-100 space-y-3">
+                <Link
+                  to="/login"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block text-blue-600 font-medium text-center py-2"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="btn-primary block text-center"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </nav>
   );

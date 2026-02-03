@@ -39,17 +39,6 @@ export const tourAPI = {
   getTourDetails: (catId) => api.get(`http://localhost:8080/api/tours/details/${catId}`),
 
 
-  // Keep this for filters, though it's same as getTours now
-  // getCategories: () => api.get('/categories/home'),
-
-  // Stubbing missing endpoints to prevent crashes
-  createCategory: (data) => Promise.resolve({ data: {} }),
-  updateCategory: (id, data) => Promise.resolve({ data: {} }),
-  deleteCategory: (id) => Promise.resolve({ data: {} }),
-  createTour: (data) => Promise.resolve({ data: {} }),
-  updateTour: (id, data) => Promise.resolve({ data: {} }),
-  deleteTour: (id) => Promise.resolve({ data: {} }),
-
   getDepartures: (tourId) => Promise.resolve({ data: [] }),
   getItinerary: (tourId) => Promise.resolve({ data: [] }),
   getPricing: (tourId) => Promise.resolve({ data: [] }),
@@ -77,10 +66,11 @@ export const bookingAPI = {
   getPaymentStatus: (bookingId) => api.get(`http://localhost:8080/api/bookings/status/${bookingId}`),
   getPassengersByBooking: (bookingId) => api.get(`http://localhost:8080/api/passengers/booking/${bookingId}`),
   downloadInvoice: (bookingId) => api.get(`http://localhost:8080/api/invoices/${bookingId}/download`, { responseType: 'blob' }),
+  sendInvoiceEmail: (paymentId) => api.post(`http://localhost:8080/api/email/invoice?paymentId=${paymentId}`),
 };
 
 export const customerAPI = {
-  register: (data) => api.post('http://localhost:8080/auth/register', data),
+  register: (data) => api.post('http://localhost:8080/client/register', data),
   login: (credentials) => api.post('http://localhost:8080/auth/login', credentials),
   getProfile: () => api.get('http://localhost:8080/api/customer/profile'),
   getProfileId: () => api.get('http://localhost:8080/api/customer/id'),

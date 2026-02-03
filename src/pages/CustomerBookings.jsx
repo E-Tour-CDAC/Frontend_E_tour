@@ -15,6 +15,7 @@ const CustomerBookings = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [loadingInvoice, setLoadingInvoice] = useState({}); // Tracking loading state per booking ID
+  const [loadingEmail, setLoadingEmail] = useState({});
 
   useEffect(() => {
     fetchBookings();
@@ -95,6 +96,21 @@ const CustomerBookings = () => {
     }
   };
 
+  const handleSendEmail = async (bookingId, paymentId) => {
+    try {
+      setLoadingEmail(prev => ({ ...prev, [bookingId]: true }));
+      // Use paymentId if available, fallback to bookingId
+      const idToSend = paymentId || bookingId;
+      await bookingAPI.sendInvoiceEmail(idToSend);
+      toast.success("Invoice email sent successfully!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to send email. Check if payment is successful.");
+    } finally {
+      setLoadingEmail(prev => ({ ...prev, [bookingId]: false }));
+    }
+  };
+
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedBooking(null);
@@ -123,8 +139,6 @@ const CustomerBookings = () => {
       day: 'numeric'
     });
   };
-
-  // ... (keep auth check and loading states same as before if needed, or I'll just rewrite the render)
 
   if (loading) {
     return (
@@ -180,7 +194,6 @@ const CustomerBookings = () => {
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">
                       Booking #{booking.bookingId}
-                      {/* Note: Tour Name is not provided in the list API */}
                     </h3>
                     <div className="flex items-center space-x-4 text-sm text-gray-600">
                       <span>Ref: {booking.bookingId}</span>
@@ -206,8 +219,6 @@ const CustomerBookings = () => {
                   </div>
                 </div>
 
-                {/* Removed Passenger Details and Departure Date as they are not in the provided JSON */}
-
                 <div className="flex items-center justify-end mt-6 pt-4 border-t">
                   <div className="flex space-x-3">
                     <button
@@ -223,6 +234,20 @@ const CustomerBookings = () => {
                         </svg>
                       )}
                       Invoice
+                    </button>
+                    <button
+                      onClick={() => handleSendEmail(booking.bookingId, booking.paymentId)}
+                      disabled={loadingEmail[booking.bookingId]}
+                      className="inline-flex items-center px-4 py-2 bg-sky-100 text-sky-700 hover:bg-sky-200 font-bold text-xs rounded-xl transition-all disabled:opacity-50"
+                    >
+                      {loadingEmail[booking.bookingId] ? (
+                        <div className="w-4 h-4 border-2 border-sky-400 border-t-transparent rounded-full animate-spin mr-2"></div>
+                      ) : (
+                        <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                      )}
+                      Send Mail
                     </button>
                     <button
                       onClick={() => handleViewDetails(booking.bookingId)}
@@ -328,6 +353,32 @@ const CustomerBookings = () => {
                     </div>
                   </div>
 
+                  {/* Tour Guide Information */}
+                  {selectedBooking.guides && selectedBooking.guides.length > 0 && (
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <svg className="w-5 h-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        Tour Guide Information
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {selectedBooking.guides.map((guide, idx) => (
+                          <div key={idx} className="p-4 bg-amber-50 rounded-xl border border-amber-100 flex items-center gap-4">
+                            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-amber-600 font-bold border border-amber-200">
+                              {guide.name?.charAt(0).toUpperCase()}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-sm font-bold text-gray-900 truncate">{guide.name}</p>
+                              <p className="text-xs text-gray-500 truncate">{guide.email}</p>
+                              <p className="text-xs text-gray-500">{guide.phone}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Additional Info */}
                   <div className="p-4 bg-amber-50 rounded-xl border border-amber-100">
                     <div className="flex items-start gap-3">
@@ -364,6 +415,20 @@ const CustomerBookings = () => {
                   </svg>
                 )}
                 Download Invoice
+              </button>
+              <button
+                onClick={() => handleSendEmail(selectedBooking?.bookingId, selectedBooking?.paymentId)}
+                disabled={loadingEmail[selectedBooking?.bookingId]}
+                className="px-6 py-2 bg-sky-100 text-sky-700 font-bold rounded-xl hover:bg-sky-200 transition-all transform hover:scale-[1.02] active:scale-95 flex items-center gap-2"
+              >
+                {loadingEmail[selectedBooking?.bookingId] ? (
+                  <div className="w-4 h-4 border-2 border-sky-600 border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                )}
+                Send Mail
               </button>
               <button
                 onClick={closeModal}
