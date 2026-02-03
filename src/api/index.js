@@ -34,9 +34,9 @@ api.interceptors.response.use(
 
 export const tourAPI = {
   // Mapping 'Tours' to 'Categories' as per available backend
-  getTours: () => api.get('http://localhost:8080/api/tours'),
-  getTour: (id) => api.get(`http://localhost:8080/api/tours/${id}`),
-  getTourDetails: (catId) => api.get(`http://localhost:8080/api/tours/details/${catId}`),
+  getTours: () => api.get('https://localhost:7213/api/tours'),
+  getTour: (id) => api.get(`https://localhost:7213/api/tours/${id}`),
+  getTourDetails: (catId) => api.get(`https://localhost:7213/api/tours/details/${catId}`),
 
 
   getDepartures: (tourId) => Promise.resolve({ data: [] }),
@@ -52,15 +52,12 @@ export const bookingAPI = {
   getBooking: (id) => api.get(`http://localhost:8080/api/bookings/${id}`),
   getBookings: () => api.get('http://localhost:8080/api/bookings/'),
   getBookingsByCustomer: (customerId) => api.get(`http://localhost:8080/api/bookings/customer/${customerId}`),
-  updateBooking: (id, data) => Promise.resolve({ data: {} }),
-  cancelBooking: (id) => Promise.resolve({ data: {} }),
+
 
   getInvoice: (bookingId) => api.get(`http://localhost:8080/api/bookings/invoice/${bookingId}`),
   addPassenger: (data) => api.post('http://localhost:8080/api/passengers/add', data),
-  updatePassenger: (bookingId, passengerId, data) => Promise.resolve({ data: {} }),
-  removePassenger: (bookingId, passengerId) => Promise.resolve({ data: {} }),
 
-  processPayment: (bookingId, data) => Promise.resolve({ data: {} }),
+
   createOrder: (data) => api.post('http://localhost:8080/payment-gateway/create-order', data),
   verifyPayment: (params) => api.post('http://localhost:8080/payment-gateway/confirm-payment', null, { params }),
   getPaymentStatus: (bookingId) => api.get(`http://localhost:8080/api/bookings/status/${bookingId}`),
@@ -70,8 +67,8 @@ export const bookingAPI = {
 };
 
 export const customerAPI = {
-  register: (data) => api.post('http://localhost:8080/client/register', data),
-  login: (credentials) => api.post('http://localhost:8080/auth/login', credentials),
+  register: (data) => api.post('https://localhost:7213/api/auth/register', data),
+  login: (credentials) => api.post('https://localhost:7213/api/auth/login', credentials),
   getProfile: () => api.get('http://localhost:8080/api/customer/profile'),
   getProfileId: () => api.get('http://localhost:8080/api/customer/id'),
   updateProfile: (data) => api.put('http://localhost:8080/api/customer/profile', data),
