@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import https from 'https';
+import http from 'http';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -133,7 +133,7 @@ let sqlContent = 'USE etour;\n\n';
 const downloadImage = (url, filepath) => {
     return new Promise((resolve, reject) => {
         const file = fs.createWriteStream(filepath);
-        const req = https.get(url, (response) => {
+        const req = http.get(url, (response) => {
             if (response.statusCode === 302 || response.statusCode === 301) {
                 // Resolve relative URLs in redirects
                 if (!response.headers.location) {
@@ -178,7 +178,7 @@ async function processImages() {
 
         try {
             console.log(`Downloading ${filename} for ${item.desc}...`);
-            await downloadImage(`https://loremflickr.com/800/600/${item.keyword}`, filePath);
+            await downloadImage(`http://loremflickr.com/800/600/${item.keyword}`, filePath);
 
             // Append SQL
             sqlContent += `UPDATE itinerary_master SET day_wise_image = '${dbPath}' WHERE itinerary_id = ${item.id};\n`;

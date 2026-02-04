@@ -34,15 +34,15 @@ api.interceptors.response.use(
 
 export const tourAPI = {
   // Mapping 'Tours' to 'Categories' as per available backend
-  getTours: () => api.get('https://localhost:7213/api/tours'),
-  getTour: (id) => api.get(`https://localhost:7213/api/tours/${id}`),
-  getTourDetails: (catId) => api.get(`https://localhost:7213/api/tours/details/${catId}`),
+  getTours: () => api.get('http://localhost:8080/api/tours'),
+  getTour: (id) => api.get(`http://localhost:8080/api/tours/${id}`),
+  getTourDetails: (catId) => api.get(`http://localhost:8080/api/tours/details/${catId}`),
 };
 
 export const bookingAPI = {
 
   getTourId: (categoryId, departureId) => api.get(`http://localhost:8080/api/tours/tour-id?categoryId=${categoryId}&departureId=${departureId}`),
-  createBooking: (data) => api.post('https://localhost:7213/api/Booking', data),
+  createBooking: (data) => api.post('http://localhost:8080/api/Booking', data),
   getBooking: (id) => api.get(`http://localhost:8080/api/bookings/${id}`),
   getBookings: () => api.get('http://localhost:8080/api/bookings/'),
   getBookingsByCustomer: (customerId) => api.get(`http://localhost:8080/api/bookings/customer/${customerId}`),
@@ -52,9 +52,9 @@ export const bookingAPI = {
   addPassenger: (data) => api.post('/api/passengers/add', data),
 
 
-  createOrder: (data) => api.post('https://localhost:7213/payment-gateway/create-order', data),
-  verifyPayment: (params) => api.post('https://localhost:7213/payment-gateway/confirm-payment', null, { params }),
-  savePayment: (params) => api.post('https://localhost:7213/api/payment/pay', null, { params }),
+  createOrder: (data) => api.post('http://localhost:8080/payment-gateway/create-order', data),
+  verifyPayment: (params) => api.post('http://localhost:8080/payment-gateway/confirm-payment', null, { params }),
+  savePayment: (params) => api.post('http ://localhost:8080/api/payment/pay', null, { params }),
   getPaymentStatus: (bookingId) => api.get(`http://localhost:8080/api/bookings/status/${bookingId}`),
   getPassengersByBooking: (bookingId) => api.get(`http://localhost:8080/api/passengers/booking/${bookingId}`),
   downloadInvoice: (bookingId) => api.get(`http://localhost:8080/api/invoices/${bookingId}/download`, { responseType: 'blob' }),

@@ -121,7 +121,15 @@ const BookingStart = () => {
 
       // Set tour + departures
       setTourData(passedTour);
-      setDepartures(passedDepartures);
+
+      // Normalize departures to handle both 'id' (Java) and 'departureId' (C#)
+      const normalizedDepartures = passedDepartures.map(d => ({
+        ...d,
+        id: d.id || d.departureId,
+        departureId: d.departureId || d.id
+      }));
+
+      setDepartures(normalizedDepartures);
       setTour(passedTour);
 
       // ✅ FETCH CUSTOMER ID (LOGIC ONLY)
@@ -212,9 +220,9 @@ const BookingStart = () => {
                 <div className="space-y-4">
                   {departures.map(dep => (
                     <label
-                      key={dep.departureId}
+                      key={dep.id}
                       className={`relative flex flex-col sm:flex-row sm:items-center border-2 rounded-xl p-4 cursor-pointer transition-all duration-200
-                        ${selectedDeparture?.departureId === dep.departureId
+                        ${selectedDeparture?.id === dep.id
                           ? 'border-sky-600 bg-sky-50 shadow-md transform scale-[1.01]'
                           : 'border-gray-100 hover:border-sky-200 hover:bg-gray-50'
                         }
@@ -224,14 +232,14 @@ const BookingStart = () => {
                         type="radio"
                         name="departure"
                         className="absolute opacity-0 w-0 h-0"
-                        checked={selectedDeparture?.departureId === dep.departureId}
+                        checked={selectedDeparture?.id === dep.id}
                         onChange={() => setSelectedDeparture(dep)}
                       />
 
                       {/* Check Circle */}
-                      <div className={`flex-shrink-0 w-6 h-6 rounded-full border-2 mr-4 mb-2 sm:mb-0 flex items-center justify-center transition-colors ${selectedDeparture?.departureId === dep.departureId ? 'border-sky-600 bg-sky-600' : 'border-gray-300 bg-white'
+                      <div className={`flex-shrink-0 w-6 h-6 rounded-full border-2 mr-4 mb-2 sm:mb-0 flex items-center justify-center transition-colors ${selectedDeparture?.id === dep.id ? 'border-sky-600 bg-sky-600' : 'border-gray-300 bg-white'
                         }`}>
-                        {selectedDeparture?.departureId === dep.departureId && (
+                        {selectedDeparture?.id === dep.id && (
                           <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
                         )}
                       </div>
@@ -266,7 +274,8 @@ const BookingStart = () => {
                     onClick={async () => {
                       try {
                         const categoryId = tour.categoryId;
-                        const departureId = selectedDeparture.departureId;
+                        // Use normalized ID
+                        const departureId = selectedDeparture.id || selectedDeparture.departureId;
 
                         const res = await bookingAPI.getTourId(
                           categoryId,

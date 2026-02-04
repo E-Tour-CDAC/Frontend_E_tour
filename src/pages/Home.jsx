@@ -29,10 +29,10 @@ const getImageUrl = (path) => {
 
 const Home = () => {
   const categoryImages = [
-    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=80",
-    "https://www.outlooktravelmag.com/media/A-Paris-Weekend-Away-main-1536px-jpg-1536x884.webp",
-    "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80",
-    "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=800&q=80"
+    "http://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=80",
+    "http://www.outlooktravelmag.com/media/A-Paris-Weekend-Away-main-1536px-jpg-1536x884.webp",
+    "http://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80",
+    "http://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=800&q=80"
   ];
 
   const [searchParams, setSearchParams] = useState({
@@ -97,7 +97,7 @@ const Home = () => {
         {/* Background Image & Overlay */}
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2021&q=80"
+            src="http://images.unsplash.com/photo-1469854523086-cc02fe5d8800?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2021&q=80"
             alt="Travel Background"
             className="w-full h-full object-cover"
           />
