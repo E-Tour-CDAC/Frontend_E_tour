@@ -7,7 +7,7 @@ import { tourAPI, searchAPI } from "../api";
 
 
 
-const BACKEND_URL = 'http://localhost:8080';
+const BACKEND_URL = 'https://localhost:7213';
 
 const getImageUrl = (path) => {
   if (!path) return null;
