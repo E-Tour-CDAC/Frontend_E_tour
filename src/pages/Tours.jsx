@@ -168,14 +168,15 @@ const Tours = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+      <div className="mb-10 text-center animate-fade-in">
+        <h1 className="text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">
           {isSearchMode ? "Search Results" : "Available Tours"}
         </h1>
-        <p className="text-gray-600">Discover your next adventure</p>
+        <div className="w-20 h-1.5 bg-sky-500 mx-auto rounded-full mb-4"></div>
+        <p className="text-xl text-gray-600 font-light">Discover your next adventure</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 animate-slide-up">
         {displayTours.map((tour) => (
           <Link
             key={tour.id}

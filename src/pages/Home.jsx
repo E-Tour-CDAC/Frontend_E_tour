@@ -129,17 +129,17 @@ const Home = () => {
             </button>
           </div>
 
-          <div className="text-center mb-10">
-            <h1 className="text-4xl md:text-6xl font-extrabold mb-4 tracking-tight drop-shadow-md">
-              {t('hero.title1')} <span className="text-sky-400">{t('hero.title2')}</span>
+          <div className="text-center mb-10 animate-fade-in">
+            <h1 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight drop-shadow-lg">
+              {t('hero.title1')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-300 to-blue-500">{t('hero.title2')}</span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-200 drop-shadow">
+            <p className="text-xl md:text-2xl text-gray-100 drop-shadow-md max-w-2xl mx-auto font-light">
               {t('hero.subtitle')}
             </p>
           </div>
 
           {/* Floating Search Widget */}
-          <div className="max-w-5xl mx-auto bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-6 md:p-8 transform transition-all hover:scale-[1.01]">
+          <div className="max-w-5xl mx-auto glass rounded-2xl p-6 md:p-8 transform transition-all hover:scale-[1.01] animate-slide-up">
 
             {/* Tabs (Optional decorative) */}
             <div className="flex gap-6 mb-6 border-b border-gray-100 pb-4 overflow-x-auto">
@@ -166,7 +166,7 @@ const Home = () => {
                     placeholder={t('search.locationPlaceholder')}
                     value={searchParams.location}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition-all font-semibold text-gray-800"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50/50 border border-gray-200/60 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition-all font-semibold text-gray-800 backdrop-blur-sm"
                   />
                 </div>
               </div>
@@ -184,7 +184,7 @@ const Home = () => {
                     name="date"
                     value={searchParams.date}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition-all font-semibold text-gray-800"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50/50 border border-gray-200/60 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition-all font-semibold text-gray-800 backdrop-blur-sm"
                   />
                 </div>
               </div>
@@ -203,14 +203,14 @@ const Home = () => {
                     placeholder={t('search.budgetPlaceholder')}
                     value={searchParams.price}
                     onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition-all font-semibold text-gray-800"
+                    className="w-full pl-10 pr-4 py-3 bg-gray-50/50 border border-gray-200/60 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition-all font-semibold text-gray-800 backdrop-blur-sm"
                   />
                 </div>
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3 h-[50px] bg-gradient-to-r from-sky-500 to-sky-700 text-white font-bold rounded-lg hover:from-sky-600 hover:to-sky-800 transition-all shadow-lg hover:shadow-sky-500/30 transform hover:-translate-y-0.5 uppercase tracking-wide"
+                className="w-full py-3 h-[50px] bg-gradient-to-r from-sky-500 to-blue-600 text-white font-bold rounded-lg hover:from-sky-600 hover:to-blue-700 transition-all shadow-lg hover:shadow-sky-500/40 transform hover:-translate-y-1 uppercase tracking-wide"
               >
                 {t('search.submit')}
               </button>
@@ -260,7 +260,7 @@ const Home = () => {
                 <Link
                   key={tour.categoryId}
                   to={`/tours/details/${tour.categoryId}`}
-                  className="group relative bg-white rounded-[28px] overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.12)] hover:shadow-[0_20px_45px_rgba(0,0,0,0.18)] transition-all duration-500"
+                  className="group relative bg-white rounded-[20px] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2"
                 >
                   {/* Image */}
                   <div className="relative h-60 overflow-hidden">
@@ -401,44 +401,44 @@ const Home = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-sky-700" fill="currentColor" viewBox="0 0 20 20">
+            <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all hover:-translate-y-1">
+              <div className="w-16 h-16 bg-sky-100 rounded-2xl flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-sky-600" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
                 {t('features.guidance.title')}
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 leading-relaxed">
                 {t('features.guidance.desc')}
               </p>
             </div>
 
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-sky-700" fill="currentColor" viewBox="0 0 20 20">
+            <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all hover:-translate-y-1">
+              <div className="w-16 h-16 bg-sky-100 rounded-2xl flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-sky-600" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
                 {t('features.price.title')}
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 leading-relaxed">
                 {t('features.price.desc')}
               </p>
             </div>
 
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-sky-700" fill="currentColor" viewBox="0 0 20 20">
+            <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all hover:-translate-y-1">
+              <div className="w-16 h-16 bg-sky-100 rounded-2xl flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-sky-600" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
                 {t('features.support.title')}
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 leading-relaxed">
                 {t('features.support.desc')}
               </p>
             </div>

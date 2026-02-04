@@ -83,11 +83,22 @@ const TourDetail = () => {
         </Link>
 
         {/* Header Section */}
-        <div className="mb-8">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight">
-            {tour.categoryName} <span className="text-sky-600">Experience</span>
-          </h1>
-          <p className="text-gray-500 mt-2 text-lg">Explore the details of this amazing journey.</p>
+        {/* Immersive Hero Section */}
+        <div className="relative rounded-3xl overflow-hidden shadow-2xl mb-10 h-[400px] flex items-center justify-center animate-fade-in">
+          <img
+            src={getImageUrl(tour.imagePath) || "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1600&q=80"}
+            alt={tour.categoryName}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+          <div className="relative z-10 text-center text-white px-4">
+            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-4 drop-shadow-lg">
+              {tour.categoryName}
+            </h1>
+            <p className="text-xl md:text-2xl font-light text-gray-200 drop-shadow-md">
+              Explore the details of this amazing journey
+            </p>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -256,12 +267,23 @@ const TourDetail = () => {
                   <Link
                     to={`/booking/start/${tour.categoryId}`}
                     state={{ tour, departures: tour.departures }}
-                    className="block w-full btn-primary text-center py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all text-lg font-bold"
+                    className="block w-full bg-gradient-to-r from-sky-600 to-blue-600 text-white text-center py-4 rounded-xl shadow-lg hover:shadow-sky-500/30 transform hover:-translate-y-1 transition-all text-lg font-bold"
                   >
                     Book Now
                   </Link>
-                  <p className="text-xs text-center text-gray-400 mt-3">Secure payment & Instant confirmation</p>
+                  <div className="mt-4 flex items-center justify-center gap-2 text-xs text-gray-500 font-medium">
+                    <svg className="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Instant Confirmation
+                  </div>
                 </div>
+              </div>
+
+              {/* Secure Badge */}
+              <div className="flex items-center justify-center gap-2 text-gray-400 text-sm">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+                <span>Best Price Guarantee</span>
               </div>
 
 
