@@ -7,15 +7,16 @@ import { tourAPI, searchAPI } from "../api";
 
 
 
-const BACKEND_URL = 'https://localhost:7213';
+const BACKEND_URL = 'http://localhost:8080';
 
 const getImageUrl = (path) => {
   if (!path) return null;
   const sanitizedPath = path.replace(/^"+|"+$/g, '');
   if (sanitizedPath.startsWith('http')) return sanitizedPath;
   const cleanPath = sanitizedPath.startsWith('/') ? sanitizedPath : `/${sanitizedPath}`;
-  console.log(`${BACKEND_URL}${cleanPath}`);
-  return `${BACKEND_URL}${cleanPath}`;
+  // Ensure we point to the /images/ folder in wwwroot
+  const finalPath = cleanPath.startsWith('/images') ? cleanPath : `/images${cleanPath}`;
+  return `${BACKEND_URL}${finalPath}`;
 };
 
 const Tours = () => {

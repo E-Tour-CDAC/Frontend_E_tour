@@ -9,7 +9,9 @@ const getImageUrl = (path) => {
   const sanitizedPath = path.replace(/^"+|"+$/g, '');
   if (sanitizedPath.startsWith('http')) return sanitizedPath;
   const cleanPath = sanitizedPath.startsWith('/') ? sanitizedPath : `/${sanitizedPath}`;
-  return `${BACKEND_URL}${cleanPath}`;
+  // Ensure we point to the /images/ folder in wwwroot
+  const finalPath = cleanPath.startsWith('/images') ? cleanPath : `/images${cleanPath}`;
+  return `${BACKEND_URL}${finalPath}`;
 };
 
 const TourDetail = () => {
@@ -122,7 +124,7 @@ const TourDetail = () => {
                           <div className="flex flex-col sm:flex-row gap-6">
                             {day.dayWiseImage && (
                               <div className="flex-shrink-0">
-                                <div className="w-full sm:w-32 h-32 rounded-lg overflow-hidden">
+                                <div className="w-full mm:w-35 h-32 rounded-lg overflow-hidden">
                                   <img
                                     src={getImageUrl(day.dayWiseImage)}
                                     alt={`Day ${day.dayNo}`}
@@ -133,7 +135,7 @@ const TourDetail = () => {
                             )}
                             <div>
                               <h3 className="text-lg font-bold text-gray-900 mb-2">Day {day.dayNo} Highlights</h3>
-                              <p className="text-gray-600 leading-relaxed text-sm">{day.itineraryDetail}</p>
+                              <p className="text-gray-600 leading-relaxed text-mm">{day.itineraryDetail}</p>
                             </div>
                           </div>
                         </div>
