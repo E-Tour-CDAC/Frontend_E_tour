@@ -34,36 +34,31 @@ api.interceptors.response.use(
 
 export const tourAPI = {
   // Mapping 'Tours' to 'Categories' as per available backend
-  getTours: () => api.get('/api/tours'),
-  getTour: (id) => api.get(`/api/tours/${id}`),
-  getTourDetails: (catId) => api.get(`/api/tours/details/${catId}`),
-
-
-  getDepartures: (tourId) => Promise.resolve({ data: [] }),
-  getItinerary: (tourId) => Promise.resolve({ data: [] }),
-  getPricing: (tourId) => Promise.resolve({ data: [] }),
-  getGuides: (tourId) => Promise.resolve({ data: [] }),
+  getTours: () => api.get('https://localhost:7213/api/tours'),
+  getTour: (id) => api.get(`https://localhost:7213/api/tours/${id}`),
+  getTourDetails: (catId) => api.get(`https://localhost:7213/api/tours/details/${catId}`),
 };
 
 export const bookingAPI = {
 
-  getTourId: (categoryId, departureId) => api.get(`/api/tours/tour-id?categoryId=${categoryId}&departureId=${departureId}`),
-  createBooking: (data) => api.post('/api/bookings', data),
-  getBooking: (id) => api.get(`/api/bookings/${id}`),
-  getBookings: () => api.get('/api/bookings/'),
-  getBookingsByCustomer: (customerId) => api.get(`/api/bookings/customer/${customerId}`),
+  getTourId: (categoryId, departureId) => api.get(`http://localhost:8080/api/tours/tour-id?categoryId=${categoryId}&departureId=${departureId}`),
+  createBooking: (data) => api.post('https://localhost:7213/api/Booking', data),
+  getBooking: (id) => api.get(`http://localhost:8080/api/bookings/${id}`),
+  getBookings: () => api.get('http://localhost:8080/api/bookings/'),
+  getBookingsByCustomer: (customerId) => api.get(`http://localhost:8080/api/bookings/customer/${customerId}`),
 
 
   getInvoice: (bookingId) => api.get(`/api/bookings/invoice/${bookingId}`),
   addPassenger: (data) => api.post('/api/passengers/add', data),
 
 
-  createOrder: (data) => api.post('/payment-gateway/create-order', data),
-  verifyPayment: (params) => api.post('/payment-gateway/confirm-payment', null, { params }),
-  getPaymentStatus: (bookingId) => api.get(`/api/bookings/status/${bookingId}`),
-  getPassengersByBooking: (bookingId) => api.get(`/api/passengers/booking/${bookingId}`),
-  downloadInvoice: (bookingId) => api.get(`/api/invoices/${bookingId}/download`, { responseType: 'blob' }),
-  sendInvoiceEmail: (paymentId) => api.post(`/api/email/invoice?paymentId=${paymentId}`),
+  createOrder: (data) => api.post('https://localhost:7213/payment-gateway/create-order', data),
+  verifyPayment: (params) => api.post('https://localhost:7213/payment-gateway/confirm-payment', null, { params }),
+  savePayment: (params) => api.post('https://localhost:7213/api/payment/pay', null, { params }),
+  getPaymentStatus: (bookingId) => api.get(`http://localhost:8080/api/bookings/status/${bookingId}`),
+  getPassengersByBooking: (bookingId) => api.get(`http://localhost:8080/api/passengers/booking/${bookingId}`),
+  downloadInvoice: (bookingId) => api.get(`http://localhost:8080/api/invoices/${bookingId}/download`, { responseType: 'blob' }),
+  sendInvoiceEmail: (paymentId) => api.post(`http://localhost:8080/api/email/invoice?paymentId=${paymentId}`),
 };
 
 export const customerAPI = {
