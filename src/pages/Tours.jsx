@@ -192,6 +192,7 @@ const Tours = () => {
                     src={getImageUrl(tour.image_url)}
                     alt={tour.tour_name}
                     className="w-full h-48 object-cover transform group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
                     onError={(e) => {
                       e.target.onerror = null;
                       e.target.src = "/fallback.jpg";

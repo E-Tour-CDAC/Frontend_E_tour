@@ -132,9 +132,11 @@ export const BookingProvider = ({ children }) => {
     dispatch({ type: 'SET_ERROR', payload: error });
   };
 
+  /* ================= NEW LOGIC: ROOM & COST CALC ================= */
+
+  // Group passengers into virtual rooms to calculate costs correctly
   const calculateTotal = () => {
     if (!state.selectedTour || !state.passengers.length) return 0;
-
     const activeCost = state.selectedTour.costs?.[0];
     if (!activeCost) return 0;
 
@@ -145,19 +147,66 @@ export const BookingProvider = ({ children }) => {
       childWithoutBedCost,
     } = activeCost;
 
-    return state.passengers.reduce((total, passenger, index) => {
-      switch (passenger.pax_type) {
-        case 'adult':
-          return total + (index === 0 ? singlePersonCost : extraPersonCost);
-        case 'child_with_bed':
-          return total + childWithBedCost;
-        case 'child_without_bed':
-          return total + childWithoutBedCost;
-        default:
-          return total;
+    let totalCost = 0;
+
+    // 1. Separate adults who explicitly want separate rooms
+    const adults = state.passengers.filter(p => p.pax_type === 'adult');
+    const separateRoomAdults = adults.filter(p => p.isSingleRoom);
+    const sharedRoomAdults = adults.filter(p => !p.isSingleRoom);
+
+    // Each separate room adult pays the full single person cost
+    totalCost += separateRoomAdults.length * singlePersonCost;
+
+    // 2. Pair up shared room adults
+    // In each pair: 1st pays singlePersonCost, 2nd pays extraPersonCost
+    for (let i = 0; i < sharedRoomAdults.length; i++) {
+      // If it's the first person in a "virtual room", they pay base price
+      // If it's the second person (sharing), they pay extra person price
+      // Logic: Even indices (0, 2...) are "Primary", Odd (1, 3...) are "Sharing"
+      if (i % 2 === 0) {
+        totalCost += singlePersonCost;
+      } else {
+        totalCost += extraPersonCost;
       }
-    }, 0);
+    }
+
+    // 3. Children Costs
+    state.passengers.forEach(p => {
+      if (p.pax_type === 'child_with_bed') totalCost += childWithBedCost;
+      if (p.pax_type === 'child_without_bed') totalCost += childWithoutBedCost;
+    });
+
+    return totalCost;
   };
+
+  // Helper to generate summary for UI
+  const calculateRoomSummary = () => {
+    if (!state.passengers) return null;
+
+    const adults = state.passengers.filter(p => p.pax_type === 'adult');
+    const singleRooms = adults.filter(p => p.isSingleRoom).length;
+    const sharingAdults = adults.filter(p => !p.isSingleRoom).length;
+
+    // Calculate Twin Sharing Rooms (Math.ceil(sharing / 2))
+    const twinRooms = Math.ceil(sharingAdults / 2);
+
+    const childBeds = state.passengers.filter(p => p.pax_type === 'child_with_bed').length;
+
+    return {
+      singleRoomCount: singleRooms,
+      doubleRoomCount: twinRooms,
+      childBedCount: childBeds
+    };
+  };
+
+  // Keep Room Summary Updated
+  React.useEffect(() => {
+    const summary = calculateRoomSummary();
+    // Avoid infinite loops by checking deep equality or simplified check
+    if (JSON.stringify(summary) !== JSON.stringify(state.roomSummary)) {
+      setRoomSummary(summary);
+    }
+  }, [state.passengers]);
 
   return (
     <BookingContext.Provider

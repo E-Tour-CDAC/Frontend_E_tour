@@ -100,6 +100,7 @@ const Home = () => {
             src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2021&q=80"
             alt="Travel Background"
             className="w-full h-full object-cover"
+            fetchpriority="high"
           />
           <div className="absolute inset-0 bg-black/50 bg-gradient-to-t from-black/80 via-black/40 to-black/30"></div>
         </div>
@@ -267,6 +268,7 @@ const Home = () => {
                       src={getImageUrl(tour.imagePath) || categoryImages[index % categoryImages.length]}
                       alt={tour.categoryName}
                       className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                      loading="lazy"
                       onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = categoryImages[index % categoryImages.length];
@@ -363,6 +365,7 @@ const Home = () => {
                     src={trip.image}
                     alt={trip.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    loading="lazy"
                   />
                   {/* Premium Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-8 text-white">
