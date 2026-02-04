@@ -133,8 +133,8 @@ const Tours = () => {
       }
 
       return {
-        id: cat.catCode || cat.CategoryCode,
-        catid: cat.categoryId,
+        id: cat.categoryCode || cat.catCode || cat.CategoryCode,
+        catid: cat.categoryId || cat.CategoryId,
         jumpFlag: cat.jumpFlag,
         tour_name: cat.categoryName,
         image_url: cat.imagePath,
