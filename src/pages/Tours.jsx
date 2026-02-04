@@ -7,7 +7,7 @@ import { tourAPI, searchAPI } from "../api";
 
 
 
-const BACKEND_URL = 'http://localhost:8080';
+const BACKEND_URL = 'https://localhost:8080';
 
 const getImageUrl = (path) => {
   if (!path) return null;
@@ -51,16 +51,7 @@ const Tours = () => {
         if (price) {
           response = await searchAPI.searchByCost(0, price);
         } else if (date) {
-          // response = await searchAPI.searchByDate(date, date);
-          // continue
-          const fromDate = date;
-
-          const toDateObj = new Date(date);
-          toDateObj.setDate(toDateObj.getDate() + 10); // 7–10 din ka buffer
-
-          const toDate = toDateObj.toISOString().split("T")[0];
-
-          response = await searchAPI.searchByDate(fromDate, toDate);
+          response = await searchAPI.searchByDate(date, date);
         } else if (loc) {
           response = await searchAPI.searchByLocation(loc);
         }

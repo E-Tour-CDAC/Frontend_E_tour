@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+// Unified Base URL (C# Backend) - HARDCODED to ensure C# backend is hit
+const API_BASE_URL = 'https://localhost:8080';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -33,69 +34,81 @@ api.interceptors.response.use(
 );
 
 export const tourAPI = {
-  // Mapping 'Tours' to 'Categories' as per available backend
-  getTours: () => api.get('https://localhost:7213/api/tours'),
-  getTour: (id) => api.get(`https://localhost:7213/api/tours/${id}`),
-  getTourDetails: (catId) => api.get(`https://localhost:7213/api/tours/details/${catId}`),
+  // Relative paths use baseURL
+  getTours: () => api.get('/api/tours'),
+  getTour: (id) => api.get(`/api/tours/${id}`),
+  getTourDetails: (catId) => api.get(`/api/tours/details/${catId}`),
 };
 
 export const bookingAPI = {
+  // Tour & Booking
+  getTourId: (categoryId, departureId) => api.get(`/api/tours/tour-id?categoryId=${categoryId}&departureId=${departureId}`),
 
-  getTourId: (categoryId, departureId) => api.get(`http://localhost:8080/api/tours/tour-id?categoryId=${categoryId}&departureId=${departureId}`),
-  createBooking: (data) => api.post('https://localhost:7213/api/Booking', data),
-  getBooking: (id) => api.get(`http://localhost:8080/api/bookings/${id}`),
-  getBookings: () => api.get('http://localhost:8080/api/bookings/'),
-  getBookingsByCustomer: (customerId) => api.get(`http://localhost:8080/api/bookings/customer/${customerId}`),
+  // Note: C# Controller is [Route("api/[controller]")] -> api/Booking
+  createBooking: (data) => api.post('/api/Booking', data),
+  getBooking: (id) => api.get(`/api/Booking/${id}`),
+  getBookings: () => api.get('/api/Booking'),
+  getBookingsByCustomer: (customerId) => api.get(`/api/Booking/customer/${customerId}`),
 
+  // Invoices (May need implementation in C#)
+  getInvoice: (bookingId) => api.get(`/api/Booking/invoice/${bookingId}`), // Warning: Check if exists
 
-  getInvoice: (bookingId) => api.get(`/api/bookings/invoice/${bookingId}`),
-  addPassenger: (data) => api.post('/api/passengers/add', data),
+  // Passengers
+  addPassenger: (data) => api.post('/api/passenger/add', data),
+  getPassengersByBooking: (bookingId) => api.get(`/api/passenger/booking/${bookingId}`),
 
+  // Payment Gateway (Razorpay)
+  createOrder: (data) => api.post('/payment-gateway/create-order', data),
+  verifyPayment: (params) => api.post('/payment-gateway/confirm-payment', null, { params }),
 
-  createOrder: (data) => api.post('https://localhost:7213/payment-gateway/create-order', data),
-  verifyPayment: (params) => api.post('https://localhost:7213/payment-gateway/confirm-payment', null, { params }),
-  savePayment: (params) => api.post('https://localhost:7213/api/payment/pay', null, { params }),
-  getPaymentStatus: (bookingId) => api.get(`http://localhost:8080/api/bookings/status/${bookingId}`),
-  getPassengersByBooking: (bookingId) => api.get(`http://localhost:8080/api/passengers/booking/${bookingId}`),
-  downloadInvoice: (bookingId) => api.get(`http://localhost:8080/api/invoices/${bookingId}/download`, { responseType: 'blob' }),
-  sendInvoiceEmail: (paymentId) => api.post(`http://localhost:8080/api/email/invoice?paymentId=${paymentId}`),
+  // Payment Records
+  savePayment: (params) => api.post('/api/payment/pay', null, { params }),
+  getPaymentStatus: (bookingId) => api.get(`/api/Booking/status/${bookingId}`),
+
+  // Downloads & Emails (Check implementation)
+  downloadInvoice: (bookingId) => api.get(`/api/invoices/${bookingId}/download`, { responseType: 'blob' }),
+  sendInvoiceEmail: (paymentId) => api.post(`/api/email/invoice?paymentId=${paymentId}`),
 };
 
 export const customerAPI = {
+  // Auth (Proxied via C# to Java if needed)
   register: (data) => api.post('/api/auth/register', data),
   login: (credentials) => api.post('/api/auth/login', credentials),
+
+  // Customer Profile (Proxied via C# CustomerController)
   getProfile: () => api.get('/api/customer/profile'),
   getProfileId: () => api.get('/api/customer/id'),
   updateProfile: (data) => api.put('/api/customer/profile', data),
   changePassword: (data) => api.post('/api/customer/change-password', data),
-  forgotPassword: (email) => api.post('/auth/forgot-password', { email }),
-  resetPassword: (data) => api.post('/auth/reset-password', data),
+
+  // Password Reset (Ensure these exist in AuthController or Java Proxy)
+  forgotPassword: (email) => api.post('/api/auth/forgot-password', { email }),
+  resetPassword: (data) => api.post('/api/auth/reset-password', data),
 };
 
 export const searchAPI = {
-  searchByDuration: (minDays, maxDays) =>
-    api.get('/search/by-duration', {
-      params: { minDays, maxDays },
-    }),
+  // SearchController Mappings
+
+  // Note: C# backend does not currently support duration search
+  searchByDuration: (minDays, maxDays) => {
+    console.warn("Search by duration not implemented in backend");
+    return Promise.resolve({ data: [] });
+  },
 
   searchByCost: (minCost, maxCost) =>
-    api.get('/search/by-cost', {
-      params: { minCost, maxCost },
-    }),
+    api.get(`/api/Search/cost/${maxCost}`), // C# takes maxCost only
 
   searchByLocation: (keyword) =>
-    api.get('/search/by-location', {
-      params: { keyword },
-    }),
+    api.get(`/api/Search/name/${keyword}`),
 
   searchByDate: (fromDate, toDate) =>
-    api.get('/search/by-date', {
-      params: { fromDate, toDate },
+    api.get('/api/Search/date', {
+      params: { from: fromDate, to: toDate }, // C# expects 'from' and 'to'
     }),
 };
 
 export const healthAPI = {
-  getHealth: () => api.get('/actuator/health'),
+  getHealth: () => api.get('/actuator/health'), // Java actuator, C# might return 404
 };
 
 export default api;

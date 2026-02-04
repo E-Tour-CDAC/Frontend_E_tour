@@ -121,15 +121,29 @@ const BookingStart = () => {
 
       // Set tour + departures
       setTourData(passedTour);
-      setDepartures(passedDepartures);
+
+      // DEBUG LOG
+      console.log('📦 Passed Departures:', passedDepartures);
+
+      // Normalize departures to handle both 'id' (Java) and 'departureId' (C#)
+      const normalizedDepartures = passedDepartures?.map((d, index) => ({
+        ...d,
+        id: d.id || d.departureId || `temp-${index}`, // Fallback ID if missing
+        departureId: d.departureId || d.id
+      })) || [];
+
+      console.log('🔄 Normalized Departures:', normalizedDepartures);
+
+      setDepartures(normalizedDepartures);
       setTour(passedTour);
 
       // ✅ FETCH CUSTOMER ID (LOGIC ONLY)
       const res = await customerAPI.getProfileId();
-      const fetchedCustomerId = res.data.id;
+      // Handle both 'id' (Java) and 'customerId' (C#) response formats
+      const fetchedCustomerId = res.data.customerId || res.data.id;
 
       // ✅ REQUIRED CONSOLE LOG
-      console.log('✅ customerId fetched from /api/customer/profile:', fetchedCustomerId);
+      console.log('✅ customerId fetched from /api/customer/id:', fetchedCustomerId);
 
       setCustomerId(fetchedCustomerId);
 
@@ -212,9 +226,9 @@ const BookingStart = () => {
                 <div className="space-y-4">
                   {departures.map(dep => (
                     <label
-                      key={dep.departureId}
+                      key={dep.id}
                       className={`relative flex flex-col sm:flex-row sm:items-center border-2 rounded-xl p-4 cursor-pointer transition-all duration-200
-                        ${selectedDeparture?.departureId === dep.departureId
+                        ${selectedDeparture?.id !== undefined && selectedDeparture.id === dep.id
                           ? 'border-sky-600 bg-sky-50 shadow-md transform scale-[1.01]'
                           : 'border-gray-100 hover:border-sky-200 hover:bg-gray-50'
                         }
@@ -224,14 +238,17 @@ const BookingStart = () => {
                         type="radio"
                         name="departure"
                         className="absolute opacity-0 w-0 h-0"
-                        checked={selectedDeparture?.departureId === dep.departureId}
-                        onChange={() => setSelectedDeparture(dep)}
+                        checked={selectedDeparture?.id !== undefined && selectedDeparture.id === dep.id}
+                        onChange={() => {
+                          console.log('Select Departure:', dep);
+                          setSelectedDeparture(dep);
+                        }}
                       />
 
                       {/* Check Circle */}
-                      <div className={`flex-shrink-0 w-6 h-6 rounded-full border-2 mr-4 mb-2 sm:mb-0 flex items-center justify-center transition-colors ${selectedDeparture?.departureId === dep.departureId ? 'border-sky-600 bg-sky-600' : 'border-gray-300 bg-white'
+                      <div className={`flex-shrink-0 w-6 h-6 rounded-full border-2 mr-4 mb-2 sm:mb-0 flex items-center justify-center transition-colors ${selectedDeparture?.id !== undefined && selectedDeparture.id === dep.id ? 'border-sky-600 bg-sky-600' : 'border-gray-300 bg-white'
                         }`}>
-                        {selectedDeparture?.departureId === dep.departureId && (
+                        {selectedDeparture?.id !== undefined && selectedDeparture.id === dep.id && (
                           <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
                         )}
                       </div>
@@ -266,7 +283,8 @@ const BookingStart = () => {
                     onClick={async () => {
                       try {
                         const categoryId = tour.categoryId;
-                        const departureId = selectedDeparture.departureId;
+                        // Use normalized ID
+                        const departureId = selectedDeparture.id || selectedDeparture.departureId;
 
                         const res = await bookingAPI.getTourId(
                           categoryId,

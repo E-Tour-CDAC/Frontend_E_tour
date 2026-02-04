@@ -121,7 +121,7 @@ const ReviewBooking = () => {
 
             // 6. Poll for Status Update
             let attempts = 0;
-            const maxAttempts = 15; // Increased for better UX
+            const maxAttempts = 5; // Reduced as per requirement
             let statusConfirmed = false;
 
             while (attempts < maxAttempts) {

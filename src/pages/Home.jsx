@@ -16,7 +16,7 @@ import family2 from '../assets/images/past-trips/family_2.png';
 import family3 from '../assets/images/past-trips/family_3.png';
 import family4 from '../assets/images/past-trips/family_4.png';
 
-const BACKEND_URL = 'http://localhost:8080';
+const BACKEND_URL = 'https://localhost:8080';
 
 const getImageUrl = (path) => {
   if (!path) return null;

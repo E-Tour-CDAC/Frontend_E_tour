@@ -26,7 +26,7 @@ const CustomerBookings = () => {
       setLoading(true);
       // 1. Get Customer Profile first to get the ID
       const profileRes = await customerAPI.getProfileId();
-      const customerId = profileRes.data.id;
+      const customerId = profileRes.data.customerId;
 
       if (!customerId) {
         toast.error("Could not verify customer identity.");
@@ -202,8 +202,8 @@ const CustomerBookings = () => {
                     </div>
                   </div>
                   <div className="mt-4 lg:mt-0">
-                    <span className={`inline-flex px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(booking.status)}`}>
-                      {booking.status}
+                    <span className={`inline-flex px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(booking.statusName)}`}>
+                      {booking.statusName}
                     </span>
                   </div>
                 </div>
@@ -293,20 +293,17 @@ const CustomerBookings = () => {
                 <div className="space-y-8">
                   {/* Summary Section */}
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-blue-50 p-3 rounded-xl text-center">
+                    <div className="bg-blue-50 p-3 rounded-xl text-center col-span-2">
                       <p className="text-xs text-blue-600 font-bold uppercase mb-1">Status</p>
-                      <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-bold ${getStatusColor(selectedBooking.status)}`}>
-                        {selectedBooking.status}
+                      <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-bold ${getStatusColor(selectedBooking.statusName)}`}>
+                        {selectedBooking.statusName}
                       </span>
                     </div>
                     <div className="bg-gray-50 p-3 rounded-xl text-center">
                       <p className="text-xs text-gray-500 font-bold uppercase mb-1">Date</p>
                       <p className="text-sm font-bold text-gray-900">{formatDate(selectedBooking.bookingDate)}</p>
                     </div>
-                    <div className="bg-gray-50 p-3 rounded-xl text-center">
-                      <p className="text-xs text-gray-500 font-bold uppercase mb-1">Type</p>
-                      <p className="text-sm font-bold text-gray-900">{selectedBooking.bookingType || 'Standard'}</p>
-                    </div>
+
                     <div className="bg-green-50 p-3 rounded-xl text-center">
                       <p className="text-xs text-green-600 font-bold uppercase mb-1">Total</p>
                       <p className="text-sm font-bold text-green-700">₹{selectedBooking.totalAmount}</p>
@@ -388,7 +385,7 @@ const CustomerBookings = () => {
                       <div>
                         <p className="text-sm font-bold text-amber-900 mb-1">Payment Status</p>
                         <p className="text-xs text-amber-700 leading-relaxed">
-                          Your payment for this booking is {selectedBooking.status?.toLowerCase() === 'confirmed' ? 'fully processed' : 'being processed'}.
+                          Your payment for this booking is {selectedBooking.statusName?.toLowerCase() === 'confirmed' ? 'fully processed' : 'being processed'}.
                           Please keep your booking ID <span className="font-mono font-bold bg-amber-200/50 px-1 rounded">#{selectedBooking.bookingId}</span> for future reference.
                         </p>
                       </div>

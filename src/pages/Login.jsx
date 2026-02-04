@@ -51,7 +51,7 @@ const Login = () => {
     console.log('Attempting login...');
     const result = await login(formData);
     console.log('Login result:', result);
-    
+
     if (result.success) {
       console.log('Login successful, fetching profile...');
       // Fetch profile to get the customer role for redirection
@@ -59,7 +59,7 @@ const Login = () => {
         const profileResponse = await customerAPI.getProfile();
         const profile = profileResponse.data;
         console.log('Profile data:', profile);
-        
+
         if (profile.customerRole === 'ADMIN') {
           console.log('Admin detected, navigating to /admin');
           navigate('/admin');
@@ -168,7 +168,7 @@ const Login = () => {
             <div>
               <button
                 type="button"
-                onClick={() => window.location.href = 'http://localhost:8080/oauth2/authorization/google'}
+                onClick={() => window.location.href = 'https://localhost:8080/api/auth/google-login'}
                 className="w-full flex items-center justify-center gap-3 py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
