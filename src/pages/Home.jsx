@@ -16,6 +16,17 @@ import family2 from '../assets/images/past-trips/family_2.png';
 import family3 from '../assets/images/past-trips/family_3.png';
 import family4 from '../assets/images/past-trips/family_4.png';
 
+const BACKEND_URL = 'http://localhost:8080';
+
+const getImageUrl = (path) => {
+  if (!path) return null;
+  const sanitizedPath = path.replace(/^"+|"+$/g, '');
+  if (sanitizedPath.startsWith('http')) return sanitizedPath;
+  const cleanPath = sanitizedPath.startsWith('/') ? sanitizedPath : `/${sanitizedPath}`;
+  const finalPath = cleanPath.startsWith('/images') ? cleanPath : `/images${cleanPath}`;
+  return `${BACKEND_URL}${finalPath}`;
+};
+
 const Home = () => {
   const categoryImages = [
     "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=80",
@@ -253,9 +264,13 @@ const Home = () => {
                   {/* Image */}
                   <div className="relative h-60 overflow-hidden">
                     <img
-                      src={categoryImages[index % categoryImages.length]}
+                      src={getImageUrl(tour.imagePath) || categoryImages[index % categoryImages.length]}
                       alt={tour.categoryName}
                       className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = categoryImages[index % categoryImages.length];
+                      }}
                     />
 
                     {/* Luxury overlay */}
