@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -34,9 +34,9 @@ api.interceptors.response.use(
 
 export const tourAPI = {
   // Mapping 'Tours' to 'Categories' as per available backend
-  getTours: () => api.get('https://localhost:7213/api/tours'),
-  getTour: (id) => api.get(`https://localhost:7213/api/tours/${id}`),
-  getTourDetails: (catId) => api.get(`https://localhost:7213/api/tours/details/${catId}`),
+  getTours: () => api.get('/api/tours'),
+  getTour: (id) => api.get(`/api/tours/${id}`),
+  getTourDetails: (catId) => api.get(`/api/tours/details/${catId}`),
 
 
   getDepartures: (tourId) => Promise.resolve({ data: [] }),
@@ -47,60 +47,60 @@ export const tourAPI = {
 
 export const bookingAPI = {
 
-  getTourId: (categoryId, departureId) => api.get(`http://localhost:8080/api/tours/tour-id?categoryId=${categoryId}&departureId=${departureId}`),
-  createBooking: (data) => api.post('http://localhost:8080/api/bookings', data),
-  getBooking: (id) => api.get(`http://localhost:8080/api/bookings/${id}`),
-  getBookings: () => api.get('http://localhost:8080/api/bookings/'),
-  getBookingsByCustomer: (customerId) => api.get(`http://localhost:8080/api/bookings/customer/${customerId}`),
+  getTourId: (categoryId, departureId) => api.get(`/api/tours/tour-id?categoryId=${categoryId}&departureId=${departureId}`),
+  createBooking: (data) => api.post('/api/bookings', data),
+  getBooking: (id) => api.get(`/api/bookings/${id}`),
+  getBookings: () => api.get('/api/bookings/'),
+  getBookingsByCustomer: (customerId) => api.get(`/api/bookings/customer/${customerId}`),
 
 
-  getInvoice: (bookingId) => api.get(`http://localhost:8080/api/bookings/invoice/${bookingId}`),
-  addPassenger: (data) => api.post('http://localhost:8080/api/passengers/add', data),
+  getInvoice: (bookingId) => api.get(`/api/bookings/invoice/${bookingId}`),
+  addPassenger: (data) => api.post('/api/passengers/add', data),
 
 
-  createOrder: (data) => api.post('http://localhost:8080/payment-gateway/create-order', data),
-  verifyPayment: (params) => api.post('http://localhost:8080/payment-gateway/confirm-payment', null, { params }),
-  getPaymentStatus: (bookingId) => api.get(`http://localhost:8080/api/bookings/status/${bookingId}`),
-  getPassengersByBooking: (bookingId) => api.get(`http://localhost:8080/api/passengers/booking/${bookingId}`),
-  downloadInvoice: (bookingId) => api.get(`http://localhost:8080/api/invoices/${bookingId}/download`, { responseType: 'blob' }),
-  sendInvoiceEmail: (paymentId) => api.post(`http://localhost:8080/api/email/invoice?paymentId=${paymentId}`),
+  createOrder: (data) => api.post('/payment-gateway/create-order', data),
+  verifyPayment: (params) => api.post('/payment-gateway/confirm-payment', null, { params }),
+  getPaymentStatus: (bookingId) => api.get(`/api/bookings/status/${bookingId}`),
+  getPassengersByBooking: (bookingId) => api.get(`/api/passengers/booking/${bookingId}`),
+  downloadInvoice: (bookingId) => api.get(`/api/invoices/${bookingId}/download`, { responseType: 'blob' }),
+  sendInvoiceEmail: (paymentId) => api.post(`/api/email/invoice?paymentId=${paymentId}`),
 };
 
 export const customerAPI = {
-  register: (data) => api.post('https://localhost:7213/api/auth/register', data),
-  login: (credentials) => api.post('https://localhost:7213/api/auth/login', credentials),
-  getProfile: () => api.get('http://localhost:8080/api/customer/profile'),
-  getProfileId: () => api.get('http://localhost:8080/api/customer/id'),
-  updateProfile: (data) => api.put('http://localhost:8080/api/customer/profile', data),
-  changePassword: (data) => api.post('http://localhost:8080/api/customer/change-password', data),
-  forgotPassword: (email) => api.post('http://localhost:8080/auth/forgot-password', { email }),
-  resetPassword: (data) => api.post('http://localhost:8080/auth/reset-password', data),
+  register: (data) => api.post('/api/auth/register', data),
+  login: (credentials) => api.post('/api/auth/login', credentials),
+  getProfile: () => api.get('/api/customer/profile'),
+  getProfileId: () => api.get('/api/customer/id'),
+  updateProfile: (data) => api.put('/api/customer/profile', data),
+  changePassword: (data) => api.post('/api/customer/change-password', data),
+  forgotPassword: (email) => api.post('/auth/forgot-password', { email }),
+  resetPassword: (data) => api.post('/auth/reset-password', data),
 };
 
 export const searchAPI = {
   searchByDuration: (minDays, maxDays) =>
-    api.get('http://localhost:8080/search/by-duration', {
+    api.get('/search/by-duration', {
       params: { minDays, maxDays },
     }),
 
   searchByCost: (minCost, maxCost) =>
-    api.get('http://localhost:8080/search/by-cost', {
+    api.get('/search/by-cost', {
       params: { minCost, maxCost },
     }),
 
   searchByLocation: (keyword) =>
-    api.get('http://localhost:8080/search/by-location', {
+    api.get('/search/by-location', {
       params: { keyword },
     }),
 
   searchByDate: (fromDate, toDate) =>
-    api.get('http://localhost:8080/search/by-date', {
+    api.get('/search/by-date', {
       params: { fromDate, toDate },
     }),
 };
 
 export const healthAPI = {
-  getHealth: () => api.get('http://localhost:8080/actuator/health'),
+  getHealth: () => api.get('/actuator/health'),
 };
 
 export default api;

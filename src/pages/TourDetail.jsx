@@ -9,7 +9,9 @@ const getImageUrl = (path) => {
   const sanitizedPath = path.replace(/^"+|"+$/g, '');
   if (sanitizedPath.startsWith('http')) return sanitizedPath;
   const cleanPath = sanitizedPath.startsWith('/') ? sanitizedPath : `/${sanitizedPath}`;
-  return `${BACKEND_URL}${cleanPath}`;
+  // Ensure we point to the /images/ folder in wwwroot
+  const finalPath = cleanPath.startsWith('/images') ? cleanPath : `/images${cleanPath}`;
+  return `${BACKEND_URL}${finalPath}`;
 };
 
 const TourDetail = () => {
