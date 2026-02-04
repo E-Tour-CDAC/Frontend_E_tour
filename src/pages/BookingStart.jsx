@@ -50,16 +50,16 @@ const BookingStart = () => {
 
   useEffect(() => {
     initBooking();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, []);
 
   // [NEW] Dynamic Cost Calculation (BRD 3.7)
   const { passengers, setTotalAmount, setRoomSummary } = useBooking();
-  
+
   useEffect(() => {
     if (!tour || !passengers.length || !tour.costs || !tour.costs[0]) return;
 
-    const rates = tour.costs[0]; 
+    const rates = tour.costs[0];
     let adultsSharing = 0;
     let adultsSingle = 0;
     let childBed = 0;
@@ -79,30 +79,30 @@ const BookingStart = () => {
     // 2. Adults "Sharing" -> Pair them up.
     //    - Pair = (Single Cost + Extra Cost) [As per user: "if same room extra person cost added"]
     //    - Remainder (Odd person) = Single Cost
-    
+
     const pairs = Math.floor(adultsSharing / 2);
     const oddSharing = adultsSharing % 2;
 
-    const total = 
+    const total =
       (adultsSingle * rates.singlePersonCost) +         // Explicit Singles
       (oddSharing * rates.singlePersonCost) +           // Odd person out
       (pairs * (rates.singlePersonCost + rates.extraPersonCost)) + // Pairs (1 Main + 1 Extra)
       (childBed * rates.childWithBedCost) +
       (childNoBed * rates.childWithoutBedCost);
-      
-      // Update Context Room Summary
-      setRoomSummary({
-        singleRoomCount: adultsSingle + oddSharing,
-        doubleRoomCount: pairs,
-        childBedCount: childBed,
-        childNoBedCount: childNoBed
-      });
-      
+
+    // Update Context Room Summary
+    setRoomSummary({
+      singleRoomCount: adultsSingle + oddSharing,
+      doubleRoomCount: pairs,
+      childBedCount: childBed,
+      childNoBedCount: childNoBed
+    });
+
     // Update Context (so BookingSummary sees it)
     // Note: ensure setTotalAmount exists in context or use setTourAmount
     // Looking at BookingSummary, it calls 'calculateTotal()'. 
     // We should probably override that or update the logic there.
-    
+
     // Actually, BookingSummary uses `calculateTotal()` which is likely in Context. 
     // Let's stick to the visual updates for now.    
   }, [passengers, tour]);
@@ -212,9 +212,9 @@ const BookingStart = () => {
                 <div className="space-y-4">
                   {departures.map(dep => (
                     <label
-                      key={dep.id}
+                      key={dep.departureId}
                       className={`relative flex flex-col sm:flex-row sm:items-center border-2 rounded-xl p-4 cursor-pointer transition-all duration-200
-                        ${selectedDeparture?.id === dep.id
+                        ${selectedDeparture?.departureId === dep.departureId
                           ? 'border-sky-600 bg-sky-50 shadow-md transform scale-[1.01]'
                           : 'border-gray-100 hover:border-sky-200 hover:bg-gray-50'
                         }
@@ -224,14 +224,14 @@ const BookingStart = () => {
                         type="radio"
                         name="departure"
                         className="absolute opacity-0 w-0 h-0"
-                        checked={selectedDeparture?.id === dep.id}
+                        checked={selectedDeparture?.departureId === dep.departureId}
                         onChange={() => setSelectedDeparture(dep)}
                       />
 
                       {/* Check Circle */}
-                      <div className={`flex-shrink-0 w-6 h-6 rounded-full border-2 mr-4 mb-2 sm:mb-0 flex items-center justify-center transition-colors ${selectedDeparture?.id === dep.id ? 'border-sky-600 bg-sky-600' : 'border-gray-300 bg-white'
+                      <div className={`flex-shrink-0 w-6 h-6 rounded-full border-2 mr-4 mb-2 sm:mb-0 flex items-center justify-center transition-colors ${selectedDeparture?.departureId === dep.departureId ? 'border-sky-600 bg-sky-600' : 'border-gray-300 bg-white'
                         }`}>
-                        {selectedDeparture?.id === dep.id && (
+                        {selectedDeparture?.departureId === dep.departureId && (
                           <div className="w-2.5 h-2.5 bg-white rounded-full"></div>
                         )}
                       </div>
@@ -266,7 +266,7 @@ const BookingStart = () => {
                     onClick={async () => {
                       try {
                         const categoryId = tour.categoryId;
-                        const departureId = selectedDeparture.id;
+                        const departureId = selectedDeparture.departureId;
 
                         const res = await bookingAPI.getTourId(
                           categoryId,

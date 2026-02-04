@@ -274,7 +274,7 @@ const TourDetail = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {tour.departures?.length > 0 ? (
               tour.departures.map((dep) => (
-                <div key={dep.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow group">
+                <div key={dep.departureId} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow group">
                   <div className="flex justify-between items-start mb-4">
                     <div className="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded uppercase tracking-wide">
                       Confirmed
