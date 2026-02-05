@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import Card from '../../components/UI/Card';
 import Table from '../../components/UI/Table';
 import { useState } from 'react';
+import { adminAPI } from '../../api';
 
 const AdminDashboard = () => {
   const stats = [
@@ -34,20 +35,12 @@ const AdminDashboard = () => {
     formData.append("file", csvFile);
 
     try {
-      const res = await fetch(
-        "http://localhost:8080/api/admin/itineraries/upload-csv",
-        {
-          method: "POST",
-          body: formData
-        }
-      );
-
-      if (!res.ok) throw new Error();
-
+      setUploadMsg("Uploading...");
+      await adminAPI.uploadItinerary(formData);
       setUploadMsg("CSV uploaded successfully ✅");
-    } // eslint-disable-next-line no-unused-vars
-    catch (err) {
-      setUploadMsg("Upload failed");
+    } catch (err) {
+      console.error(err);
+      setUploadMsg(err.response?.data?.message || "Upload failed ❌");
     }
   };
   return (

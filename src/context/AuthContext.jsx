@@ -97,10 +97,16 @@ export const AuthProvider = ({ children }) => {
         return;
       }
 
+      const decoded = decodeJWT(state.token);
+      const user = decoded ? {
+        email: decoded.sub,
+        role: decoded.role
+      } : null;
+
       dispatch({
         type: 'LOGIN_SUCCESS',
         payload: {
-          user: null, // optional: lazy load profile later
+          user: user,
           token: state.token,
         },
       });

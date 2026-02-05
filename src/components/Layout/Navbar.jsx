@@ -48,6 +48,11 @@ const Navbar = () => {
                 <Link to="/customer/profile" className="text-gray-700 hover:text-blue-600 transition-colors">
                   Profile
                 </Link>
+                {(user?.role === 'ADMIN' || user?.customer_role === 'ADMIN') && (
+                  <Link to="/admin/dashboard" className="text-blue-600 font-bold hover:text-blue-700 transition-colors">
+                    Admin
+                  </Link>
+                )}
               </>
             )}
           </div>
@@ -128,6 +133,15 @@ const Navbar = () => {
                 >
                   Profile
                 </Link>
+                {(user?.role === 'ADMIN' || user?.customer_role === 'ADMIN') && (
+                  <Link
+                    to="/admin/dashboard"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block text-blue-600 font-bold hover:text-blue-700 transition-colors"
+                  >
+                    Admin Dashboard
+                  </Link>
+                )}
                 <div className="pt-4 border-t border-gray-100">
                   <p className="text-sm text-gray-500 mb-2">Welcome, {user?.first_name || user?.email}</p>
                   <button

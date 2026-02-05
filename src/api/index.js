@@ -66,9 +66,20 @@ export const bookingAPI = {
   savePayment: (params) => api.post('/api/payment/pay', null, { params }),
   getPaymentStatus: (bookingId) => api.get(`/api/Booking/status/${bookingId}`),
 
-  // Downloads & Emails (Check implementation)
+  // Downloads & Emails
   downloadInvoice: (bookingId) => api.get(`/api/invoices/${bookingId}/download`, { responseType: 'blob' }),
   sendInvoiceEmail: (paymentId) => api.post(`/api/email/invoice?paymentId=${paymentId}`),
+};
+
+export const adminAPI = {
+  uploadItinerary: (formData) => api.post('/api/admin/itineraries/upload-csv', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
+};
+
+export const emailAPI = {
+  sendBookingConfirmation: (paymentId) => api.post(`/api/email/booking-confirmation?paymentId=${paymentId}`),
+  sendInvoice: (paymentId) => api.post(`/api/email/invoice?paymentId=${paymentId}`),
 };
 
 export const customerAPI = {
