@@ -38,6 +38,7 @@ export const tourAPI = {
   getTours: () => api.get('/api/tours'),
   getTour: (id) => api.get(`/api/tours/${id}`),
   getTourDetails: (catId) => api.get(`/api/tours/details/${catId}`),
+  getToursByCategoryIds: (ids) => api.post('/api/tours/by-category-ids', ids),
 };
 
 export const bookingAPI = {

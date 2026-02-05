@@ -27,16 +27,13 @@ const Tours = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 🔥 SEARCH STATES
   const [isSearchMode, setIsSearchMode] = useState(false);
-  const [searchedCategoryIds, setSearchedCategoryIds] = useState([]);
 
   /* ================= SEARCH HANDLER ================= */
 
   useEffect(() => {
     if (!location.state?.searchParams) {
       setIsSearchMode(false);
-      setSearchedCategoryIds([]);
       return;
     }
 
@@ -46,8 +43,10 @@ const Tours = () => {
     const runSearch = async () => {
       try {
         setLoading(true);
-        let response;
+        setError(null);
+        let response = null;
 
+        // 1. Get Tours directly from Search API (Backend Orchestration)
         if (price) {
           response = await searchAPI.searchByCost(0, price);
         } else if (date) {
@@ -56,16 +55,16 @@ const Tours = () => {
           response = await searchAPI.searchByLocation(loc);
         }
 
-        // 🔥 IMPORTANT: sirf categoryIds store karo
-        const ids =
-          response?.data?.map((item) =>
-            typeof item === "number" ? item : item.categoryId,
-          ) || [];
+        // Response.data is now List<TourDto>
+        if (response?.data && response.data.length > 0) {
+           mapAndSetTours(response.data);
+        } else {
+           setTours([]); // No results found
+        }
 
-        setSearchedCategoryIds(ids);
       } catch (err) {
         console.error("Search failed", err);
-        setSearchedCategoryIds([]);
+        setTours([]);
       } finally {
         setLoading(false);
       }
@@ -74,15 +73,18 @@ const Tours = () => {
     runSearch();
   }, [location.state]);
 
-  /* ================= FETCH TOURS (ALWAYS) ================= */
+  /* ================= FETCH TOURS (DEFAULT MODE) ================= */
 
   useEffect(() => {
+    // Only fetch default tours if NOT in search mode
+    if (location.state?.searchParams) return;
+
     if (id) {
       fetchToursBySubcat(id);
     } else {
       fetchTours();
     }
-  }, [id]);
+  }, [id, location.state]);
 
   const fetchTours = async () => {
     try {
@@ -144,9 +146,8 @@ const Tours = () => {
 
   /* ================= FINAL DISPLAY LOGIC ================= */
 
-  const displayTours = isSearchMode
-    ? tours.filter((tour) => searchedCategoryIds.includes(tour.catid))
-    : tours;
+  // No longer filtering client-side, as 'tours' is already filtered source
+  const displayTours = tours;
 
   /* ================= UI ================= */
 
@@ -185,14 +186,15 @@ const Tours = () => {
                 ? `/tours/details/${tour.catid}`
                 : `/tours/${tour.id}`
             }
+            className="block h-full"
           >
-            <Card hover className="cursor-pointer group">
-              <div >
+            <Card hover className="cursor-pointer group h-[26rem] flex flex-col">
+              <div className="h-48 shrink-0 overflow-hidden relative">
                 {tour.image_url ? (
                   <img
                     src={getImageUrl(tour.image_url)}
                     alt={tour.tour_name}
-                    className="w-full h-48 object-cover transform group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
                     onError={(e) => {
                       e.target.onerror = null;
@@ -200,37 +202,41 @@ const Tours = () => {
                     }}
                   />
                 ) : (
-                  <div className="w-full h-48 bg-gray-300 flex items-center justify-center">
+                  <div className="w-full h-full bg-gray-300 flex items-center justify-center">
                     <span className="text-gray-500">No Image</span>
                   </div>
                 )}
               </div>
 
-              <div className="p-4">
-                <span className="text-xs text-sky-600 font-medium">
+              <div className="p-4 flex flex-col flex-grow">
+                <span className="text-xs text-sky-600 font-medium shrink-0">
                   {tour.category_name}
                 </span>
 
-                <h3 className="text-lg font-semibold text-gray-900 mt-2">
+                <h3 className="text-lg font-semibold text-gray-900 mt-2 shrink-0">
                   {tour.tour_name}
                 </h3>
 
-                <p className="text-gray-600 text-sm line-clamp-2 mt-2">
+                <p className="text-gray-600 text-sm line-clamp-2 mt-2 flex-grow">
                   {tour.description}
                 </p>
 
-                <div className="flex items-center justify-between mt-4 text-sm text-gray-500">
+                <div className="flex items-center justify-between mt-4 text-sm text-gray-500 shrink-0">
                   <span>Var. Days</span>
                   <span>⭐ {tour.rating}</span>
                 </div>
 
-                {tour.jumpFlag && tour.starting_price && (
-                  <div className="mt-2 text-sky-700 font-semibold">
-                    Starting from ₹{tour.starting_price}
-                  </div>
-                )}
+                <div className="mt-2 min-h-[1.5rem] flex items-center shrink-0">
+                  {tour.jumpFlag && tour.starting_price ? (
+                    <span className="text-sky-700 font-semibold">
+                      Starting from ₹{tour.starting_price}
+                    </span>
+                  ) : (
+                    <span className="invisible font-semibold">Placeholder</span>
+                  )}
+                </div>
 
-                <div className="flex justify-between items-center mt-4">
+                <div className="flex justify-between items-center mt-2 shrink-0">
                   <span className="text-sky-700 font-bold">View</span>
                   <span className="text-sky-700 text-sm">View Packages →</span>
                 </div>
