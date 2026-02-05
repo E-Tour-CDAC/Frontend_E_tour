@@ -85,6 +85,9 @@ export const customerAPI = {
   // Password Reset (Ensure these exist in AuthController or Java Proxy)
   forgotPassword: (email) => api.post('/api/auth/forgot-password', { email }),
   resetPassword: (data) => api.post('/api/auth/reset-password', data),
+
+  // Google OAuth Login
+  googleLogin: (idToken) => api.post('/api/auth/google-login', { idToken }),
 };
 
 export const searchAPI = {

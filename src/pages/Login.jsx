@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { customerAPI } from '../api';
 import Card from '../components/UI/Card';
 import TextInput from '../components/Forms/TextInput';
+
+// Google Client ID - should match backend configuration
+const GOOGLE_CLIENT_ID = '441076747169-m9sogeramkuopg3ejt4a3o8c2pi5h3eg.apps.googleusercontent.com';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -11,8 +14,90 @@ const Login = () => {
     password: ''
   });
   const [errors, setErrors] = useState({});
-  const { login, loading } = useAuth();
+  const [googleError, setGoogleError] = useState('');
+  const { login, loginWithOAuth2, loading } = useAuth();
   const navigate = useNavigate();
+  const googleButtonRef = useRef(null);
+
+  // Initialize Google Sign-In
+  useEffect(() => {
+    const initializeGoogleSignIn = () => {
+      if (window.google && googleButtonRef.current) {
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleGoogleCallback,
+        });
+        window.google.accounts.id.renderButton(
+          googleButtonRef.current,
+          { 
+            theme: 'outline', 
+            size: 'large', 
+            width: googleButtonRef.current.offsetWidth,
+            text: 'continue_with',
+          }
+        );
+      }
+    };
+
+    // Check if the script is already loaded
+    if (window.google) {
+      initializeGoogleSignIn();
+    } else {
+      // Wait for script to load
+      const checkGoogleLoaded = setInterval(() => {
+        if (window.google) {
+          clearInterval(checkGoogleLoaded);
+          initializeGoogleSignIn();
+        }
+      }, 100);
+
+      // Cleanup after 5 seconds if not loaded
+      setTimeout(() => clearInterval(checkGoogleLoaded), 5000);
+    }
+  }, []);
+
+  // Handle Google Sign-In callback
+  const handleGoogleCallback = async (response) => {
+    try {
+      setGoogleError('');
+      console.log('Google sign-in successful, sending token to backend...');
+      
+      // Send the ID token to your backend
+      const backendResponse = await customerAPI.googleLogin(response.credential);
+      const { token } = backendResponse.data;
+      
+      console.log('Backend returned JWT:', token);
+      
+      // Use the OAuth2 login function from AuthContext
+      const result = await loginWithOAuth2(token);
+      
+      if (result.success) {
+        console.log('Login successful, fetching profile...');
+        try {
+          const profileResponse = await customerAPI.getProfile();
+          const profile = profileResponse.data;
+          console.log('Profile data:', profile);
+
+          if (profile.customerRole === 'ADMIN') {
+            console.log('Admin detected, navigating to /admin');
+            navigate('/admin');
+          } else {
+            console.log('Customer detected, navigating to /tours');
+            navigate('/tours');
+          }
+        } catch (error) {
+          console.error('Error fetching profile:', error);
+          navigate('/tours');
+        }
+      } else {
+        setGoogleError(result.error || 'Google login failed');
+      }
+    } catch (error) {
+      console.error('Google login error:', error);
+      const message = error.response?.data?.message || 'Google login failed. Please try again.';
+      setGoogleError(message);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -164,34 +249,18 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Google Login Button */}
-            <div>
-              <button
-                type="button"
-                onClick={() => window.location.href = 'https://localhost:8080/api/auth/google-login'}
-                className="w-full flex items-center justify-center gap-3 py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
-              >
-                <svg className="w-5 h-5" viewBox="0 0 24 24">
-                  <path
-                    fill="#4285F4"
-                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                  />
-                  <path
-                    fill="#34A853"
-                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                  />
-                  <path
-                    fill="#FBBC05"
-                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                  />
-                  <path
-                    fill="#EA4335"
-                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                  />
-                </svg>
-                Continue with Google
-              </button>
-            </div>
+            {/* Google Sign-In Button (rendered by Google SDK) */}
+            <div 
+              ref={googleButtonRef} 
+              className="w-full flex justify-center"
+            ></div>
+
+            {/* Google Error Message */}
+            {googleError && (
+              <div className="text-red-600 text-sm text-center">
+                {googleError}
+              </div>
+            )}
           </form>
         </Card>
       </div>
