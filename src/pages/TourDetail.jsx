@@ -163,34 +163,37 @@ const TourDetail = () => {
 
             {/* Tour Guide Section */}
             {tour.guides?.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden mt-8">
-                <div className="p-6 md:p-8 bg-gradient-to-r from-amber-50 to-white border-b border-gray-100">
-                  <h2 className="text-2xl font-bold text-gray-800 flex items-center">
-                    <span className="bg-amber-100 text-amber-700 p-2 rounded-lg mr-3">
+              <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden mt-8 animate-fade-in-up">
+                <div className="p-6 md:p-8 bg-gradient-to-r from-amber-50 to-white border-b border-gray-100 flex items-center justify-between">
+                  <h2 className="text-2xl font-black text-gray-800 flex items-center">
+                    <div className="bg-amber-100 text-amber-700 p-2.5 rounded-xl mr-4 shadow-sm">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                       </svg>
-                    </span>
-                    Tour Guides
+                    </div>
+                    Meet Your Guides
                   </h2>
+                  <span className="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest">
+                    Expert Team
+                  </span>
                 </div>
                 <div className="p-6 md:p-8">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {tour.guides.map((guide) => (
-                      <div key={guide.id} className="flex items-center p-4 bg-gray-50 rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
-                        <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mr-4 text-amber-700 font-bold text-xl leading-none">
+                      <div key={guide.id} className="flex items-center p-5 bg-white rounded-2xl border border-gray-100 hover:border-amber-200 hover:shadow-lg transition-all group">
+                        <div className="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mr-5 text-amber-600 font-black text-2xl border-4 border-white shadow-sm ring-1 ring-amber-100 group-hover:bg-amber-100 transition-colors">
                           {guide.name?.charAt(0).toUpperCase()}
                         </div>
-                        <div>
-                          <h3 className="font-bold text-gray-900">{guide.name}</h3>
-                          <div className="flex flex-col text-sm text-gray-500">
-                            <span className="flex items-center gap-1">
+                        <div className="min-w-0 flex-1">
+                          <h3 className="text-lg font-black text-gray-900 group-hover:text-amber-700 transition-colors truncate">{guide.name}</h3>
+                          <div className="flex flex-col gap-1 mt-1">
+                            <span className="flex items-center gap-2 text-xs font-bold text-gray-400 group-hover:text-gray-600 transition-colors">
                               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                               </svg>
                               {guide.email}
                             </span>
-                            <span className="flex items-center gap-1">
+                            <span className="flex items-center gap-2 text-xs font-bold text-gray-400 group-hover:text-gray-600 transition-colors">
                               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                               </svg>

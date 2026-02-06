@@ -313,26 +313,28 @@ const CustomerBookings = () => {
                   {/* Passenger Information */}
                   <div>
                     <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                      <svg className="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                      </svg>
+                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                      </div>
                       Passenger Information
                     </h3>
-                    <div className="bg-gray-50 rounded-xl overflow-hidden border border-gray-100">
+                    <div className="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
                       <table className="w-full text-left">
-                        <thead className="bg-gray-100/50 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                        <thead className="bg-gray-50 text-xs font-bold text-gray-400 uppercase tracking-wider">
                           <tr>
-                            <th className="px-4 py-3">Name</th>
-                            <th className="px-4 py-3">Type</th>
+                            <th className="px-6 py-4">Passenger Name</th>
+                            <th className="px-6 py-4">Category</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-200">
+                        <tbody className="divide-y divide-gray-50">
                           {selectedBooking.passengers && selectedBooking.passengers.length > 0 ? (
                             selectedBooking.passengers.map((p, idx) => (
-                              <tr key={idx} className="hover:bg-white/50 transition-colors">
-                                <td className="px-4 py-3 text-sm font-semibold text-gray-800">{p.paxName}</td>
-                                <td className="px-4 py-3">
-                                  <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-700 uppercase">
+                              <tr key={idx} className="hover:bg-blue-50/30 transition-colors group">
+                                <td className="px-6 py-4 text-sm font-bold text-gray-700 group-hover:text-blue-700">{p.paxName}</td>
+                                <td className="px-6 py-4">
+                                  <span className="inline-flex px-2.5 py-1 rounded-lg text-[10px] font-black bg-sky-100 text-sky-700 uppercase tracking-tighter">
                                     {p.paxType || 'Adult'}
                                   </span>
                                 </td>
@@ -340,8 +342,9 @@ const CustomerBookings = () => {
                             ))
                           ) : (
                             <tr>
-                              <td colSpan="2" className="px-4 py-8 text-center text-gray-500 italic">
-                                Passenger data available: {selectedBooking.noOfPax}
+                              <td colSpan="2" className="px-6 py-12 text-center">
+                                <p className="text-gray-400 italic text-sm">No individual passenger details found.</p>
+                                <p className="text-xs text-gray-400 mt-1">Total count: {selectedBooking.noOfPax}</p>
                               </td>
                             </tr>
                           )}
@@ -354,21 +357,25 @@ const CustomerBookings = () => {
                   {selectedBooking.guides && selectedBooking.guides.length > 0 && (
                     <div>
                       <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                        <svg className="w-5 h-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
+                        <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
+                          <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                          </svg>
+                        </div>
                         Tour Guide Information
                       </h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {selectedBooking.guides.map((guide, idx) => (
-                          <div key={idx} className="p-4 bg-amber-50 rounded-xl border border-amber-100 flex items-center gap-4">
-                            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-amber-600 font-bold border border-amber-200">
+                          <div key={idx} className="p-4 bg-white rounded-2xl border border-gray-100 shadow-sm hover:border-amber-200 transition-all group flex items-center gap-4">
+                            <div className="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center text-amber-600 font-black text-lg border-2 border-white shadow-sm ring-1 ring-amber-100 group-hover:bg-amber-100 transition-colors">
                               {guide.name?.charAt(0).toUpperCase()}
                             </div>
-                            <div className="min-w-0">
-                              <p className="text-sm font-bold text-gray-900 truncate">{guide.name}</p>
-                              <p className="text-xs text-gray-500 truncate">{guide.email}</p>
-                              <p className="text-xs text-gray-500">{guide.phone}</p>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-sm font-black text-gray-900 truncate group-hover:text-amber-700 transition-colors">{guide.name}</p>
+                              <div className="flex flex-col mt-0.5">
+                                <span className="text-[10px] font-bold text-gray-400 truncate">{guide.email}</span>
+                                <span className="text-[10px] font-bold text-gray-400">{guide.phone}</span>
+                              </div>
                             </div>
                           </div>
                         ))}
