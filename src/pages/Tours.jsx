@@ -7,7 +7,7 @@ import { tourAPI, searchAPI } from "../api";
 
 
 
-const BACKEND_URL = 'https://localhost:8080';
+const BACKEND_URL = 'http://localhost:8080';
 
 const getImageUrl = (path) => {
   if (!path) return null;
@@ -57,9 +57,9 @@ const Tours = () => {
 
         // Response.data is now List<TourDto>
         if (response?.data && response.data.length > 0) {
-           mapAndSetTours(response.data);
+          mapAndSetTours(response.data);
         } else {
-           setTours([]); // No results found
+          setTours([]); // No results found
         }
 
       } catch (err) {

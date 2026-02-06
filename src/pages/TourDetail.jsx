@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { tourAPI } from '../api';
 
-const BACKEND_URL = 'https://localhost:8080';
+const BACKEND_URL = 'http://localhost:8080';
 
 const getImageUrl = (path) => {
   if (!path) return null;
