@@ -75,6 +75,8 @@ export const adminAPI = {
   uploadItinerary: (formData) => api.post('/api/admin/itineraries/upload-csv', formData, {
     headers: { 'Content-Type': 'multipart/form-data' }
   }),
+  getDashboardStats: () => api.get('/api/admin/stats'),
+  getRecentBookings: () => api.get('/api/admin/recent-bookings'),
 };
 
 export const emailAPI = {

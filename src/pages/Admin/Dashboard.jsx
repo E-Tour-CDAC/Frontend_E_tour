@@ -1,27 +1,62 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Card from '../../components/UI/Card';
 import Table from '../../components/UI/Table';
-import { useState } from 'react';
 import { adminAPI } from '../../api';
 
 const AdminDashboard = () => {
-  const stats = [
-    { label: 'Total Tours', value: '156', change: '+12%', changeType: 'positive' },
-    { label: 'Total Bookings', value: '1,234', change: '+23%', changeType: 'positive' },
-    { label: 'Active Users', value: '5,678', change: '+18%', changeType: 'positive' },
-    { label: 'Revenue', value: '$45,678', change: '+31%', changeType: 'positive' }
-  ];
+  const [stats, setStats] = useState([
+    { label: 'Total Tours', value: '...', change: '', changeType: 'positive' },
+    { label: 'Total Bookings', value: '...', change: '', changeType: 'positive' },
+    { label: 'Active Users', value: '...', change: '', changeType: 'positive' },
+    { label: 'Revenue', value: '...', change: '', changeType: 'positive' }
+  ]);
 
   const [csvFile, setCsvFile] = useState(null);
   const [uploadMsg, setUploadMsg] = useState('');
+  const [recentBookingsData, setRecentBookingsData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const recentBookings = [
-    ['B001', 'John Doe', 'European Adventure', '2024-01-15', '$2,450', 'Confirmed'],
-    ['B002', 'Jane Smith', 'Asian Discovery', '2024-01-14', '$3,200', 'Pending'],
-    ['B003', 'Mike Johnson', 'American Dream', '2024-01-13', '$1,800', 'Confirmed'],
-    ['B004', 'Sarah Williams', 'African Safari', '2024-01-12', '$4,500', 'Completed']
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [statsRes, bookingsRes] = await Promise.all([
+          adminAPI.getDashboardStats(),
+          adminAPI.getRecentBookings()
+        ]);
+
+        const s = statsRes.data;
+        // Check if s.error exists (from my Java fallback)
+        if (s.error) {
+          console.warn("Backend reported an error, using fallbacks:", s.error);
+        }
+
+        setStats([
+          { label: 'Total Tours', value: s.totalTours ?? 0, change: '+12%', changeType: 'positive' },
+          { label: 'Total Bookings', value: s.totalBookings ?? 0, change: '+23%', changeType: 'positive' },
+          { label: 'Active Users', value: s.totalCustomers ?? 0, change: '+18%', changeType: 'positive' },
+          { label: 'Revenue', value: `₹${(s.totalRevenue ?? 0).toLocaleString()}`, change: '+31%', changeType: 'positive' }
+        ]);
+
+        if (Array.isArray(bookingsRes.data)) {
+          setRecentBookingsData(bookingsRes.data.map(b => [
+            `B${b.bookingId}`,
+            b.customerName || `Customer #${b.customerId || '?'}`,
+            b.tourName || `Tour #${b.tourId || '?'}`,
+            b.bookingDate ? new Date(b.bookingDate).toLocaleDateString() : 'N/A',
+            `₹${(b.totalAmount ?? 0).toLocaleString()}`,
+            b.statusName || b.status || 'Confirmed'
+          ]));
+        }
+
+      } catch (err) {
+        console.error("Failed to fetch admin stats:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   const bookingHeaders = ['ID', 'Customer', 'Tour', 'Date', 'Amount', 'Status'];
 
@@ -43,83 +78,100 @@ const AdminDashboard = () => {
       setUploadMsg(err.response?.data?.message || "Upload failed ❌");
     }
   };
+
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">Admin Dashboard</h1>
-        <p className="text-gray-600">Manage tours, bookings, and customers</p>
-      </div>
+      <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
+      <p className="text-gray-600 mb-8">Manage tours, bookings, and customers</p>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {stats.map((stat, index) => (
-          <Card key={index}>
-            <div className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">{stat.label}</p>
-                  <p className="text-2xl font-bold text-gray-900 mt-2">{stat.value}</p>
+      {loading ? (
+        <div className="flex justify-center items-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {stats.map((stat, index) => (
+              <Card key={index} className="p-6">
+                <p className="text-sm font-medium text-gray-500 mb-1">{stat.label}</p>
+                <div className="flex items-baseline justify-between">
+                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                  <span className={`text-sm font-medium ${stat.changeType === 'positive' ? 'text-green-600' : 'text-red-600'}`}>
+                    {stat.change}
+                  </span>
                 </div>
-                <div className={`text-sm font-medium ${stat.changeType === 'positive' ? 'text-green-600' : 'text-red-600'
-                  }`}>
-                  {stat.change}
-                </div>
-              </div>
-            </div>
-          </Card>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <Card>
-          <div className="p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Bookings</h2>
-            <Table
-              headers={bookingHeaders}
-              data={recentBookings}
-              className="text-sm"
-            />
+              </Card>
+            ))}
           </div>
-        </Card>
 
-        <Card>
-          <div className="p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
-            <div className="space-y-4">
-              <button className="w-full text-left btn-secondary">
-                Add New Tour
-              </button>
-              <button className="w-full text-left btn-secondary">
-                View All Bookings
-              </button>
-              <div className="border rounded-lg p-4">
-                <p className="font-medium mb-2">Upload Itinerary CSV</p>
-
-                <input
-                  type="file"
-                  accept=".csv"
-                  onChange={(e) => setCsvFile(e.target.files[0])}
-                  className="mb-2"
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            {/* Recent Bookings Table */}
+            <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Bookings</h2>
+              {recentBookingsData.length > 0 ? (
+                <Table
+                  headers={bookingHeaders}
+                  data={recentBookingsData}
+                  className="text-sm"
                 />
+              ) : (
+                <p className="text-center py-8 text-gray-500 italic">No bookings found yet.</p>
+              )}
+            </div>
 
-                <button
-                  onClick={handleCsvUpload}
-                  className="w-full btn-secondary"
-                >
-                  Upload CSV
+            {/* Admin Actions */}
+            <div className="space-y-6">
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Upload Itinerary</h3>
+                <div className="space-y-4">
+                  <div className="border-2 border-dashed border-gray-200 rounded-lg p-4 text-center">
+                    <input
+                      type="file"
+                      accept=".csv"
+                      onChange={(e) => setCsvFile(e.target.files[0])}
+                      className="hidden"
+                      id="csv-upload"
+                    />
+                    <label htmlFor="csv-upload" className="cursor-pointer">
+                      <div className="text-blue-600 font-medium hover:text-blue-700">
+                        {csvFile ? csvFile.name : 'Choose CSV File'}
+                      </div>
+                      <p className="text-xs text-gray-400 mt-1">Maximum size: 5MB</p>
+                    </label>
+                  </div>
+                  <button
+                    onClick={handleCsvUpload}
+                    disabled={!csvFile}
+                    className="w-full btn-primary disabled:opacity-50"
+                  >
+                    Upload Itinerary
+                  </button>
+                  {uploadMsg && (
+                    <p className={`text-sm text-center ${uploadMsg.includes('❌') ? 'text-red-600' : 'text-green-600'}`}>
+                      {uploadMsg}
+                    </p>
+                  )}
+                </div>
+              </Card>
+
+              <div className="grid grid-cols-1 gap-4">
+                <button className="btn-secondary w-full text-left flex justify-between items-center group">
+                  <span>Add New Tour</span>
+                  <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
                 </button>
-
-                {uploadMsg && (
-                  <p className="text-sm mt-2 text-gray-600">{uploadMsg}</p>
-                )}
+                <button className="btn-secondary w-full text-left flex justify-between items-center group">
+                  <span>Manage Users</span>
+                  <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+                </button>
+                <button className="btn-secondary w-full text-left flex justify-between items-center group">
+                  <span>View Reports</span>
+                  <span className="opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+                </button>
               </div>
-
-              <button className="w-full text-left btn-secondary">
-                Generate Reports
-              </button>
             </div>
           </div>
-        </Card>
-      </div>
+        </>
+      )}
 
       <Routes>
         <Route path="/tours" element={<div>Tour Management</div>} />
