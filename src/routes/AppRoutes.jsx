@@ -12,6 +12,7 @@ import CustomerProfile from "../pages/CustomerProfile";
 import CustomerBookings from "../pages/CustomerBookings";
 import AdminDashboard from "../pages/Admin/Dashboard";
 import HealthPage from "../pages/Health";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 const AppRoutes = () => {
   return (
@@ -21,14 +22,35 @@ const AppRoutes = () => {
       <Route path="/tours" element={<Tours />} />
       <Route path="/tours/:id" element={<Tours />} />
       <Route path="/tours/details/:id" element={<TourDetail />} />
-      <Route path="/booking/start/:tourId" element={<BookingStart />} />
+      <Route
+        path="/booking/start/:tourId"
+        element={
+          <ProtectedRoute>
+            <BookingStart />
+          </ProtectedRoute>
+        }
+      />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/oauth2-success" element={<OAuth2Success />} />
-      <Route path="/customer/profile" element={<CustomerProfile />} />
-      <Route path="/customer/bookings" element={<CustomerBookings />} />
+      <Route
+        path="/customer/profile"
+        element={
+          <ProtectedRoute>
+            <CustomerProfile />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/customer/bookings"
+        element={
+          <ProtectedRoute>
+            <CustomerBookings />
+          </ProtectedRoute>
+        }
+      />
       <Route path="/admin/*" element={<AdminDashboard />} />
       <Route path="/health" element={<HealthPage />} />
     </Routes>
