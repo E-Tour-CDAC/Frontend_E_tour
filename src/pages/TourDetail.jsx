@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useLocation, Link } from 'react-router-dom';
 import { tourAPI } from '../api';
 
-const BACKEND_URL = 'http://localhost:8080';
+const BACKEND_URL = import.meta.env.VITE_API_URL;
 
 const getImageUrl = (path) => {
   if (!path) return null;
@@ -16,6 +16,13 @@ const getImageUrl = (path) => {
 
 const TourDetail = () => {
   const { id } = useParams();
+  const location = useLocation();
+  // Carried forward from Home's search widget (via Tours), for BookingStart's
+  // passenger prefill. Falls back to defaults on direct navigation.
+  const travelerCounts = {
+    adults: Number(location.state?.travelerCounts?.adults) || 1,
+    children: Number(location.state?.travelerCounts?.children) || 0,
+  };
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -269,7 +276,7 @@ const TourDetail = () => {
                 <div className="p-6 bg-gray-50 border-t border-gray-100">
                   <Link
                     to={`/booking/start/${tour.categoryId}`}
-                    state={{ tour, departures: tour.departures }}
+                    state={{ tour, departures: tour.departures, travelerCounts }}
                     className="block w-full bg-gradient-to-r from-sky-600 to-blue-600 text-white text-center py-4 rounded-xl shadow-lg hover:shadow-sky-500/30 transform hover:-translate-y-1 transition-all text-lg font-bold"
                   >
                     Book Now
