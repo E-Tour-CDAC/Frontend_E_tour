@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useBooking } from '../../context/BookingContext';
 import Card from '../UI/Card';
 import TextInput from './TextInput';
@@ -8,8 +8,38 @@ import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { toast } from 'react-toastify';
 
 const PassengerForm = () => {
-  const { passengers, addPassenger, updatePassenger, removePassenger, setStep, selectedDeparture: departure } = useBooking();
+  const { passengers, addPassenger, updatePassenger, removePassenger, setStep, selectedDeparture: departure, travelerCounts } = useBooking();
   const [errors, setErrors] = useState({});
+
+  // Prefill passenger rows from the adults/children counts carried over from
+  // search, so the user isn't starting from a blank list. They can still
+  // add/remove rows afterward.
+  useEffect(() => {
+    if (passengers.length > 0) return;
+
+    const adults = Math.max(1, travelerCounts?.adults || 1);
+    const children = Math.max(0, travelerCounts?.children || 0);
+
+    for (let i = 0; i < adults; i++) {
+      addPassenger({
+        pax_name: '',
+        pax_birthdate: '',
+        pax_type: 'adult',
+        is_extra: i > 0,
+        isSingleRoom: false,
+      });
+    }
+    for (let i = 0; i < children; i++) {
+      addPassenger({
+        pax_name: '',
+        pax_birthdate: '',
+        pax_type: 'child_with_bed',
+        is_extra: true,
+        isSingleRoom: false,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const passengerTypes = [
     { value: 'adult', label: 'Adult' },

@@ -7,7 +7,7 @@ import { tourAPI, searchAPI } from "../api";
 
 
 
-const BACKEND_URL = 'http://localhost:8080';
+const BACKEND_URL = import.meta.env.VITE_API_URL;
 
 const getImageUrl = (path) => {
   if (!path) return null;
@@ -28,6 +28,13 @@ const Tours = () => {
   const [error, setError] = useState(null);
 
   const [isSearchMode, setIsSearchMode] = useState(false);
+
+  // Carried forward from Home's search widget so it can reach TourDetail /
+  // BookingStart for passenger prefill. Frontend-only, not sent to the backend.
+  const travelerCounts = {
+    adults: Number(location.state?.searchParams?.adults) || 1,
+    children: Number(location.state?.searchParams?.children) || 0,
+  };
 
   /* ================= SEARCH HANDLER ================= */
 
@@ -186,6 +193,7 @@ const Tours = () => {
                 ? `/tours/details/${tour.catid}`
                 : `/tours/${tour.id}`
             }
+            state={{ travelerCounts }}
             className="block h-full"
           >
             <Card hover className="cursor-pointer group h-[26rem] flex flex-col">

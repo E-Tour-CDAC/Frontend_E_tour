@@ -16,7 +16,7 @@ import family2 from '../assets/images/past-trips/family_2.png';
 import family3 from '../assets/images/past-trips/family_3.png';
 import family4 from '../assets/images/past-trips/family_4.png';
 
-const BACKEND_URL = 'http://localhost:8080';
+const BACKEND_URL = import.meta.env.VITE_API_URL;
 
 const getImageUrl = (path) => {
   if (!path) return null;
@@ -38,7 +38,9 @@ const Home = () => {
   const [searchParams, setSearchParams] = useState({
     location: '',
     date: '',
-    price: ''
+    price: '',
+    adults: 1,
+    children: 0
   });
   const [tours, setTours] = useState([]);
   const [loadingTours, setLoadingTours] = useState(true);
@@ -76,6 +78,13 @@ const Home = () => {
       ...searchParams,
       [e.target.name]: e.target.value
     });
+  };
+
+  const handleTravelerCountChange = (field, delta, min) => {
+    setSearchParams((prev) => ({
+      ...prev,
+      [field]: Math.max(min, (Number(prev[field]) || 0) + delta)
+    }));
   };
 
   const pastTrips = [
@@ -151,7 +160,7 @@ const Home = () => {
               </button>
             </div>
 
-            <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
               <div className="text-left w-full group">
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 group-focus-within:text-sky-600">
                   {t('search.location')}
@@ -205,6 +214,50 @@ const Home = () => {
                     onChange={handleInputChange}
                     className="w-full pl-10 pr-4 py-3 bg-gray-50/50 border border-gray-200/60 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition-all font-semibold text-gray-800 backdrop-blur-sm"
                   />
+                </div>
+              </div>
+
+              <div className="text-left w-full group">
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                  Travelers
+                </label>
+                <div className="flex items-center gap-3 bg-gray-50/50 border border-gray-200/60 rounded-lg px-3 py-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-600 font-semibold">Adults</span>
+                    <button
+                      type="button"
+                      onClick={() => handleTravelerCountChange('adults', -1, 1)}
+                      className="w-6 h-6 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100"
+                    >
+                      −
+                    </button>
+                    <span className="w-4 text-center font-semibold text-gray-800">{searchParams.adults}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleTravelerCountChange('adults', 1, 1)}
+                      className="w-6 h-6 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-600 font-semibold">Children</span>
+                    <button
+                      type="button"
+                      onClick={() => handleTravelerCountChange('children', -1, 0)}
+                      className="w-6 h-6 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100"
+                    >
+                      −
+                    </button>
+                    <span className="w-4 text-center font-semibold text-gray-800">{searchParams.children}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleTravelerCountChange('children', 1, 0)}
+                      className="w-6 h-6 rounded-full border border-gray-300 text-gray-600 hover:bg-gray-100"
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
               </div>
 

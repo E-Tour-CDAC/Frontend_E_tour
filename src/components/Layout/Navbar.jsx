@@ -48,7 +48,7 @@ const Navbar = () => {
                 <Link to="/customer/profile" className="text-gray-700 hover:text-blue-600 transition-colors">
                   Profile
                 </Link>
-                {(user?.role === 'ADMIN' || user?.customer_role === 'ADMIN') && (
+                {user?.role === 'ADMIN' && (
                   <Link to="/admin/dashboard" className="text-blue-600 font-bold hover:text-blue-700 transition-colors">
                     Admin
                   </Link>
@@ -61,7 +61,7 @@ const Navbar = () => {
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
                 <span className="text-gray-700">
-                  Welcome, {user?.first_name || user?.email}
+                  Welcome, {user?.email}
                 </span>
                 <button
                   onClick={handleLogout}
@@ -133,7 +133,7 @@ const Navbar = () => {
                 >
                   Profile
                 </Link>
-                {(user?.role === 'ADMIN' || user?.customer_role === 'ADMIN') && (
+                {user?.role === 'ADMIN' && (
                   <Link
                     to="/admin/dashboard"
                     onClick={() => setIsMenuOpen(false)}
@@ -143,7 +143,7 @@ const Navbar = () => {
                   </Link>
                 )}
                 <div className="pt-4 border-t border-gray-100">
-                  <p className="text-sm text-gray-500 mb-2">Welcome, {user?.first_name || user?.email}</p>
+                  <p className="text-sm text-gray-500 mb-2">Welcome, {user?.email}</p>
                   <button
                     onClick={handleLogout}
                     className="btn-secondary w-full text-center"
