@@ -1,26 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, useParams, Link } from 'react-router-dom';
 import { useBooking } from '../context/BookingContext';
 import Stepper from '../components/UI/Stepper';
 import Card from '../components/UI/Card';
 import BookingSummary from '../components/Bookings/BookingSummary';
 import PassengerForm from '../components/Forms/PassengerForm';
-import PaymentForm from '../components/Forms/PaymentForm';
 import ReviewBooking from '../components/Bookings/ReviewBooking';
-import { bookingAPI, customerAPI } from '../api';
+import { bookingAPI, customerAPI, tourAPI } from '../api';
 import { toast } from 'react-toastify';
 
 const BookingStart = () => {
   const location = useLocation();
+  const { tourId } = useParams();
 
-  // Data coming from TourDetail
+  // Data coming from TourDetail (via Link state). Missing on direct load/refresh.
   const passedTour = location.state?.tour;
   const passedDepartures = location.state?.departures;
+  const travelerCounts = location.state?.travelerCounts;
 
   const {
     setTour,
     setDeparture,
     setCustomerId,
+    setTravelerCounts,
     customerId,
     currentStep,
     setStep
@@ -32,12 +34,13 @@ const BookingStart = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Payment happens inline as part of "Review & Pay" (see ReviewBooking), so
+  // there's no separate step for it in the wizard.
   const steps = [
     'Select Tour',
     'Choose Departure',
     'Passenger Details',
-    'Review',
-    'Payment',
+    'Review & Pay',
     'Confirmation'
   ];
 
@@ -114,19 +117,32 @@ const BookingStart = () => {
       setDeparture(null);
       setSelectedDeparture(null);
 
-      if (!passedTour || !passedDepartures) {
+      // Data normally arrives via router state (Link from TourDetail). On a
+      // direct URL load or refresh that state is gone, so fetch the tour by
+      // its id from the URL instead, the same way TourDetail does.
+      let resolvedTour = passedTour;
+      let resolvedDepartures = passedDepartures;
+
+      if (!resolvedTour) {
+        const detailsRes = await tourAPI.getTourDetails(tourId);
+        const details = Array.isArray(detailsRes.data) ? detailsRes.data : [];
+        resolvedTour = details[0] || null;
+        resolvedDepartures = resolvedTour?.departures || [];
+      }
+
+      if (!resolvedTour || !resolvedDepartures) {
         setError('Invalid booking flow. Please start from Tours page.');
         return;
       }
 
       // Set tour + departures
-      setTourData(passedTour);
+      setTourData(resolvedTour);
 
       // DEBUG LOG
-      console.log('📦 Passed Departures:', passedDepartures);
+      console.log('📦 Departures:', resolvedDepartures);
 
       // Normalize departures to handle both 'id' (Java) and 'departureId' (C#)
-      const normalizedDepartures = passedDepartures?.map((d, index) => ({
+      const normalizedDepartures = resolvedDepartures?.map((d, index) => ({
         ...d,
         id: d.id || d.departureId || `temp-${index}`, // Fallback ID if missing
         departureId: d.departureId || d.id
@@ -135,7 +151,8 @@ const BookingStart = () => {
       console.log('🔄 Normalized Departures:', normalizedDepartures);
 
       setDepartures(normalizedDepartures);
-      setTour(passedTour);
+      setTour(resolvedTour);
+      setTravelerCounts(travelerCounts || { adults: 1, children: 0 });
 
       // ✅ FETCH CUSTOMER ID (LOGIC ONLY)
       const res = await customerAPI.getProfileId();
@@ -323,7 +340,6 @@ const BookingStart = () => {
 
           {currentStep === 2 && <PassengerForm />}
           {currentStep === 3 && <ReviewBooking />}
-          {currentStep === 4 && <PaymentForm />}
           {currentStep === 5 && (
             <Card>
               <div className="p-12 text-center">

@@ -98,7 +98,7 @@ const ReviewBooking = () => {
 
       // 4. Initialize Razorpay
       const options = {
-        key: 'rzp_test_S6YRDydnTqv8Mc', // Test Key
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: orderData.amount,
         currency: orderData.currency,
         name: 'E-TOUR',
